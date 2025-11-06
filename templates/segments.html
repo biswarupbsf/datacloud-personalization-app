@@ -205,18 +205,38 @@
                     // Create styled table with priority fields first
                     html += '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><thead><tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">';
                     
-                    // Priority fields in specific order
-                    const priorityFields = ['Name', 'omnichannel_score', 'preferred_channel', 'Current_Sentiment', 'Purchase_Intent', 'Favourite_Brand', 'Lifestyle_Quotient', 'Health_Profile'];
-                    const fieldLabels = {
-                        'Name': '👤 Name',
-                        'omnichannel_score': '📊 Engagement',
-                        'preferred_channel': '📱 Channel',
-                        'Current_Sentiment': '😊 Sentiment',
-                        'Purchase_Intent': '🛒 Intent',
-                        'Favourite_Brand': '❤️ Brand',
-                        'Lifestyle_Quotient': '🎯 Lifestyle',
-                        'Health_Profile': '💪 Health'
-                    };
+                    // Check if this is a driving segment
+                    const isDrivingSegment = data.segment.type === 'driving';
+                    
+                    // Priority fields based on segment type
+                    let priorityFields, fieldLabels;
+                    
+                    if (isDrivingSegment) {
+                        // Driving segment fields
+                        priorityFields = ['Name', 'driving_score', 'max_speed', 'safety_score', 'efficiency_score', 'harsh_events', 'vehicle_id'];
+                        fieldLabels = {
+                            'Name': '👤 Name',
+                            'driving_score': '🎯 Driving Score',
+                            'max_speed': '🏎️ Max Speed',
+                            'safety_score': '🛡️ Safety',
+                            'efficiency_score': '⚡ Efficiency',
+                            'harsh_events': '⚠️ Harsh Events',
+                            'vehicle_id': '🚗 Vehicle ID'
+                        };
+                    } else {
+                        // Engagement segment fields
+                        priorityFields = ['Name', 'omnichannel_score', 'preferred_channel', 'Current_Sentiment', 'Purchase_Intent', 'Favourite_Brand', 'Lifestyle_Quotient', 'Health_Profile'];
+                        fieldLabels = {
+                            'Name': '👤 Name',
+                            'omnichannel_score': '📊 Engagement',
+                            'preferred_channel': '📱 Channel',
+                            'Current_Sentiment': '😊 Sentiment',
+                            'Purchase_Intent': '🛒 Intent',
+                            'Favourite_Brand': '❤️ Brand',
+                            'Lifestyle_Quotient': '🎯 Lifestyle',
+                            'Health_Profile': '💪 Health'
+                        };
+                    }
                     
                     priorityFields.forEach(field => {
                         html += `<th style="border: 1px solid #ddd; padding: 12px; color: white; font-weight: 600; white-space: nowrap;">${fieldLabels[field] || field}</th>`;
@@ -269,6 +289,31 @@
                                 html += `<td style="border: 1px solid #eee; padding: 10px; color: #999;">-</td>`;
                             } else if (field === 'Name') {
                                 html += `<td style="border: 1px solid #eee; padding: 10px;"><strong>${value}</strong></td>`;
+                            } else if (isDrivingSegment) {
+                                // Driving segment specific fields
+                                if (field === 'driving_score') {
+                                    const score = parseFloat(value);
+                                    const scoreColor = score >= 75 ? '#4caf50' : (score >= 50 ? '#ff9800' : '#f44336');
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${scoreColor}; color: white; font-weight: 600;">${score.toFixed(1)}</span></td>`;
+                                } else if (field === 'max_speed') {
+                                    const speed = parseFloat(value);
+                                    const speedColor = speed >= 100 ? '#f44336' : (speed >= 80 ? '#ff9800' : '#4caf50');
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${speedColor}; color: white; font-weight: 600;">${speed.toFixed(1)} kmph</span></td>`;
+                                } else if (field === 'safety_score') {
+                                    const score = parseFloat(value);
+                                    const scoreColor = score >= 80 ? '#4caf50' : (score >= 60 ? '#ff9800' : '#f44336');
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${scoreColor}; color: white; font-weight: 600;">${score.toFixed(0)}/100</span></td>`;
+                                } else if (field === 'efficiency_score') {
+                                    const score = parseFloat(value);
+                                    const scoreColor = score >= 80 ? '#4caf50' : (score >= 60 ? '#ff9800' : '#f44336');
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${scoreColor}; color: white; font-weight: 600;">${score.toFixed(0)}/100</span></td>`;
+                                } else if (field === 'harsh_events') {
+                                    const events = parseInt(value);
+                                    const eventsColor = events === 0 ? '#4caf50' : (events <= 2 ? '#ff9800' : '#f44336');
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${eventsColor}; color: white; font-weight: 600;">${events}</span></td>`;
+                                } else {
+                                    html += `<td style="border: 1px solid #eee; padding: 10px;">${value}</td>`;
+                                }
                             } else if (field === 'omnichannel_score') {
                                 const score = parseFloat(value);
                                 const scoreColor = score >= 7 ? '#4caf50' : (score >= 5 ? '#ff9800' : '#f44336');
