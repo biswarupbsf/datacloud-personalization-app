@@ -23,11 +23,16 @@ from modules.datacloud_analytics import DataCloudAnalytics
 from modules.ai_agent import AIAgent
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+# Use environment variable for secret key (consistent across restarts)
+# If not set, generate one (for development)
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 CORS(app)
 
 # Configuration
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=8)
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('PORT') is not None  # True on Heroku
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
@@ -83,17 +88,18 @@ def login():
 
 @app.route('/login/oauth', methods=['POST'])
 def login_oauth():
-    """Simple SOAP login - no security token needed if IP is whitelisted!"""
+    """Simple SOAP login with optional security token"""
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    security_token = data.get('security_token', '')
     
     if not username or not password:
         return jsonify({'success': False, 'error': 'Username and password required'}), 400
     
     try:
-        # Connect using SOAP (no security token needed if IP whitelisted)
-        simple_auth_manager.connect_soap(username, password)
+        # Connect using SOAP (token appended to password if provided)
+        simple_auth_manager.connect_soap(username, password, security_token)
         
         # Copy connection to sf_manager for compatibility
         sf_manager.sf = simple_auth_manager.sf
