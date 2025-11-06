@@ -90,6 +90,15 @@ class SegmentationEngine:
         if not segment:
             raise Exception("Segment not found")
         
+        # Check if this is a driving segment (members stored directly)
+        if segment.get('type') == 'driving':
+            members = segment.get('members', [])
+            return {
+                'segment': segment,
+                'members': members,
+                'totalSize': len(members)
+            }
+        
         # Check if this is an engagement-based segment
         if segment.get('uses_engagement', False):
             members = self._get_members_with_engagement(sf, segment['filters'])
