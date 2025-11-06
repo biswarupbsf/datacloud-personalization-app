@@ -445,3 +445,4 @@ cd /Users/bbanerjee/.cursor/DC\ MCP/datacloud_app
 **🌩️ Happy Data Cloud Managing! ✨**
 
 
+

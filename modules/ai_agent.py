@@ -669,6 +669,8 @@ class AIAgent:
         try:
             # Load vehicle telemetry data
             telemetry_file = 'data/vehicle_telematics.csv'
+            vehicle_mapping_file = 'data/individual_vehicles.csv'
+            
             if not os.path.exists(telemetry_file):
                 return {
                     'intent': 'create_segment',
@@ -677,8 +679,17 @@ class AIAgent:
                     'suggested_actions': ['Generate vehicle data', 'Check data files']
                 }
             
-            # Load telemetry data
+            if not os.path.exists(vehicle_mapping_file):
+                return {
+                    'intent': 'create_segment',
+                    'message': "❌ Vehicle mapping data not found. Please ensure individual_vehicles.csv exists.",
+                    'data': None,
+                    'suggested_actions': ['Check data files']
+                }
+            
+            # Load telemetry data and vehicle mapping
             telemetry_df = pd.read_csv(telemetry_file)
+            vehicle_mapping_df = pd.read_csv(vehicle_mapping_file)
             
             # Parse speed requirement
             speed_threshold = None
@@ -693,39 +704,66 @@ class AIAgent:
                 limit = int(limit_match.group(1))
             
             # Calculate driving scores
-            # For each individual, get their latest/best driving metrics
+            # For each vehicle/individual, get their latest/best driving metrics
             individual_stats = {}
             
             for _, row in telemetry_df.iterrows():
-                ind_id = row['IndividualId']
-                speed = float(row['Speed_kmph'])
-                fuel_eff = float(row['Fuel_Efficiency_kmpl'])
-                
-                # Calculate safety score (100 - harsh events percentage)
-                harsh_accel = float(row.get('Harsh_Acceleration_Count', 0))
-                harsh_brake = float(row.get('Harsh_Braking_Count', 0))
-                safety_score = max(0, 100 - (harsh_accel + harsh_brake) * 5)
-                
-                # Calculate efficiency score (normalized fuel efficiency)
-                efficiency_score = min(100, fuel_eff * 5)
-                
-                # Combined driving score (50% safety, 50% efficiency)
-                driving_score = (safety_score * 0.5) + (efficiency_score * 0.5)
-                
-                if ind_id not in individual_stats:
-                    individual_stats[ind_id] = {
-                        'max_speed': speed,
-                        'avg_efficiency': fuel_eff,
-                        'driving_score': driving_score,
-                        'safety_score': safety_score,
-                        'efficiency_score': efficiency_score,
-                        'harsh_events': harsh_accel + harsh_brake
-                    }
-                else:
-                    # Update with max/avg values
-                    individual_stats[ind_id]['max_speed'] = max(individual_stats[ind_id]['max_speed'], speed)
-                    individual_stats[ind_id]['avg_efficiency'] = (individual_stats[ind_id]['avg_efficiency'] + fuel_eff) / 2
-                    individual_stats[ind_id]['driving_score'] = max(individual_stats[ind_id]['driving_score'], driving_score)
+                try:
+                    # Get speed (column is just 'Speed')
+                    speed = float(row.get('Speed', 0))
+                    
+                    # Get fuel consumption (lower is better, so invert for efficiency)
+                    fuel_consumption = float(row.get('FuelConsumption', 0))
+                    fuel_efficiency = max(0, 100 - fuel_consumption) if fuel_consumption > 0 else 50
+                    
+                    # Get harsh events (columns: HarshBraking, RapidAcceleration)
+                    harsh_brake = 1 if row.get('HarshBraking', 0) == 1 or row.get('HarshBraking', '').lower() == 'true' else 0
+                    harsh_accel = 1 if row.get('RapidAcceleration', 0) == 1 or row.get('RapidAcceleration', '').lower() == 'true' else 0
+                    harsh_events = harsh_brake + harsh_accel
+                    
+                    # Calculate safety score (100 - harsh events penalty)
+                    safety_score = max(0, 100 - (harsh_events * 10))
+                    
+                    # Calculate efficiency score (normalized)
+                    efficiency_score = min(100, fuel_efficiency)
+                    
+                    # Combined driving score (50% safety, 50% efficiency)
+                    driving_score = (safety_score * 0.5) + (efficiency_score * 0.5)
+                    
+                    # Get vehicle ID to map to individual
+                    vehicle_id = row.get('Vehicle_Id', '')
+                    if not vehicle_id:
+                        continue
+                    
+                    # Find the individual ID for this vehicle
+                    vehicle_match = vehicle_mapping_df[vehicle_mapping_df['VehicleId'] == vehicle_id]
+                    if vehicle_match.empty:
+                        continue
+                    
+                    ind_id = vehicle_match.iloc[0]['Individual_Id']
+                    ind_name = vehicle_match.iloc[0]['Individual_Name']
+                    
+                    if ind_id not in individual_stats:
+                        individual_stats[ind_id] = {
+                            'name': ind_name,
+                            'max_speed': speed,
+                            'avg_efficiency': efficiency_score,
+                            'driving_score': driving_score,
+                            'safety_score': safety_score,
+                            'efficiency_score': efficiency_score,
+                            'harsh_events': harsh_events,
+                            'vehicle_id': vehicle_id
+                        }
+                    else:
+                        # Update with max/avg values
+                        individual_stats[ind_id]['max_speed'] = max(individual_stats[ind_id]['max_speed'], speed)
+                        individual_stats[ind_id]['avg_efficiency'] = (individual_stats[ind_id]['avg_efficiency'] + efficiency_score) / 2
+                        individual_stats[ind_id]['driving_score'] = max(individual_stats[ind_id]['driving_score'], driving_score)
+                        individual_stats[ind_id]['harsh_events'] += harsh_events
+                        
+                except Exception as e:
+                    # Skip rows with errors
+                    continue
             
             # Filter by speed threshold if specified
             if speed_threshold:
@@ -744,15 +782,6 @@ class AIAgent:
                     'data': None,
                     'suggested_actions': ['Adjust criteria', 'Check data']
                 }
-            
-            # Load individual names from engagement data
-            import json
-            engagement_file = 'data/synthetic_engagement_data.json'
-            ind_names = {}
-            if os.path.exists(engagement_file):
-                with open(engagement_file, 'r') as f:
-                    eng_data = json.load(f)
-                    ind_names = {item['IndividualId']: item.get('Name', item['IndividualId']) for item in eng_data}
             
             # Create segment
             segment_name = f"Top {limit} Efficient & Safe Drivers"
@@ -791,7 +820,7 @@ class AIAgent:
             message_text += "\n**Top 10 Members:**\n"
             
             for i, (ind_id, stats) in enumerate(top_drivers[:10], 1):
-                name = ind_names.get(ind_id, ind_id)
+                name = stats.get('name', ind_id)
                 message_text += f"{i}. {name} - "
                 message_text += f"Score: {stats['driving_score']:.2f} | "
                 message_text += f"Max Speed: {stats['max_speed']:.1f} kmph | "
