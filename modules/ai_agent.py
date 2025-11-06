@@ -304,6 +304,14 @@ class AIAgent:
         purchase_intent_filter = None
         sentiment_filter = None
         
+        # **NEW: Detect driving/vehicle-related requests**
+        driving_keywords = ['driver', 'drivers', 'driving', 'speed', 'kmph', 'mph', 'efficient', 'safe', 'safety', 'vehicle', 'car', 'telemetry', 'acceleration', 'braking']
+        is_driving_query = any(keyword in message for keyword in driving_keywords)
+        
+        if is_driving_query:
+            # This is a driving-related segment request
+            return self._handle_driving_segment(original_message, message, sf, segmentation_engine)
+        
         # Detect "super engaged" or "highly engaged"
         # Note: Max score in data is ~6.88, adjusted to find reasonable matches
         if 'super engaged' in message or 'highly engaged' in message or 'high engagement' in message:
@@ -651,6 +659,167 @@ class AIAgent:
                 'message': f"❌ Error retrieving segments: {str(e)}",
                 'data': None,
                 'suggested_actions': ['Try again', 'Go to Segments page']
+            }
+    
+    def _handle_driving_segment(self, original_message, message, sf, segmentation_engine):
+        """Handle driving/vehicle-related segment creation"""
+        import os
+        import pandas as pd
+        
+        try:
+            # Load vehicle telemetry data
+            telemetry_file = 'data/synthetic_vehicle_telematics_data.csv'
+            if not os.path.exists(telemetry_file):
+                return {
+                    'intent': 'create_segment',
+                    'message': "❌ Vehicle telemetry data not found. Please generate synthetic vehicle data first.",
+                    'data': None,
+                    'suggested_actions': ['Generate vehicle data', 'Check data files']
+                }
+            
+            # Load telemetry data
+            telemetry_df = pd.read_csv(telemetry_file)
+            
+            # Parse speed requirement
+            speed_threshold = None
+            speed_match = re.search(r'(?:above|over|more than|greater than)\s+(\d+)\s*(?:kmph|km/h|mph)', message, re.IGNORECASE)
+            if speed_match:
+                speed_threshold = float(speed_match.group(1))
+            
+            # Parse limit (number of drivers)
+            limit = 5  # default
+            limit_match = re.search(r'(\d+)\s+(?:most|top|best|drivers?|individuals?)', message, re.IGNORECASE)
+            if limit_match:
+                limit = int(limit_match.group(1))
+            
+            # Calculate driving scores
+            # For each individual, get their latest/best driving metrics
+            individual_stats = {}
+            
+            for _, row in telemetry_df.iterrows():
+                ind_id = row['IndividualId']
+                speed = float(row['Speed_kmph'])
+                fuel_eff = float(row['Fuel_Efficiency_kmpl'])
+                
+                # Calculate safety score (100 - harsh events percentage)
+                harsh_accel = float(row.get('Harsh_Acceleration_Count', 0))
+                harsh_brake = float(row.get('Harsh_Braking_Count', 0))
+                safety_score = max(0, 100 - (harsh_accel + harsh_brake) * 5)
+                
+                # Calculate efficiency score (normalized fuel efficiency)
+                efficiency_score = min(100, fuel_eff * 5)
+                
+                # Combined driving score (50% safety, 50% efficiency)
+                driving_score = (safety_score * 0.5) + (efficiency_score * 0.5)
+                
+                if ind_id not in individual_stats:
+                    individual_stats[ind_id] = {
+                        'max_speed': speed,
+                        'avg_efficiency': fuel_eff,
+                        'driving_score': driving_score,
+                        'safety_score': safety_score,
+                        'efficiency_score': efficiency_score,
+                        'harsh_events': harsh_accel + harsh_brake
+                    }
+                else:
+                    # Update with max/avg values
+                    individual_stats[ind_id]['max_speed'] = max(individual_stats[ind_id]['max_speed'], speed)
+                    individual_stats[ind_id]['avg_efficiency'] = (individual_stats[ind_id]['avg_efficiency'] + fuel_eff) / 2
+                    individual_stats[ind_id]['driving_score'] = max(individual_stats[ind_id]['driving_score'], driving_score)
+            
+            # Filter by speed threshold if specified
+            if speed_threshold:
+                individual_stats = {k: v for k, v in individual_stats.items() if v['max_speed'] >= speed_threshold}
+            
+            # Sort by driving score
+            sorted_individuals = sorted(individual_stats.items(), key=lambda x: x[1]['driving_score'], reverse=True)
+            
+            # Take top N
+            top_drivers = sorted_individuals[:limit]
+            
+            if not top_drivers:
+                return {
+                    'intent': 'create_segment',
+                    'message': f"❌ No drivers found matching criteria (speed > {speed_threshold if speed_threshold else 'any'} kmph).",
+                    'data': None,
+                    'suggested_actions': ['Adjust criteria', 'Check data']
+                }
+            
+            # Load individual names from engagement data
+            import json
+            engagement_file = 'data/synthetic_engagement_data.json'
+            ind_names = {}
+            if os.path.exists(engagement_file):
+                with open(engagement_file, 'r') as f:
+                    eng_data = json.load(f)
+                    ind_names = {item['IndividualId']: item.get('Name', item['IndividualId']) for item in eng_data}
+            
+            # Create segment
+            segment_name = f"Top {limit} Efficient & Safe Drivers"
+            if speed_threshold:
+                segment_name += f" (Speed > {speed_threshold} kmph)"
+            
+            segment = {
+                'id': f"seg_driving_{int(datetime.now().timestamp())}",
+                'name': segment_name,
+                'description': f"AI-generated driving segment: {original_message}",
+                'base_object': 'Individual',
+                'filters': [],
+                'member_count': len(top_drivers),
+                'members': top_drivers,
+                'created_at': datetime.now().isoformat(),
+                'type': 'driving'
+            }
+            
+            # Save segment
+            segments = segmentation_engine.list_segments()
+            segments.append(segment)
+            with open(segmentation_engine.segments_file, 'w') as f:
+                json.dump(segments, f, indent=2)
+            
+            # Update context
+            self.context['last_segment_created'] = segment_name
+            self.context['last_segment_id'] = segment['id']
+            self.context['last_segment_name'] = segment_name
+            
+            # Build response message
+            message_text = f"✅ **Segment Created Successfully!**\n\n"
+            message_text += f"📊 **Segment Name:** {segment_name}\n"
+            message_text += f"👥 **Members:** {len(top_drivers)} drivers\n"
+            if speed_threshold:
+                message_text += f"🏎️ **Speed Filter:** Above {speed_threshold} kmph\n"
+            message_text += "\n**Top 10 Members:**\n"
+            
+            for i, (ind_id, stats) in enumerate(top_drivers[:10], 1):
+                name = ind_names.get(ind_id, ind_id)
+                message_text += f"{i}. {name} - "
+                message_text += f"Score: {stats['driving_score']:.2f} | "
+                message_text += f"Max Speed: {stats['max_speed']:.1f} kmph | "
+                message_text += f"Safety: {stats['safety_score']:.1f}/100 | "
+                message_text += f"Efficiency: {stats['efficiency_score']:.1f}/100\n"
+            
+            message_text += "\n✅ **Next steps:**\n"
+            message_text += "• View full segment in the **Segments** page\n"
+            message_text += "• Generate personalized communications for these drivers\n"
+            message_text += "• Sync to Salesforce Campaign\n"
+            
+            return {
+                'intent': 'create_segment',
+                'message': message_text,
+                'data': {
+                    'segment': segment,
+                    'members': top_drivers,
+                    'stats': individual_stats
+                },
+                'suggested_actions': ['View segment', 'Generate emails', 'Sync to Salesforce']
+            }
+            
+        except Exception as e:
+            return {
+                'intent': 'create_segment',
+                'message': f"❌ Error creating driving segment: {str(e)}",
+                'data': None,
+                'suggested_actions': ['Try again', 'Check data files']
             }
     
     def _handle_generate_email(self, original_message, message, sf, email_generator, segmentation_engine):
