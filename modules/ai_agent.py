@@ -668,7 +668,7 @@ class AIAgent:
         
         try:
             # Load vehicle telemetry data
-            telemetry_file = 'data/synthetic_vehicle_telematics_data.csv'
+            telemetry_file = 'data/vehicle_telematics.csv'
             if not os.path.exists(telemetry_file):
                 return {
                     'intent': 'create_segment',
