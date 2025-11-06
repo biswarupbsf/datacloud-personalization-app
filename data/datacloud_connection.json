@@ -1,0 +1,14 @@
+{
+  "connected": true,
+  "username": "biswarupb@salesforce.com",
+  "instance_url": "https://sftutor.my.salesforce.com",
+  "org_info": {
+    "username": "biswarupb@salesforce.com",
+    "instance_url": "https://sftutor.my.salesforce.com",
+    "org_id": "00D4V000001EnHZUA0",
+    "org_name": "Salesforce",
+    "org_type": "Enterprise Edition",
+    "instance": "NA241",
+    "connected_at": "2025-11-02T15:35:12.450244"
+  }
+}

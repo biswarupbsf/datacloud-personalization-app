@@ -1,0 +1,22 @@
+{
+  "id": "vip_welcome",
+  "name": "VIP Welcome Email",
+  "description": "Personalized VIP welcome email with engagement stats",
+  "subject_template": "\ud83c\udf1f {greeting}, {first_name}!",
+  "html_template": "\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }\n        .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); \n                   color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }\n        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; }\n        .highlight { background: #f8f9fa; padding: 20px; border-left: 4px solid #667eea; \n                     margin: 20px 0; border-radius: 5px; }\n        .stats { display: flex; justify-content: space-around; margin: 20px 0; }\n        .stat-box { text-align: center; padding: 15px; background: #f8f9fa; \n                    border-radius: 8px; flex: 1; margin: 0 10px; }\n        .stat-number { font-size: 32px; font-weight: bold; color: #667eea; }\n        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; }\n        .cta-button { background: #667eea; color: white; padding: 15px 30px; \n                      text-decoration: none; border-radius: 5px; display: inline-block; \n                      margin: 20px 0; font-weight: bold; }\n        .vip-badge { display: inline-block; background: gold; color: #333; \n                     padding: 5px 15px; border-radius: 20px; font-weight: bold; margin: 10px 0; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>\ud83c\udf1f Welcome to VIP Status! \ud83c\udf1f</h1>\n            <div class=\"vip-badge\">{vip_level}</div>\n        </div>\n        <div class=\"content\">\n            <h2>Dear {full_name},</h2>\n            <p><strong>Congratulations!</strong> {stars} Your exceptional engagement has earned you VIP status.</p>\n            <div class=\"stats\">\n                <div class=\"stat-box\">\n                    <div class=\"stat-number\">{metric_1}</div>\n                    <div class=\"stat-label\">{metric_1_label}</div>\n                </div>\n                <div class=\"stat-box\">\n                    <div class=\"stat-number\">{metric_2}</div>\n                    <div class=\"stat-label\">{metric_2_label}</div>\n                </div>\n            </div>\n            <div class=\"highlight\">\n                <h3>\ud83c\udf81 Your Exclusive Benefits</h3>\n                <p>{benefits}</p>\n            </div>\n            <center>\n                <a href=\"{cta_link}\" class=\"cta-button\">{cta_text}</a>\n            </center>\n            <p>{personal_note}</p>\n        </div>\n    </div>\n</body>\n</html>\n            ",
+  "variables": [
+    "greeting",
+    "first_name",
+    "full_name",
+    "vip_level",
+    "stars",
+    "metric_1",
+    "metric_1_label",
+    "metric_2",
+    "metric_2_label",
+    "benefits",
+    "cta_link",
+    "cta_text",
+    "personal_note"
+  ]
+}

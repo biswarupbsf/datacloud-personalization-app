@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🌩️ Data Cloud Manager</h1>
+                <p>Connect to your Salesforce Data Cloud org</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username / Email</label>
+                    <input type="email" id="username" name="username" 
+                           placeholder="your.email@salesforce.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" 
+                           placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="security_token">Security Token (Optional)</label>
+                    <input type="text" id="security_token" name="security_token" 
+                           placeholder="Leave blank if IP is whitelisted">
+                    <small>Required only if your IP is not in Salesforce Trusted IP Ranges</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Connect to Salesforce</span>
+                    <span class="btn-loading" style="display: none;">Connecting...</span>
+                </button>
+            </form>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <p style="color: #666;">── OR ──</p>
+            </div>
+            
+            <button type="button" onclick="loginWithoutToken()" class="btn btn-secondary btn-block">
+                🔐 Login Without Security Token
+            </button>
+            
+            <div class="login-help">
+                <p><strong>Need help?</strong></p>
+                <ul>
+                    <li>Use your Salesforce login credentials</li>
+                    <li>Security token required if IP not whitelisted</li>
+                    <li>Get token: Setup → Personal → Reset Security Token</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            // Disable form
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            const formData = {
+                username: form.username.value,
+                password: form.password.value,
+                security_token: form.security_token.value
+            };
+            
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successDiv.textContent = result.message;
+                    successDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    errorDiv.textContent = result.error || 'Connection failed';
+                    errorDiv.style.display = 'block';
+                    submitBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error: ' + error.message;
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            }
+        });
+        
+        // Login Without Token Function
+        async function loginWithoutToken() {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            if (!username || !password) {
+                errorDiv.textContent = 'Please enter username and password';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            successDiv.textContent = '🔐 Connecting without security token...';
+            successDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch('/login/oauth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successDiv.textContent = '✅ ' + result.message;
+                    successDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    errorDiv.textContent = result.error || 'Login failed';
+                    errorDiv.style.display = 'block';
+                    successDiv.style.display = 'none';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error: ' + error.message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+

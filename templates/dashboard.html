@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>📊 Dashboard</h1>
+                <div class="header-actions">
+                    <span class="user-info">👤 {{ username }}</span>
+                    <a href="/logout" class="btn btn-secondary">Logout</a>
+                </div>
+            </header>
+            
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Individuals</h3>
+                        <div class="stat-number">{{ stats.individuals|default(0) }}</div>
+                        <a href="/data?object=Individual" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📇</div>
+                    <div class="stat-content">
+                        <h3>Contacts</h3>
+                        <div class="stat-number">{{ stats.contacts|default(0) }}</div>
+                        <a href="/data?object=Contact" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📢</div>
+                    <div class="stat-content">
+                        <h3>Campaigns</h3>
+                        <div class="stat-number">{{ stats.campaigns|default(0) }}</div>
+                        <a href="/data?object=Campaign" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Opportunities</h3>
+                        <div class="stat-number">{{ stats.opportunities|default(0) }}</div>
+                        <a href="/data?object=Opportunity" class="stat-link">View all →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <h2>🚀 Quick Actions</h2>
+                <div class="action-grid">
+                    <a href="/data" class="action-card">
+                        <div class="action-icon">📊</div>
+                        <h3>Manage Data</h3>
+                        <p>Create, update, and delete records</p>
+                    </a>
+                    
+                    <a href="/relationships" class="action-card">
+                        <div class="action-icon">🔗</div>
+                        <h3>Build Relationships</h3>
+                        <p>Connect records across objects</p>
+                    </a>
+                    
+                    <a href="/segments" class="action-card">
+                        <div class="action-icon">🎯</div>
+                        <h3>Create Segments</h3>
+                        <p>Filter and group your audience</p>
+                    </a>
+                    
+                    <a href="/emails" class="action-card">
+                        <div class="action-icon">📧</div>
+                        <h3>Send Emails</h3>
+                        <p>Generate personalized campaigns</p>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="datacloud-stats" style="margin-top: 30px;">
+                <h2>☁️ Real Data Cloud Analytics</h2>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Live statistics from your Data Cloud engagement objects</p>
+                <div id="datacloudStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="stat-card clickable-card" onclick="showDataCloudRecords('BU2_EmailEngagement__dlm', '📧 Email Engagements')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer; transition: transform 0.2s;">
+                        <div class="stat-content">
+                            <h3 style="color: white;">📧 Email Engagements</h3>
+                            <div class="stat-number" id="dcEmailTotal">Loading...</div>
+                            <small style="opacity: 0.9;">From BU2_EmailEngagement__dlm</small>
+                            <small style="opacity: 0.7; display: block; margin-top: 5px;">👉 Click to view records</small>
+                        </div>
+                    </div>
+                    <div class="stat-card clickable-card" onclick="showDataCloudRecords('E_Commerce_App_Behavioral_Event_E4C9EA42__dlm', '🌐 Website Events')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; cursor: pointer; transition: transform 0.2s;">
+                        <div class="stat-content">
+                            <h3 style="color: white;">🌐 Website Events</h3>
+                            <div class="stat-number" id="dcWebTotal">Loading...</div>
+                            <small style="opacity: 0.9;">From E-Commerce Behavioral Events</small>
+                            <small style="opacity: 0.7; display: block; margin-top: 5px;">👉 Click to view records</small>
+                        </div>
+                    </div>
+            <div class="stat-card clickable-card" onclick="showDataCloudRecords('ExternalOrders__dlm', '🛒 Total Orders')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; cursor: pointer; transition: transform 0.2s;">
+                <div class="stat-content">
+                    <h3 style="color: white;">🛒 Total Orders</h3>
+                    <div class="stat-number" id="dcOrderTotal">Loading...</div>
+                    <small style="opacity: 0.9;">From ExternalOrders__dlm</small>
+                    <small style="opacity: 0.7; display: block; margin-top: 5px;">👉 Click to view records</small>
+                </div>
+            </div>
+            <div class="stat-card clickable-card" onclick="showDataCloudRecords('BU2_MessageEngagement__dlm', '📱 Message Engagements')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; cursor: pointer; transition: transform 0.2s;">
+                <div class="stat-content">
+                    <h3 style="color: white;">📱 Message Engagements</h3>
+                    <div class="stat-number" id="dcMessageTotal">Loading...</div>
+                    <small style="opacity: 0.9;">SMS, WhatsApp, Push</small>
+                    <small style="opacity: 0.7; display: block; margin-top: 5px;">👉 Click to view records</small>
+                </div>
+            </div>
+        </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+                    <h3 style="margin-top: 0;">💡 Omnichannel Data Approach</h3>
+                    <p style="margin-bottom: 10px;">This application combines:</p>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><strong>Test Individuals (100):</strong> With synthetic omnichannel engagement (Email, SMS, WhatsApp, Push, Website)</li>
+                        <li><strong>Real Data Cloud:</strong> 12.7M+ email engagements, 19.8K+ message engagements, 339K+ website events, 312K+ orders</li>
+                        <li><strong>Live Analytics:</strong> Real-time statistics from your actual Data Cloud objects</li>
+                        <li><strong>Omnichannel Segmentation:</strong> Create segments based on any channel or combination of channels</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="getting-started">
+                <h2>👋 Getting Started</h2>
+                <div class="steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <h3>Create Data</h3>
+                            <p>Start by creating Individual and Contact records</p>
+                            <a href="/data" class="btn btn-sm">Go to Data Management</a>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h3>Build Relationships</h3>
+                            <p>Link Individuals to Contacts and Campaigns</p>
+                            <a href="/relationships" class="btn btn-sm">Open Relationship Builder</a>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h3>Create Segments</h3>
+                            <p>Filter records based on criteria (engagement, demographics)</p>
+                            <a href="/segments" class="btn btn-sm">Create Segment</a>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <div class="step-content">
+                            <h3>Send Personalized Emails</h3>
+                            <p>Generate and send VIP welcome emails to your segment</p>
+                            <a href="/emails" class="btn btn-sm">Create Campaign</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load Real Data Cloud Analytics
+        async function loadDataCloudStats() {
+            try {
+                console.log('Loading Data Cloud stats...');
+                const response = await fetch('/api/analytics/datacloud');
+                const data = await response.json();
+                console.log('Data Cloud stats response:', data);
+                
+            if (data.error) {
+                console.error('Data Cloud API error:', data.error);
+                document.getElementById('dcEmailTotal').textContent = 'Login Required';
+                document.getElementById('dcMessageTotal').textContent = 'Login Required';
+                document.getElementById('dcWebTotal').textContent = 'Login Required';
+                document.getElementById('dcOrderTotal').textContent = 'Login Required';
+                return;
+            }
+                
+            // Update totals
+            const emailCount = data.total_records?.email_engagements || 0;
+            const messageCount = data.total_records?.message_engagements || 0;
+            const webCount = data.total_records?.website_events || 0;
+            const orderCount = data.total_records?.orders || 0;
+            
+            console.log('Updating UI with counts:', {emailCount, messageCount, webCount, orderCount});
+            
+            document.getElementById('dcEmailTotal').textContent = emailCount.toLocaleString();
+            document.getElementById('dcMessageTotal').textContent = messageCount.toLocaleString();
+            document.getElementById('dcWebTotal').textContent = webCount.toLocaleString();
+            document.getElementById('dcOrderTotal').textContent = orderCount.toLocaleString();
+                
+            } catch (error) {
+                console.error('Failed to load Data Cloud stats:', error);
+                document.getElementById('dcEmailTotal').textContent = 'Error';
+                document.getElementById('dcMessageTotal').textContent = 'Error';
+                document.getElementById('dcWebTotal').textContent = 'Error';
+                document.getElementById('dcOrderTotal').textContent = 'Error';
+            }
+        }
+        
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadDataCloudStats);
+        
+        // Show Data Cloud Records
+        async function showDataCloudRecords(objectName, title) {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; max-width: 90%; max-height: 90%; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">${title}</h2>
+                    <button onclick="this.closest('.modal-overlay').remove()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 16px;">✕ Close</button>
+                </div>
+                <p style="color: #666; margin-bottom: 15px;">Object: <code>${objectName}</code></p>
+                <div id="recordsContent" style="min-height: 200px;">
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+                        <p>Loading records...</p>
+                    </div>
+                </div>
+            `;
+            
+            modal.className = 'modal-overlay';
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Fetch records
+            try {
+                const response = await fetch('/api/data/' + objectName + '/records?limit=20');
+                const data = await response.json();
+                
+                const recordsDiv = document.getElementById('recordsContent');
+                
+                if (data.error) {
+                    recordsDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Records</h3><p>' + data.error + '</p></div>';
+                    return;
+                }
+                
+                const records = data.records || [];
+                const totalSize = data.totalSize || 0;
+                
+                if (records.length === 0) {
+                    recordsDiv.innerHTML = '<div style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">📭</div><h3>No Records Found</h3><p>This object doesn\'t contain any records yet.</p></div>';
+                    return;
+                }
+                
+                // Build table
+                const fields = Object.keys(records[0]).filter(f => f !== 'attributes');
+                const displayFields = fields.slice(0, 8);
+                
+                let tableHTML = '<div style="margin-bottom: 15px;"><strong>Total Records:</strong> ' + totalSize.toLocaleString() + ' | <strong>Showing:</strong> First ' + records.length + '</div>';
+                tableHTML += '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><thead><tr style="background: #667eea; color: white;">';
+                
+                displayFields.forEach(f => {
+                    tableHTML += '<th style="padding: 10px; text-align: left; border: 1px solid #ddd;">' + f + '</th>';
+                });
+                
+                tableHTML += '</tr></thead><tbody>';
+                
+                records.forEach((record, idx) => {
+                    const bgColor = idx % 2 === 0 ? '#f9f9f9' : 'white';
+                    tableHTML += '<tr style="background: ' + bgColor + ';">';
+                    displayFields.forEach(field => {
+                        let value = record[field];
+                        if (value === null || value === undefined) value = '-';
+                        if (typeof value === 'string' && value.length > 50) value = value.substring(0, 50) + '...';
+                        tableHTML += '<td style="padding: 8px; border: 1px solid #ddd;">' + value + '</td>';
+                    });
+                    tableHTML += '</tr>';
+                });
+                
+                tableHTML += '</tbody></table></div>';
+                
+                if (fields.length > 8) {
+                    tableHTML += '<p style="margin-top: 10px; color: #666; font-size: 12px;">... and ' + (fields.length - 8) + ' more fields</p>';
+                }
+                
+                recordsDiv.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('recordsContent').innerHTML = '<div style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">⚠️</div><h3>Network Error</h3><p>' + error.message + '</p></div>';
+            }
+        }
+        
+        // Add hover effect for clickable cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.clickable-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

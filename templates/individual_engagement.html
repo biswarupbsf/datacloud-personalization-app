@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Engagement Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .engagement-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .engagement-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .engagement-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .engagement-table th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: white !important;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .engagement-table th.sortable:hover {
+            background: rgba(0, 0, 0, 0.4) !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 10px;
+            opacity: 0.6;
+        }
+        
+        .sort-icon.active {
+            opacity: 1;
+        }
+        
+        .engagement-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        
+        .engagement-table tbody tr:hover {
+            background: #f8f9ff;
+            cursor: pointer;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .score-high {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .score-medium {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .score-low {
+            background: #f44336;
+            color: white;
+        }
+        
+        .channel-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .channel-email { background: #e3f2fd; color: #1976d2; }
+        .channel-sms { background: #fce4ec; color: #c2185b; }
+        .channel-whatsapp { background: #e8f5e9; color: #2e7d32; }
+        .channel-push { background: #f3e5f5; color: #7b1fa2; }
+        .channel-website { background: #fff3e0; color: #e65100; }
+        
+        .metric-cell {
+            text-align: center;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card-small {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card-small h4 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .stat-card-small .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .export-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .export-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    
+    <div class="main-content">
+        <div class="header">
+            <h1>🎯 Individual Engagement Dashboard</h1>
+            <p>Detailed omnichannel engagement metrics for all individuals</p>
+        </div>
+        
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div>
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; font-weight: 600; color: #667eea;">Loading engagement data...</p>
+            </div>
+        </div>
+        
+        <!-- Summary Stats -->
+        <div class="stats-grid">
+            <div class="stat-card-small">
+                <h4>Total Individuals</h4>
+                <div class="value" id="totalIndividuals">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Avg Engagement Score</h4>
+                <div class="value" id="avgEngagement">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Total Email Opens</h4>
+                <div class="value" id="totalEmailOpens">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Total SMS Opens</h4>
+                <div class="value" id="totalSMSOpens">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Total WhatsApp Reads</h4>
+                <div class="value" id="totalWhatsAppReads">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Total Website Actions</h4>
+                <div class="value" id="totalWebActions">0</div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0;">🔍 Filter & Search</h3>
+                <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search by Name</label>
+                    <input type="text" id="searchName" placeholder="Type to search..." onkeyup="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>Preferred Channel</label>
+                    <select id="filterChannel" onchange="applyFilters()">
+                        <option value="">All Channels</option>
+                        <option value="Email">Email</option>
+                        <option value="SMS">SMS</option>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Push">Push</option>
+                        <option value="Website">Website</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Min Engagement Score</label>
+                    <select id="filterScore" onchange="applyFilters()">
+                        <option value="0">All Scores</option>
+                        <option value="7">7+ (High)</option>
+                        <option value="5">5+ (Medium)</option>
+                        <option value="3">3+ (Low)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortBy" onchange="applyFilters()">
+                        <option value="omnichannel_score">Omnichannel Score</option>
+                        <option value="engagement_score">Email Score</option>
+                        <option value="email_opens">Email Opens</option>
+                        <option value="sms_opens">SMS Opens</option>
+                        <option value="whatsapp_reads">WhatsApp Reads</option>
+                        <option value="website_product_views">Website Views</option>
+                        <option value="total_order_value">Order Value</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Engagement Table -->
+        <div class="engagement-table-container">
+            <table class="engagement-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 150px;" onclick="sortTable('Name')">Name <span class="sort-icon" id="sort-Name">↕</span></th>
+                        <th class="sortable" style="min-width: 100px; text-align: center;" onclick="sortTable('omnichannel_score')">Omni Score <span class="sort-icon" id="sort-omnichannel_score">↕</span></th>
+                        <th style="min-width: 120px; text-align: center;">Preferred Channel</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('email_opens')">📧 Opens <span class="sort-icon" id="sort-email_opens">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('email_clicks')">📧 Clicks <span class="sort-icon" id="sort-email_clicks">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('sms_opens')">📱 SMS <span class="sort-icon" id="sort-sms_opens">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('whatsapp_reads')">💬 WhatsApp <span class="sort-icon" id="sort-whatsapp_reads">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('push_opens')">🔔 Push <span class="sort-icon" id="sort-push_opens">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('website_product_views')">👁️ Views <span class="sort-icon" id="sort-website_product_views">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center;" onclick="sortTable('website_add_to_cart')">🛒 Cart <span class="sort-icon" id="sort-website_add_to_cart">↕</span></th>
+                        <th class="sortable" style="min-width: 100px; text-align: center;" onclick="sortTable('total_order_value')">💰 Order Value <span class="sort-icon" id="sort-total_order_value">↕</span></th>
+                    </tr>
+                </thead>
+                <tbody id="engagementTableBody">
+                    <tr>
+                        <td colspan="11" style="text-align: center; padding: 40px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+                            <p>Loading engagement data...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; color: #666;">
+            Showing <strong id="displayCount">0</strong> of <strong id="totalCount">0</strong> individuals
+        </div>
+    </div>
+    
+    <script>
+        let allIndividuals = [];
+        let filteredIndividuals = [];
+        let currentSortColumn = 'omnichannel_score';
+        let currentSortDirection = 'desc';
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadEngagementData);
+        
+        async function loadEngagementData() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                const response = await fetch('/api/individuals/engagement');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load data');
+                }
+                
+                allIndividuals = data.individuals;
+                filteredIndividuals = [...allIndividuals];
+                
+                updateSummaryStats();
+                
+                // Set initial sort
+                sortTable('omnichannel_score');
+                
+            } catch (error) {
+                console.error('Error loading engagement data:', error);
+                document.getElementById('engagementTableBody').innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Data</h3><p>' + error.message + '</p></td></tr>';
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+        
+        function updateSummaryStats() {
+            document.getElementById('totalIndividuals').textContent = allIndividuals.length;
+            
+            const avgEng = (allIndividuals.reduce((sum, ind) => sum + parseFloat(ind.engagement_score || 0), 0) / allIndividuals.length).toFixed(1);
+            document.getElementById('avgEngagement').textContent = avgEng;
+            
+            const totalEmailOpens = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.email_opens || 0), 0);
+            document.getElementById('totalEmailOpens').textContent = totalEmailOpens.toLocaleString();
+            
+            const totalSMS = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.sms_opens || 0), 0);
+            document.getElementById('totalSMSOpens').textContent = totalSMS.toLocaleString();
+            
+            const totalWhatsApp = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.whatsapp_reads || 0), 0);
+            document.getElementById('totalWhatsAppReads').textContent = totalWhatsApp.toLocaleString();
+            
+            const totalWeb = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.website_product_views || 0) + parseInt(ind.website_add_to_cart || 0), 0);
+            document.getElementById('totalWebActions').textContent = totalWeb.toLocaleString();
+        }
+        
+        function applyFilters() {
+            const searchText = document.getElementById('searchName').value.toLowerCase();
+            const channelFilter = document.getElementById('filterChannel').value;
+            const scoreFilter = parseFloat(document.getElementById('filterScore').value);
+            const sortBy = document.getElementById('sortBy').value;
+            
+            // Filter
+            filteredIndividuals = allIndividuals.filter(ind => {
+                const nameMatch = !searchText || ind.Name.toLowerCase().includes(searchText);
+                const channelMatch = !channelFilter || ind.preferred_channel === channelFilter;
+                const scoreMatch = parseFloat(ind.omnichannel_score || 0) >= scoreFilter;
+                return nameMatch && channelMatch && scoreMatch;
+            });
+            
+            // Sort
+            filteredIndividuals.sort((a, b) => parseFloat(b[sortBy] || 0) - parseFloat(a[sortBy] || 0));
+            
+            renderTable();
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('engagementTableBody');
+            
+            if (filteredIndividuals.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">🔍</div><h3>No Results</h3><p>Try adjusting your filters</p></td></tr>';
+                document.getElementById('displayCount').textContent = '0';
+                document.getElementById('totalCount').textContent = allIndividuals.length;
+                return;
+            }
+            
+            let html = '';
+            filteredIndividuals.forEach(ind => {
+                const scoreValue = parseFloat(ind.omnichannel_score || 0);
+                const scoreClass = scoreValue >= 7 ? 'score-high' : (scoreValue >= 5 ? 'score-medium' : 'score-low');
+                const channelClass = 'channel-' + (ind.preferred_channel || 'email').toLowerCase();
+                
+                html += '<tr onclick="showIndividualDetails(\'' + ind.Id + '\')">';
+                html += '<td><strong>' + (ind.Name || '') + '</strong></td>';
+                html += '<td class="metric-cell"><span class="score-badge ' + scoreClass + '">' + scoreValue.toFixed(1) + '</span></td>';
+                html += '<td class="metric-cell"><span class="channel-badge ' + channelClass + '">' + (ind.preferred_channel || 'Email') + '</span></td>';
+                html += '<td class="metric-cell">' + parseInt(ind.email_opens || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.email_clicks || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.sms_opens || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.whatsapp_reads || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.push_opens || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.website_product_views || 0) + '</td>';
+                html += '<td class="metric-cell">' + parseInt(ind.website_add_to_cart || 0) + '</td>';
+                html += '<td class="metric-cell">$' + parseFloat(ind.total_order_value || 0).toFixed(2) + '</td>';
+                html += '</tr>';
+            });
+            
+            tbody.innerHTML = html;
+            document.getElementById('displayCount').textContent = filteredIndividuals.length;
+            document.getElementById('totalCount').textContent = allIndividuals.length;
+        }
+        
+        function showIndividualDetails(individualId) {
+            const ind = allIndividuals.find(i => i.Id === individualId);
+            if (!ind) return;
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; max-width: 800px; max-height: 90%; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+            
+            let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">';
+            html += '<h2 style="margin: 0;">📊 ' + ind.Name + '</h2>';
+            html += '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">✕ Close</button>';
+            html += '</div>';
+            
+            html += '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">';
+            html += '<div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Omnichannel Score</div>';
+            html += '<div style="font-size: 48px; font-weight: bold;">' + ind.omnichannel_score.toFixed(1) + '/10</div>';
+            html += '<div style="opacity: 0.9;">Preferred Channel: ' + ind.preferred_channel + '</div>';
+            html += '</div>';
+            
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">';
+            
+            // Email metrics
+            html += '<div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #1976d2;">📧 Email Engagement</h4>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Opens: <strong>' + ind.email_opens + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Clicks: <strong>' + ind.email_clicks + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Bounces: <strong>' + ind.email_bounces + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Unsubs: <strong>' + ind.email_unsubscribes + '</strong></div>';
+            html += '</div>';
+            
+            // SMS metrics
+            html += '<div style="background: #fce4ec; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #c2185b;">📱 SMS Engagement</h4>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Sends: <strong>' + ind.sms_sends + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Opens: <strong>' + ind.sms_opens + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Clicks: <strong>' + ind.sms_clicks + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Open Rate: <strong>' + ind.sms_open_rate.toFixed(1) + '%</strong></div>';
+            html += '</div>';
+            
+            // WhatsApp metrics
+            html += '<div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #2e7d32;">💬 WhatsApp Engagement</h4>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Sends: <strong>' + ind.whatsapp_sends + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Reads: <strong>' + ind.whatsapp_reads + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Replies: <strong>' + ind.whatsapp_replies + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Read Rate: <strong>' + ind.whatsapp_read_rate.toFixed(1) + '%</strong></div>';
+            html += '</div>';
+            
+            // Push metrics
+            html += '<div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #7b1fa2;">🔔 Push Notifications</h4>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Sends: <strong>' + ind.push_sends + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Opens: <strong>' + ind.push_opens + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Clicks: <strong>' + ind.push_clicks + '</strong></div>';
+            html += '<div style="font-size: 12px; margin: 5px 0;">Open Rate: <strong>' + ind.push_open_rate.toFixed(1) + '%</strong></div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            // Website behavior
+            html += '<div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 15px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #e65100;">🌐 Website Behavior</h4>';
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 12px;">';
+            html += '<div>Product Views: <strong>' + ind.website_product_views + '</strong></div>';
+            html += '<div>Add to Cart: <strong>' + ind.website_add_to_cart + '</strong></div>';
+            html += '<div>Cart Abandons: <strong>' + ind.website_cart_abandons + '</strong></div>';
+            html += '<div>Purchases: <strong>' + ind.website_purchases + '</strong></div>';
+            html += '<div>Order Value: <strong>$' + ind.total_order_value.toFixed(2) + '</strong></div>';
+            html += '<div>Fav Category: <strong>' + (ind.favorite_category || 'N/A') + '</strong></div>';
+            html += '</div>';
+            html += '</div>';
+            
+            // Products
+            if (ind.products_browsed && ind.products_browsed.length > 0) {
+                html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">';
+                html += '<h4 style="margin: 0 0 10px 0;">🛍️ Browsing History</h4>';
+                html += '<div style="font-size: 12px;">' + ind.products_browsed.slice(0, 5).join(', ') + '</div>';
+                html += '</div>';
+            }
+            
+            modalContent.innerHTML = html;
+            modal.className = 'modal-overlay';
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function sortTable(column) {
+            // Toggle sort direction if clicking same column
+            if (currentSortColumn === column) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = column;
+                currentSortDirection = column === 'Name' ? 'asc' : 'desc'; // Name defaults to asc, numbers to desc
+            }
+            
+            // Reset all sort icons
+            document.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.textContent = '↕';
+                icon.classList.remove('active');
+            });
+            
+            // Update active sort icon
+            const activeIcon = document.getElementById('sort-' + column);
+            if (activeIcon) {
+                activeIcon.textContent = currentSortDirection === 'asc' ? '↑' : '↓';
+                activeIcon.classList.add('active');
+            }
+            
+            // Sort the data
+            filteredIndividuals.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                // Handle string comparison (for Name)
+                if (column === 'Name') {
+                    aVal = String(aVal || '').toLowerCase();
+                    bVal = String(bVal || '').toLowerCase();
+                    if (currentSortDirection === 'asc') {
+                        return aVal.localeCompare(bVal);
+                    } else {
+                        return bVal.localeCompare(aVal);
+                    }
+                }
+                
+                // Handle numeric comparison - parse strings to numbers
+                aVal = parseFloat(aVal || 0);
+                bVal = parseFloat(bVal || 0);
+                if (currentSortDirection === 'asc') {
+                    return aVal - bVal;
+                } else {
+                    return bVal - aVal;
+                }
+            });
+            
+            renderTable();
+        }
+        
+        function exportToCSV() {
+            let csv = 'Name,Omnichannel Score,Preferred Channel,Email Opens,Email Clicks,SMS Opens,WhatsApp Reads,Push Opens,Website Views,Add to Cart,Order Value\n';
+            
+            filteredIndividuals.forEach(ind => {
+                csv += '"' + ind.Name + '",';
+                csv += ind.omnichannel_score + ',';
+                csv += ind.preferred_channel + ',';
+                csv += ind.email_opens + ',';
+                csv += ind.email_clicks + ',';
+                csv += ind.sms_opens + ',';
+                csv += ind.whatsapp_reads + ',';
+                csv += ind.push_opens + ',';
+                csv += ind.website_product_views + ',';
+                csv += ind.website_add_to_cart + ',';
+                csv += ind.total_order_value + '\n';
+            });
+            
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'individual_engagement_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+        }
+    </script>
+</body>
+</html>
+

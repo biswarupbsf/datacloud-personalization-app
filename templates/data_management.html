@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Management - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>💾 Data Management</h1>
+                <div class="header-actions">
+                    <button onclick="showCreateDialog()" class="btn btn-primary">+ Create Records</button>
+                </div>
+            </header>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Select Object</h2>
+                </div>
+                <div>
+                    <select id="objectSelector" class="form-control" onchange="loadRecords()">
+                        <option value="">-- Select an object --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="card" id="recordsCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">Records</h2>
+                    <span id="recordCount" class="text-muted"></span>
+                </div>
+                <div id="recordsTable"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/data_management.js"></script>
+</body>
+</html>
+
+

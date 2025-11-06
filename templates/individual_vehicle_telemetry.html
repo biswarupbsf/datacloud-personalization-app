@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Driving Insights - Data Cloud App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styling to preserve icon sizes */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .sidebar-menu .menu-item.active {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%);
+            border-left: 3px solid #ff9800;
+        }
+
+        .sidebar-menu .menu-item .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu .menu-item span:not(.icon) {
+            font-size: 14px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 193, 7, 0.05) 100%);
+        }
+
+        .stat-card h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card .change {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .telemetry-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .telemetry-section h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .telemetry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .telemetry-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .telemetry-table th:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .telemetry-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .telemetry-table tr:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .score-bar {
+            display: inline-block;
+            width: 100px;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .score-fill.excellent {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .score-fill.good {
+            background: linear-gradient(90deg, #17a2b8, #0dcaf0);
+        }
+
+        .score-fill.average {
+            background: linear-gradient(90deg, #ffc107, #fd7e14);
+        }
+
+        .score-fill.poor {
+            background: linear-gradient(90deg, #dc3545, #e66b74);
+        }
+
+        .sort-icon {
+            margin-left: 5px;
+            font-size: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .detail-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .vehicle-list {
+            margin-top: 15px;
+        }
+
+        .vehicle-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+            padding-left: 15px;
+        }
+
+        .alert-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .alert-critical {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    
+    <div class="main-content">
+        <div class="header">
+            <h1>🚗 Individual Driving Insights</h1>
+            <p>Real-time vehicle performance and driving behavior analytics</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" onclick="showIndividualsDetails()" title="Click to view all individuals">
+                <h3>Total Individuals</h3>
+                <div class="value" id="totalIndividuals">0</div>
+                <div class="change">With connected vehicles</div>
+            </div>
+            <div class="stat-card" onclick="showVehiclesDetails()" title="Click to view all vehicles">
+                <h3>Connected Vehicles</h3>
+                <div class="value" id="totalVehicles">0</div>
+                <div class="change">Actively transmitting data</div>
+            </div>
+            <div class="stat-card" onclick="showEventsDetails()" title="Click to view recent events">
+                <h3>Telematics Events</h3>
+                <div class="value" id="totalEvents">0</div>
+                <div class="change">Last 7 days</div>
+            </div>
+            <div class="stat-card" onclick="showScoreDistribution()" title="Click to view score breakdown">
+                <h3>Avg Driving Score</h3>
+                <div class="value" id="avgScore">0</div>
+                <div class="change">Out of 100</div>
+            </div>
+        </div>
+
+        <div class="telemetry-section">
+            <h2>📊 Individual Telemetry Profiles</h2>
+            
+            <table class="telemetry-table" id="telemetryTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('Name')">Name <span class="sort-icon" id="sort-Name">↕</span></th>
+                        <th onclick="sortTable('Total_Vehicles')">Vehicles <span class="sort-icon" id="sort-Total_Vehicles">↕</span></th>
+                        <th onclick="sortTable('Total_Events')">Events <span class="sort-icon" id="sort-Total_Events">↕</span></th>
+                        <th onclick="sortTable('Avg_Speed')">Avg Speed <span class="sort-icon" id="sort-Avg_Speed">↕</span></th>
+                        <th onclick="sortTable('Harsh_Braking_Count')">Harsh Braking <span class="sort-icon" id="sort-Harsh_Braking_Count">↕</span></th>
+                        <th onclick="sortTable('Alert_Count')">Alerts <span class="sort-icon" id="sort-Alert_Count">↕</span></th>
+                        <th onclick="sortTable('Driving_Score')">Driving Score <span class="sort-icon" id="sort-Driving_Score">↕</span></th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="telemetryTableBody">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let telemetryData = [];
+        let currentSort = { column: 'Driving_Score', direction: 'desc' };
+
+        async function loadData() {
+            try {
+                const response = await fetch('/api/individual-telemetry');
+                telemetryData = await response.json();
+                
+                updateStats();
+                renderTable();
+                sortTable('Driving_Score'); // Sort by score initially
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function updateStats() {
+            const totalIndividuals = telemetryData.length;
+            const totalVehicles = telemetryData.reduce((sum, item) => sum + item.Connected_Vehicles, 0);
+            const totalEvents = telemetryData.reduce((sum, item) => sum + item.Total_Events, 0);
+            const avgScore = telemetryData.reduce((sum, item) => sum + item.Driving_Score, 0) / telemetryData.length;
+
+            document.getElementById('totalIndividuals').textContent = totalIndividuals;
+            document.getElementById('totalVehicles').textContent = totalVehicles;
+            document.getElementById('totalEvents').textContent = totalEvents.toLocaleString();
+            document.getElementById('avgScore').textContent = avgScore.toFixed(1);
+        }
+
+        function getDrivingRating(score) {
+            if (score >= 80) return { text: '⭐⭐⭐⭐⭐ Excellent', class: 'badge-excellent', fill: 'excellent' };
+            if (score >= 60) return { text: '⭐⭐⭐⭐ Good', class: 'badge-good', fill: 'good' };
+            if (score >= 40) return { text: '⭐⭐⭐ Average', class: 'badge-average', fill: 'average' };
+            return { text: '⭐⭐ Needs Improvement', class: 'badge-poor', fill: 'poor' };
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('telemetryTableBody');
+            tbody.innerHTML = '';
+
+            telemetryData.forEach(profile => {
+                const row = document.createElement('tr');
+                const rating = getDrivingRating(profile.Driving_Score);
+                
+                row.innerHTML = `
+                    <td><strong>${profile.Name}</strong><br><small>${profile.Email}</small></td>
+                    <td>${profile.Total_Vehicles} (${profile.Connected_Vehicles} connected)</td>
+                    <td>${profile.Total_Events}</td>
+                    <td>${profile.Avg_Speed} km/h</td>
+                    <td>${profile.Harsh_Braking_Count} (${profile.Harsh_Braking_Rate}%)</td>
+                    <td>${profile.Alert_Count}</td>
+                    <td>
+                        <strong>${profile.Driving_Score.toFixed(1)}</strong>/100
+                        <div class="score-bar">
+                            <div class="score-fill ${rating.fill}" style="width: ${profile.Driving_Score}%"></div>
+                        </div>
+                    </td>
+                    <td><span class="badge ${rating.class}">${rating.text}</span></td>
+                `;
+                
+                row.onclick = () => showDetails(profile);
+                tbody.appendChild(row);
+            });
+        }
+
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'desc';
+            }
+
+            telemetryData.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            // Update sort icons
+            document.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.textContent = '↕';
+            });
+            document.getElementById(`sort-${column}`).textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+
+            renderTable();
+        }
+
+        async function showDetails(profile) {
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            const rating = getDrivingRating(profile.Driving_Score);
+            
+            // Group alerts by type
+            const alertsByType = {};
+            profile.telematics_events.forEach(event => {
+                if (event.AlertType !== 'None') {
+                    alertsByType[event.AlertType] = (alertsByType[event.AlertType] || 0) + 1;
+                }
+            });
+
+            let alertsHtml = '';
+            Object.entries(alertsByType).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
+                const alertClass = type.includes('Low') || type.includes('Check') ? 'alert-warning' : 'alert-info';
+                alertsHtml += `<div class="alert-item ${alertClass}"><strong>${type}:</strong> ${count} times</div>`;
+            });
+
+            let vehiclesHtml = '';
+            profile.vehicles.forEach(vehicle => {
+                vehiclesHtml += `
+                    <div class="vehicle-item">
+                        <strong>${vehicle.Make} ${vehicle.Model} (${vehicle.ModelYear})</strong><br>
+                        <small>VIN: ${vehicle.VIN} | Registration: ${vehicle.RegistrationNumber}</small><br>
+                        <small>Mileage: ${parseInt(vehicle.Mileage).toLocaleString()} km | Value: ₹${parseInt(vehicle.MarketValue).toLocaleString()}</small><br>
+                        <small>Telematics: ${vehicle.IsTelematicsActive === 'true' ? '✅ Active (' + vehicle.TelematicsDeviceId + ')' : '❌ Inactive'}</small>
+                    </div>
+                `;
+            });
+
+            modalBody.innerHTML = `
+                <h2>🚗 ${profile.Name}</h2>
+                <p><strong>Email:</strong> ${profile.Email} | <strong>Phone:</strong> ${profile.Phone}</p>
+                <p><strong>Omnichannel Score:</strong> ${profile.Omnichannel_Score}/10</p>
+                
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h4>🏆 Driving Performance</h4>
+                        <p><strong>Overall Score:</strong> ${profile.Driving_Score.toFixed(1)}/100</p>
+                        <p><span class="badge ${rating.class}">${rating.text}</span></p>
+                        <div class="score-bar" style="width: 200px; height: 12px; margin-top: 10px;">
+                            <div class="score-fill ${rating.fill}" style="width: ${profile.Driving_Score}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <h4>📊 Event Summary</h4>
+                        <p><strong>Total Events:</strong> ${profile.Total_Events}</p>
+                        <p><strong>Average Speed:</strong> ${profile.Avg_Speed} km/h</p>
+                        <p><strong>Data Period:</strong> Last 7 days</p>
+                    </div>
+                </div>
+
+                <div class="detail-card" style="margin-top: 20px;">
+                    <h4>👤 Driver Behavior</h4>
+                    <p><strong>Harsh Braking:</strong> ${profile.Harsh_Braking_Count} events (${profile.Harsh_Braking_Rate}%)</p>
+                    <p><strong>Rapid Acceleration:</strong> ${profile.Rapid_Accel_Count} events (${profile.Rapid_Accel_Rate}%)</p>
+                    <p><strong>Total Alerts:</strong> ${profile.Alert_Count} (${profile.Alert_Rate}%)</p>
+                </div>
+
+                <div class="detail-card" style="margin-top: 20px;">
+                    <h4>🚗 Vehicle Ownership (${profile.Total_Vehicles})</h4>
+                    <div class="vehicle-list">
+                        ${vehiclesHtml}
+                    </div>
+                </div>
+
+                ${alertsHtml ? `
+                <div class="detail-card" style="margin-top: 20px;">
+                    <h4>⚠️ Alerts & Warnings</h4>
+                    ${alertsHtml}
+                </div>
+                ` : ''}
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Card detail functions
+        function showIndividualsDetails() {
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Sort by name
+            const sorted = [...telemetryData].sort((a, b) => a.Name.localeCompare(b.Name));
+            
+            let tableHtml = `
+                <h2>📊 All Individuals with Connected Vehicles (${telemetryData.length})</h2>
+                <p style="margin-bottom: 20px;">Complete list of individuals with at least one connected vehicle</p>
+                <table class="telemetry-table" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Vehicles</th>
+                            <th>Connected</th>
+                            <th>Events</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            sorted.forEach(profile => {
+                const rating = getDrivingRating(profile.Driving_Score);
+                tableHtml += `
+                    <tr style="cursor: pointer;" onclick='showDetails(${JSON.stringify(profile).replace(/'/g, "&apos;")})'>
+                        <td><strong>${profile.Name}</strong></td>
+                        <td>${profile.Email}</td>
+                        <td>${profile.Total_Vehicles}</td>
+                        <td>${profile.Connected_Vehicles}</td>
+                        <td>${profile.Total_Events}</td>
+                        <td>
+                            <strong>${profile.Driving_Score.toFixed(1)}</strong>/100
+                            <span class="badge ${rating.class}">${rating.text}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            modalBody.innerHTML = tableHtml;
+            modal.style.display = 'block';
+        }
+
+        function showVehiclesDetails() {
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Aggregate all vehicles
+            let allVehicles = [];
+            telemetryData.forEach(profile => {
+                profile.vehicles.forEach(vehicle => {
+                    if (vehicle.IsTelematicsActive === 'true') {
+                        allVehicles.push({
+                            ...vehicle,
+                            ownerName: profile.Name,
+                            ownerEmail: profile.Email
+                        });
+                    }
+                });
+            });
+            
+            // Sort by make and model
+            allVehicles.sort((a, b) => {
+                const makeComp = a.Make.localeCompare(b.Make);
+                if (makeComp !== 0) return makeComp;
+                return a.Model.localeCompare(b.Model);
+            });
+            
+            let tableHtml = `
+                <h2>🚗 All Connected Vehicles (${allVehicles.length})</h2>
+                <p style="margin-bottom: 20px;">Vehicles actively transmitting telematics data</p>
+                <table class="telemetry-table" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>VIN</th>
+                            <th>Owner</th>
+                            <th>Mileage</th>
+                            <th>Value</th>
+                            <th>Device ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            allVehicles.forEach(vehicle => {
+                tableHtml += `
+                    <tr>
+                        <td><strong>${vehicle.Make} ${vehicle.Model}</strong><br><small>${vehicle.ModelYear} • ${vehicle.Color}</small></td>
+                        <td><small>${vehicle.VIN}</small></td>
+                        <td><strong>${vehicle.ownerName}</strong><br><small>${vehicle.ownerEmail}</small></td>
+                        <td>${parseInt(vehicle.Mileage).toLocaleString()} km</td>
+                        <td>₹${parseInt(vehicle.MarketValue).toLocaleString()}</td>
+                        <td><small>${vehicle.TelematicsDeviceId}</small></td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            modalBody.innerHTML = tableHtml;
+            modal.style.display = 'block';
+        }
+
+        function showEventsDetails() {
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Aggregate all events and sort by timestamp (most recent first)
+            let allEvents = [];
+            telemetryData.forEach(profile => {
+                profile.telematics_events.forEach(event => {
+                    allEvents.push({
+                        ...event,
+                        ownerName: profile.Name,
+                        ownerEmail: profile.Email
+                    });
+                });
+            });
+            
+            // Sort by timestamp descending
+            allEvents.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+            
+            // Take only the most recent 100 events
+            const recentEvents = allEvents.slice(0, 100);
+            
+            let tableHtml = `
+                <h2>📡 Recent Telematics Events</h2>
+                <p style="margin-bottom: 20px;">Showing ${recentEvents.length} most recent events out of ${allEvents.length} total (Last 7 days)</p>
+                <table class="telemetry-table" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Vehicle</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Speed</th>
+                            <th>Status</th>
+                            <th>Alerts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            recentEvents.forEach(event => {
+                const alertClass = event.AlertType !== 'None' ? 
+                    (event.AlertSeverity === 'Critical' ? 'alert-critical' : 
+                     event.AlertSeverity === 'Warning' ? 'alert-warning' : 'alert-info') : '';
+                
+                tableHtml += `
+                    <tr>
+                        <td><small>${event.Timestamp}</small></td>
+                        <td><strong>${event.VehicleMake} ${event.VehicleModel}</strong></td>
+                        <td><small>${event.ownerName}</small></td>
+                        <td>${event.LocationCity}<br><small>${parseFloat(event.Latitude).toFixed(3)}, ${parseFloat(event.Longitude).toFixed(3)}</small></td>
+                        <td>${event.Speed} km/h<br><small>${event.RPM} RPM</small></td>
+                        <td>
+                            ${event.IsMoving === 'true' ? '🚗 Moving' : '⏸️ Stopped'}<br>
+                            <small>${event.IsEngineOn === 'true' ? 'Engine On' : 'Engine Off'}</small>
+                        </td>
+                        <td>
+                            ${event.AlertType !== 'None' ? `<div class="alert-item ${alertClass}" style="padding: 4px 8px; margin: 0;">
+                                <strong>${event.AlertType}</strong><br><small>${event.AlertSeverity}</small>
+                            </div>` : '<small style="color: #999;">No alerts</small>'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            modalBody.innerHTML = tableHtml;
+            modal.style.display = 'block';
+        }
+
+        function showScoreDistribution() {
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Calculate score distribution
+            const excellent = telemetryData.filter(p => p.Driving_Score >= 80);
+            const good = telemetryData.filter(p => p.Driving_Score >= 60 && p.Driving_Score < 80);
+            const average = telemetryData.filter(p => p.Driving_Score >= 40 && p.Driving_Score < 60);
+            const poor = telemetryData.filter(p => p.Driving_Score < 40);
+            
+            // Sort each category by score descending
+            excellent.sort((a, b) => b.Driving_Score - a.Driving_Score);
+            good.sort((a, b) => b.Driving_Score - a.Driving_Score);
+            average.sort((a, b) => b.Driving_Score - a.Driving_Score);
+            poor.sort((a, b) => b.Driving_Score - a.Driving_Score);
+            
+            const totalScore = telemetryData.reduce((sum, p) => sum + p.Driving_Score, 0);
+            const avgScore = (totalScore / telemetryData.length).toFixed(1);
+            
+            let html = `
+                <h2>📊 Driving Score Distribution</h2>
+                <p style="margin-bottom: 20px;">Average Score: <strong>${avgScore}/100</strong> across ${telemetryData.length} individuals</p>
+                
+                <div class="detail-grid" style="margin-bottom: 30px;">
+                    <div class="detail-card" style="background: #d4edda; border-left: 4px solid #28a745;">
+                        <h4 style="color: #28a745;">⭐⭐⭐⭐⭐ Excellent (80-100)</h4>
+                        <p style="font-size: 32px; font-weight: bold; color: #28a745;">${excellent.length}</p>
+                        <p style="color: #666;">${((excellent.length / telemetryData.length) * 100).toFixed(1)}% of drivers</p>
+                    </div>
+                    
+                    <div class="detail-card" style="background: #d1ecf1; border-left: 4px solid #17a2b8;">
+                        <h4 style="color: #17a2b8;">⭐⭐⭐⭐ Good (60-79)</h4>
+                        <p style="font-size: 32px; font-weight: bold; color: #17a2b8;">${good.length}</p>
+                        <p style="color: #666;">${((good.length / telemetryData.length) * 100).toFixed(1)}% of drivers</p>
+                    </div>
+                    
+                    <div class="detail-card" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+                        <h4 style="color: #856404;">⭐⭐⭐ Average (40-59)</h4>
+                        <p style="font-size: 32px; font-weight: bold; color: #856404;">${average.length}</p>
+                        <p style="color: #666;">${((average.length / telemetryData.length) * 100).toFixed(1)}% of drivers</p>
+                    </div>
+                    
+                    <div class="detail-card" style="background: #f8d7da; border-left: 4px solid #dc3545;">
+                        <h4 style="color: #721c24;">⭐⭐ Needs Improvement (0-39)</h4>
+                        <p style="font-size: 32px; font-weight: bold; color: #dc3545;">${poor.length}</p>
+                        <p style="color: #666;">${((poor.length / telemetryData.length) * 100).toFixed(1)}% of drivers</p>
+                    </div>
+                </div>
+            `;
+            
+            // Show top 5 and bottom 5
+            html += `
+                <h3 style="color: #28a745; margin-top: 30px;">🏆 Top 5 Performers</h3>
+                <table class="telemetry-table" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Events</th>
+                            <th>Harsh Braking</th>
+                            <th>Alerts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const top5 = [...telemetryData].sort((a, b) => b.Driving_Score - a.Driving_Score).slice(0, 5);
+            top5.forEach((profile, index) => {
+                html += `
+                    <tr style="cursor: pointer;" onclick='showDetails(${JSON.stringify(profile).replace(/'/g, "&apos;")})'>
+                        <td><strong>${index + 1}</strong></td>
+                        <td><strong>${profile.Name}</strong><br><small>${profile.Email}</small></td>
+                        <td><strong style="color: #28a745;">${profile.Driving_Score.toFixed(1)}</strong>/100</td>
+                        <td>${profile.Total_Events}</td>
+                        <td>${profile.Harsh_Braking_Count} (${profile.Harsh_Braking_Rate}%)</td>
+                        <td>${profile.Alert_Count}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                
+                <h3 style="color: #dc3545; margin-top: 30px;">⚠️ Bottom 5 (Needs Attention)</h3>
+                <table class="telemetry-table" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Events</th>
+                            <th>Harsh Braking</th>
+                            <th>Alerts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const bottom5 = [...telemetryData].sort((a, b) => a.Driving_Score - b.Driving_Score).slice(0, 5);
+            bottom5.forEach((profile, index) => {
+                html += `
+                    <tr style="cursor: pointer;" onclick='showDetails(${JSON.stringify(profile).replace(/'/g, "&apos;")})'>
+                        <td><strong>${index + 1}</strong></td>
+                        <td><strong>${profile.Name}</strong><br><small>${profile.Email}</small></td>
+                        <td><strong style="color: #dc3545;">${profile.Driving_Score.toFixed(1)}</strong>/100</td>
+                        <td>${profile.Total_Events}</td>
+                        <td>${profile.Harsh_Braking_Count} (${profile.Harsh_Braking_Rate}%)</td>
+                        <td>${profile.Alert_Count}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            modalBody.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
+

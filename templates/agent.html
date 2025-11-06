@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 100px);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-user {
+            text-align: right;
+        }
+        
+        .message-bubble {
+            display: inline-block;
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            margin: 5px 0;
+        }
+        
+        .message-user .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-agent .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+            text-align: left;
+        }
+        
+        .message-agent .message-bubble strong {
+            color: #667eea;
+        }
+        
+        .suggested-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .suggested-action {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: all 0.2s;
+        }
+        
+        .suggested-action:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+        
+        .chat-send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-send-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .chat-send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 18px;
+            width: fit-content;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .welcome-prompts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .prompt-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .prompt-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .prompt-card h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .prompt-card p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>🤖 AI Agent Assistant</h1>
+                <div class="header-actions">
+                    <button onclick="clearConversation()" class="btn btn-secondary">🗑️ Clear Chat</button>
+                </div>
+            </header>
+            
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2 style="margin: 0;">💬 Ask Me Anything About Your Data Cloud</h2>
+                    <p style="margin: 5px 0 0 0; opacity: 0.9;">I can help you investigate data, create segments, generate emails, and more!</p>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Welcome message -->
+                    <div class="message message-agent">
+                        <div class="message-bubble">
+                            <strong>👋 Hi! I'm your Data Cloud AI Assistant!</strong><br><br>
+                            I can help you with:<br>
+                            • 📊 Investigating table contents<br>
+                            • 🎯 Creating segments<br>
+                            • 📧 Generating email campaigns<br>
+                            • 🔨 Creating synthetic records<br>
+                            • 📈 Showing analytics<br>
+                            • 💡 Explaining Data Cloud concepts<br><br>
+                            Try one of the examples below or just ask me anything!
+                        </div>
+                    </div>
+                    
+                    <!-- Welcome prompts -->
+                    <div class="welcome-prompts">
+                        <div class="prompt-card" onclick="sendQuickMessage('Show me the Individual table contents')">
+                            <h3>📊 Investigate Data</h3>
+                            <p>Show me the Individual table contents</p>
+                        </div>
+                        <div class="prompt-card" onclick="sendQuickMessage('Create a segment for highly engaged individuals')">
+                            <h3>🎯 Create Segment</h3>
+                            <p>Create a segment for highly engaged individuals</p>
+                        </div>
+                        <div class="prompt-card" onclick="sendQuickMessage('Generate VIP welcome emails')">
+                            <h3>📧 Generate Emails</h3>
+                            <p>Generate VIP welcome emails</p>
+                        </div>
+                        <div class="prompt-card" onclick="sendQuickMessage('Show me analytics and performance')">
+                            <h3>📈 View Analytics</h3>
+                            <p>Show me analytics and performance</p>
+                        </div>
+                        <div class="prompt-card" onclick="sendQuickMessage('Create 25 Individual records with engagement data')">
+                            <h3>🔨 Create Records</h3>
+                            <p>Create 25 Individual records</p>
+                        </div>
+                        <div class="prompt-card" onclick="sendQuickMessage('What is an engagement score?')">
+                            <h3>💡 Learn</h3>
+                            <p>What is an engagement score?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="typing-indicator" id="typingIndicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        class="chat-input" 
+                        placeholder="Ask me anything... (e.g., 'Show me the contents of the Campaign table')"
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button id="sendBtn" onclick="sendMessage()" class="chat-send-btn">Send →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let isProcessing = false;
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !isProcessing) {
+                sendMessage();
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+            
+            isProcessing = true;
+            input.value = '';
+            document.getElementById('sendBtn').disabled = true;
+            
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Show typing indicator
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToBottom();
+            
+            try {
+                const response = await fetch('/api/agent/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                // Hide typing indicator
+                document.getElementById('typingIndicator').style.display = 'none';
+                
+                if (data.success && data.response) {
+                    addMessage(data.response.message, 'agent', data.response.suggested_actions);
+                } else {
+                    addMessage('❌ Sorry, I encountered an error processing your request.', 'agent');
+                }
+            } catch (error) {
+                document.getElementById('typingIndicator').style.display = 'none';
+                addMessage('❌ Network error. Please try again.', 'agent');
+            }
+            
+            isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
+        }
+        
+        function sendQuickMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+        
+        function addMessage(text, type, suggestedActions = []) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            
+            let actionsHTML = '';
+            if (suggestedActions && suggestedActions.length > 0) {
+                actionsHTML = '<div class="suggested-actions">';
+                suggestedActions.forEach(action => {
+                    actionsHTML += `<span class="suggested-action" onclick="sendQuickMessage('${action.replace(/'/g, "\\'")}')">${action}</span>`;
+                });
+                actionsHTML += '</div>';
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    ${text.replace(/\n/g, '<br>')}
+                    ${actionsHTML}
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        async function clearConversation() {
+            if (!confirm('Clear conversation history?')) return;
+            
+            try {
+                await fetch('/api/agent/clear', { method: 'POST' });
+                
+                // Clear UI
+                const messagesContainer = document.getElementById('chatMessages');
+                messagesContainer.innerHTML = `
+                    <div class="message message-agent">
+                        <div class="message-bubble">
+                            <strong>🗑️ Conversation cleared!</strong><br><br>
+                            I'm ready to help you with a fresh start. What would you like to do?
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                alert('Error clearing conversation');
+            }
+        }
+        
+        // Focus input on load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('chatInput').focus();
+        });
+    </script>
+</body>
+</html>
+
+

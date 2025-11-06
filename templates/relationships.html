@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationships - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>🔗 Relationship Builder</h1>
+            </header>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Discover Relationships</h2>
+                </div>
+                <div class="form-group">
+                    <label>Select Object</label>
+                    <select id="objectSelect" onchange="discoverRelationships()">
+                        <option value="Individual">Individual</option>
+                        <option value="Contact">Contact</option>
+                        <option value="Campaign">Campaign</option>
+                        <option value="Account">Account</option>
+                    </select>
+                </div>
+                <div id="relationshipsDisplay"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function discoverRelationships() {
+            const objectName = document.getElementById('objectSelect').value;
+            const response = await fetch(`/api/relationships/discover?object=${objectName}`);
+            const data = await response.json();
+            
+            const display = document.getElementById('relationshipsDisplay');
+            display.innerHTML = `
+                <h3>Parent Relationships (Lookups)</h3>
+                <ul>
+                    ${data.parent_relationships.map(r => `
+                        <li><strong>${r.label}</strong> → ${r.relatedObject}</li>
+                    `).join('')}
+                </ul>
+                <h3>Child Relationships</h3>
+                <ul>
+                    ${data.child_relationships.map(r => `
+                        <li><strong>${r.relationshipName}</strong> from ${r.childObject}</li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+        
+        discoverRelationships();
+    </script>
+</body>
+</html>
+
+

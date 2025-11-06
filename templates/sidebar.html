@@ -1,0 +1,87 @@
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h2>🌩️ Data Cloud</h2>
+        <p>Manager</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="/" class="menu-item">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+        </a></li>
+        
+        <li><a href="/agent" class="menu-item" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border-left: 3px solid #667eea;">
+            <span class="icon">🤖</span>
+            <span>AI Agent</span>
+            <span style="background: #667eea; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">NEW</span>
+        </a></li>
+        
+        <li><a href="/individual-engagement" class="menu-item" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(102, 187, 106, 0.1) 100%); border-left: 3px solid #4caf50;">
+            <span class="icon">🎯</span>
+            <span>Individual Engagement</span>
+            <span style="background: #4caf50; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">METRICS</span>
+        </a></li>
+        
+        <li><a href="/individual-insights" class="menu-item" style="background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(186, 104, 200, 0.1) 100%); border-left: 3px solid #9c27b0;">
+            <span class="icon">🔮</span>
+            <span>Individual Insights</span>
+            <span style="background: #9c27b0; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">BEHAVIORAL</span>
+        </a></li>
+        
+        <li><a href="/individual-vehicle-telemetry" class="menu-item" style="background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%); border-left: 3px solid #ff9800;">
+            <span class="icon">🚗</span>
+            <span>Individual Driving Insights</span>
+            <span style="background: #ff9800; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">IoT</span>
+        </a></li>
+        
+        <li><a href="/vehicle-telemetry" class="menu-item" style="background: linear-gradient(135deg, rgba(255, 87, 34, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%); border-left: 3px solid #ff5722;">
+            <span class="icon">📡</span>
+            <span>Vehicle Telemetry</span>
+            <span style="background: #ff5722; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">EVENTS</span>
+        </a></li>
+        
+        <li><a href="/data" class="menu-item">
+            <span class="icon">💾</span>
+            <span>Data Management</span>
+        </a></li>
+        
+        <li><a href="/relationships" class="menu-item">
+            <span class="icon">🔗</span>
+            <span>Relationships</span>
+        </a></li>
+        
+        <li><a href="/segments" class="menu-item">
+            <span class="icon">🎯</span>
+            <span>Segments</span>
+        </a></li>
+        
+        <li><a href="/emails" class="menu-item">
+            <span class="icon">📧</span>
+            <span>Email Campaigns</span>
+        </a></li>
+        
+        <li><a href="/analytics" class="menu-item">
+            <span class="icon">📈</span>
+            <span>Analytics</span>
+        </a></li>
+    </ul>
+    
+    <div class="sidebar-footer">
+        <a href="/logout" class="btn btn-sm btn-secondary">Logout</a>
+    </div>
+</nav>
+
+<script>
+// Highlight active menu item
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPath = window.location.pathname;
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    menuItems.forEach(item => {
+        if (item.getAttribute('href') === currentPath) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
+

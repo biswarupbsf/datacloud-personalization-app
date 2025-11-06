@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Campaigns - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>📧 Email Campaigns</h1>
+            </header>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Generate Personalized Emails</h2>
+                </div>
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label>Select Segment</label>
+                        <select id="segmentSelect" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Template</label>
+                        <select id="templateSelect">
+                            <option value="vip_welcome">VIP Welcome Email</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" onclick="previewEmails()" class="btn btn-secondary">Preview</button>
+                        <button type="submit" class="btn btn-primary">Generate Emails</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card" id="previewCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">Email Preview</h2>
+                </div>
+                <div id="emailPreview"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadSegments() {
+            const response = await fetch('/api/segments/list');
+            const segments = await response.json();
+            const select = document.getElementById('segmentSelect');
+            select.innerHTML = '<option value="">-- Select Segment --</option>' +
+                segments.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        }
+        
+        async function previewEmails() {
+            alert('Email preview feature coming soon!');
+        }
+        
+        document.getElementById('emailForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const segmentId = document.getElementById('segmentSelect').value;
+            const templateId = document.getElementById('templateSelect').value;
+            
+            if (!segmentId) {
+                alert('Please select a segment');
+                return;
+            }
+            
+            const response = await fetch('/api/emails/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({segment_id: segmentId, template_id: templateId})
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                alert(`Generated ${result.emails.length} personalized emails!`);
+            } else {
+                alert('Error: ' + result.error);
+            }
+        });
+        
+        loadSegments();
+    </script>
+</body>
+</html>
+
+

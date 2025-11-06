@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Insights Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styling to preserve icon sizes */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .sidebar-menu .menu-item.active {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(186, 104, 200, 0.15) 100%);
+            border-left: 3px solid #9c27b0;
+        }
+
+        .sidebar-menu .menu-item .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu .menu-item span:not(.icon) {
+            font-size: 14px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #5568d3;
+        }
+        
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .insights-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .insights-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+        
+        .insights-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .insights-table th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: white !important;
+        }
+        
+        .insights-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        
+        .insights-table tbody tr:hover {
+            background: #f8f9ff;
+            cursor: pointer;
+        }
+        
+        .sentiment-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        .sentiment-Happy { background: #4caf50; color: white; }
+        .sentiment-Elated { background: #8bc34a; color: white; }
+        .sentiment-Frustrated { background: #ff9800; color: white; }
+        .sentiment-Anxious { background: #ff5722; color: white; }
+        .sentiment-Sad { background: #9e9e9e; color: white; }
+        .sentiment-Angry { background: #f44336; color: white; }
+        .sentiment-Disgusted { background: #795548; color: white; }
+        
+        .lifestyle-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 11px;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .intent-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        .intent-very-high { background: #f44336; color: white; }
+        .intent-immediate { background: #ff5722; color: white; }
+        .intent-high { background: #ff9800; color: white; }
+        .intent-considering { background: #ffc107; color: #000; }
+        .intent-medium { background: #ffeb3b; color: #000; }
+        .intent-tepid { background: #cddc39; color: #000; }
+        .intent-low { background: #9e9e9e; color: white; }
+        .intent-not-interested { background: #607d8b; color: white; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card-small {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card-small h4 {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .stat-card-small .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .export-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .export-btn:hover {
+            background: #45a049;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .event-text {
+            font-style: italic;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        {% include 'sidebar.html' %}
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>🔮 Individual Insights Dashboard</h1>
+                <p>Time-series behavioral insights for all individuals</p>
+            </div>
+            <button onclick="window.location.reload()" class="btn-secondary">🔄 Refresh</button>
+        </div>
+        
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div>
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; font-weight: 600; color: #667eea;">Loading insights data...</p>
+            </div>
+        </div>
+        
+        <!-- Summary Stats -->
+        <div class="stats-grid">
+            <div class="stat-card-small">
+                <h4>Total Insight Records</h4>
+                <div class="value" id="totalRecords">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Unique Individuals</h4>
+                <div class="value" id="uniqueIndividuals">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Most Common Sentiment</h4>
+                <div class="value" id="topSentiment" style="font-size: 20px;">-</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>High Purchase Intent</h4>
+                <div class="value" id="highIntent">0%</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Top Lifestyle</h4>
+                <div class="value" id="topLifestyle" style="font-size: 20px;">-</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>Most Loved Brand</h4>
+                <div class="value" id="topBrand" style="font-size: 18px;">-</div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0;">🔍 Filter & Search</h3>
+                <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search by Name</label>
+                    <input type="text" id="searchName" placeholder="Type to search..." onkeyup="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>Sentiment</label>
+                    <select id="filterSentiment" onchange="applyFilters()">
+                        <option value="">All Sentiments</option>
+                        <option value="Happy">Happy</option>
+                        <option value="Elated">Elated</option>
+                        <option value="Anxious">Anxious</option>
+                        <option value="Frustrated">Frustrated</option>
+                        <option value="Sad">Sad</option>
+                        <option value="Angry">Angry</option>
+                        <option value="Disgusted">Disgusted</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Purchase Intent</label>
+                    <select id="filterIntent" onchange="applyFilters()">
+                        <option value="">All Intents</option>
+                        <option value="Very High">Very High</option>
+                        <option value="Immediate">Immediate</option>
+                        <option value="High">High</option>
+                        <option value="Considering">Considering</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Tepid">Tepid</option>
+                        <option value="Low">Low</option>
+                        <option value="Not Interested">Not Interested</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortBy" onchange="applyFilters()">
+                        <option value="timestamp">Timestamp (Newest)</option>
+                        <option value="name">Name</option>
+                        <option value="sentiment">Sentiment</option>
+                        <option value="intent">Purchase Intent</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Insights Table -->
+        <div class="insights-table-container">
+            <table class="insights-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">Name</th>
+                        <th style="min-width: 160px;">Timestamp</th>
+                        <th style="min-width: 120px;">😊 Sentiment</th>
+                        <th style="min-width: 140px;">🎯 Lifestyle</th>
+                        <th style="min-width: 130px;">💪 Health</th>
+                        <th style="min-width: 120px;">🏋️ Fitness</th>
+                        <th style="min-width: 140px;">🛒 Intent</th>
+                        <th style="min-width: 150px;">❤️ Favourite Brand</th>
+                        <th style="min-width: 180px;">✈️ Favourite Destination</th>
+                        <th style="min-width: 130px;">🎨 Hobby</th>
+                        <th style="min-width: 300px;">📅 Imminent Event</th>
+                    </tr>
+                </thead>
+                <tbody id="insightsTableBody">
+                    <tr>
+                        <td colspan="11" style="text-align: center; padding: 40px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+                            <p>Loading insights data...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; color: #666;">
+            Showing <strong id="displayCount">0</strong> of <strong id="totalCount">0</strong> insight records
+        </div>
+    </div>
+    
+    <script>
+        let allInsights = [];
+        let filteredInsights = [];
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadInsightsData);
+        
+        async function loadInsightsData() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                const response = await fetch('/api/analytics/insights');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load data');
+                }
+                
+                allInsights = data.sample_records || [];
+                
+                // Load full data from sample_records (API returns first 20, but we want all)
+                // Let's fetch all from a dedicated endpoint if needed
+                // For now, use what we have
+                
+                // Actually, let's load from the JSON file directly
+                const fullResponse = await fetch('/data/individual_insights.json');
+                if (fullResponse.ok) {
+                    allInsights = await fullResponse.json();
+                }
+                
+                filteredInsights = [...allInsights];
+                
+                updateSummaryStats(data);
+                renderTable();
+                
+            } catch (error) {
+                console.error('Error loading insights data:', error);
+                document.getElementById('insightsTableBody').innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Data</h3><p>' + error.message + '</p></td></tr>';
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+        
+        function updateSummaryStats(data) {
+            const uniqueIndividuals = new Set(allInsights.map(i => i.Individual_Id)).size;
+            
+            document.getElementById('totalRecords').textContent = allInsights.length.toLocaleString();
+            document.getElementById('uniqueIndividuals').textContent = uniqueIndividuals;
+            
+            // Top sentiment
+            const sentiments = {};
+            allInsights.forEach(i => {
+                sentiments[i.Current_Sentiment] = (sentiments[i.Current_Sentiment] || 0) + 1;
+            });
+            const topSentiment = Object.entries(sentiments).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('topSentiment').textContent = topSentiment ? topSentiment[0] : '-';
+            
+            // High purchase intent
+            const highIntentCount = allInsights.filter(i => 
+                ['Very High', 'Immediate', 'High'].includes(i.Purchase_Intent)
+            ).length;
+            const highIntentPct = ((highIntentCount / allInsights.length) * 100).toFixed(1);
+            document.getElementById('highIntent').textContent = highIntentPct + '%';
+            
+            // Top lifestyle
+            const lifestyles = {};
+            allInsights.forEach(i => {
+                lifestyles[i.Lifestyle_Quotient] = (lifestyles[i.Lifestyle_Quotient] || 0) + 1;
+            });
+            const topLifestyle = Object.entries(lifestyles).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('topLifestyle').textContent = topLifestyle ? topLifestyle[0] : '-';
+            
+            // Top brand
+            const brands = {};
+            allInsights.forEach(i => {
+                brands[i.Favourite_Brand] = (brands[i.Favourite_Brand] || 0) + 1;
+            });
+            const topBrand = Object.entries(brands).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('topBrand').textContent = topBrand ? topBrand[0] : '-';
+        }
+        
+        function applyFilters() {
+            const searchText = document.getElementById('searchName').value.toLowerCase();
+            const sentimentFilter = document.getElementById('filterSentiment').value;
+            const intentFilter = document.getElementById('filterIntent').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            // Filter
+            filteredInsights = allInsights.filter(insight => {
+                const nameMatch = !searchText || insight.Individual_Name.toLowerCase().includes(searchText);
+                const sentimentMatch = !sentimentFilter || insight.Current_Sentiment === sentimentFilter;
+                const intentMatch = !intentFilter || insight.Purchase_Intent === intentFilter;
+                return nameMatch && sentimentMatch && intentMatch;
+            });
+            
+            // Sort
+            if (sortBy === 'timestamp') {
+                filteredInsights.sort((a, b) => new Date(b.Event_Timestamp) - new Date(a.Event_Timestamp));
+            } else if (sortBy === 'name') {
+                filteredInsights.sort((a, b) => a.Individual_Name.localeCompare(b.Individual_Name));
+            } else if (sortBy === 'sentiment') {
+                filteredInsights.sort((a, b) => a.Current_Sentiment.localeCompare(b.Current_Sentiment));
+            } else if (sortBy === 'intent') {
+                filteredInsights.sort((a, b) => a.Purchase_Intent.localeCompare(b.Purchase_Intent));
+            }
+            
+            renderTable();
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('insightsTableBody');
+            
+            if (filteredInsights.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">🔍</div><h3>No Results</h3><p>Try adjusting your filters</p></td></tr>';
+                document.getElementById('displayCount').textContent = '0';
+                document.getElementById('totalCount').textContent = allInsights.length;
+                return;
+            }
+            
+            let html = '';
+            filteredInsights.forEach(insight => {
+                const sentimentClass = 'sentiment-' + insight.Current_Sentiment.replace(/ /g, '-');
+                const intentClass = 'intent-' + insight.Purchase_Intent.toLowerCase().replace(/ /g, '-');
+                const timestamp = new Date(insight.Event_Timestamp).toLocaleString();
+                
+                html += '<tr onclick="showInsightDetails(\'' + insight.Individual_Id + '\', \'' + insight.Event_Timestamp + '\')">';
+                html += '<td><strong>' + insight.Individual_Name + '</strong></td>';
+                html += '<td style="font-size: 11px;">' + timestamp + '</td>';
+                html += '<td><span class="sentiment-badge ' + sentimentClass + '">' + insight.Current_Sentiment + '</span></td>';
+                html += '<td><span class="lifestyle-badge">' + insight.Lifestyle_Quotient + '</span></td>';
+                html += '<td>' + insight.Health_Profile + '</td>';
+                html += '<td>' + insight.Fitness_Milestone + '</td>';
+                html += '<td><span class="intent-badge ' + intentClass + '">' + insight.Purchase_Intent + '</span></td>';
+                html += '<td>' + insight.Favourite_Brand + '</td>';
+                html += '<td>' + insight.Favourite_Destination + '</td>';
+                html += '<td>' + insight.Hobby + '</td>';
+                html += '<td class="event-text">' + insight.Imminent_Event + '</td>';
+                html += '</tr>';
+            });
+            
+            tbody.innerHTML = html;
+            document.getElementById('displayCount').textContent = filteredInsights.length.toLocaleString();
+            document.getElementById('totalCount').textContent = allInsights.length.toLocaleString();
+        }
+        
+        function showInsightDetails(individualId, timestamp) {
+            const insight = allInsights.find(i => i.Individual_Id === individualId && i.Event_Timestamp === timestamp);
+            if (!insight) return;
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; max-width: 700px; max-height: 90%; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+            
+            const sentimentClass = 'sentiment-' + insight.Current_Sentiment.replace(/ /g, '-');
+            const intentClass = 'intent-' + insight.Purchase_Intent.toLowerCase().replace(/ /g, '-');
+            
+            let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">';
+            html += '<h2 style="margin: 0;">🔮 ' + insight.Individual_Name + '</h2>';
+            html += '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">✕ Close</button>';
+            html += '</div>';
+            
+            html += '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">';
+            html += '<div style="font-size: 12px; color: #666; margin-bottom: 5px;">Event Timestamp</div>';
+            html += '<div style="font-size: 16px; font-weight: bold;">' + new Date(insight.Event_Timestamp).toLocaleString() + '</div>';
+            html += '<div style="font-size: 12px; color: #666; margin-top: 10px;">Email: ' + insight.Individual_Email + '</div>';
+            html += '<div style="font-size: 12px; color: #666;">Phone: ' + insight.Individual_Phone + '</div>';
+            html += '</div>';
+            
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">';
+            
+            // Sentiment
+            html += '<div style="background: #fff3e0; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #e65100;">😊 Current Sentiment</h4>';
+            html += '<div><span class="sentiment-badge ' + sentimentClass + '">' + insight.Current_Sentiment + '</span></div>';
+            html += '</div>';
+            
+            // Purchase Intent
+            html += '<div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #7b1fa2;">🛒 Purchase Intent</h4>';
+            html += '<div><span class="intent-badge ' + intentClass + '">' + insight.Purchase_Intent + '</span></div>';
+            html += '</div>';
+            
+            // Lifestyle
+            html += '<div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #1976d2;">🎯 Lifestyle Quotient</h4>';
+            html += '<div><strong>' + insight.Lifestyle_Quotient + '</strong></div>';
+            html += '</div>';
+            
+            // Health
+            html += '<div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">';
+            html += '<h4 style="margin: 0 0 10px 0; color: #2e7d32;">💪 Health Profile</h4>';
+            html += '<div><strong>' + insight.Health_Profile + '</strong></div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            // Additional Details
+            html += '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">';
+            html += '<h4 style="margin: 0 0 15px 0;">📋 Additional Insights</h4>';
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">';
+            html += '<div><strong>Fitness Milestone:</strong> ' + insight.Fitness_Milestone + '</div>';
+            html += '<div><strong>Favourite Brand:</strong> ' + insight.Favourite_Brand + '</div>';
+            html += '<div><strong>Favourite Destination:</strong> ' + insight.Favourite_Destination + '</div>';
+            html += '<div><strong>Hobby:</strong> ' + insight.Hobby + '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            // Imminent Event
+            html += '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px;">';
+            html += '<h4 style="margin: 0 0 10px 0;">📅 Imminent Event</h4>';
+            html += '<p style="margin: 0; font-style: italic;">' + insight.Imminent_Event + '</p>';
+            html += '</div>';
+            
+            modalContent.innerHTML = html;
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function exportToCSV() {
+            if (filteredInsights.length === 0) {
+                alert('No data to export!');
+                return;
+            }
+            
+            // Create CSV content
+            const headers = ['Name', 'Email', 'Phone', 'Timestamp', 'Sentiment', 'Lifestyle', 'Health', 'Fitness', 'Purchase Intent', 'Brand', 'Destination', 'Hobby', 'Event'];
+            let csv = headers.join(',') + '\n';
+            
+            filteredInsights.forEach(insight => {
+                const row = [
+                    insight.Individual_Name,
+                    insight.Individual_Email,
+                    insight.Individual_Phone,
+                    insight.Event_Timestamp,
+                    insight.Current_Sentiment,
+                    insight.Lifestyle_Quotient,
+                    insight.Health_Profile,
+                    insight.Fitness_Milestone,
+                    insight.Purchase_Intent,
+                    insight.Favourite_Brand,
+                    insight.Favourite_Destination,
+                    insight.Hobby,
+                    '"' + insight.Imminent_Event.replace(/"/g, '""') + '"'
+                ];
+                csv += row.join(',') + '\n';
+            });
+            
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'individual_insights_' + new Date().toISOString().split('T')[0] + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
+

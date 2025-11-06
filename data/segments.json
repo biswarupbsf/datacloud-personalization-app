@@ -1,0 +1,168 @@
+[
+  {
+    "id": "aa739c5c-b731-4f64-a3e3-f38579b6cdc5",
+    "name": "VIP Segment for Loyal consumers",
+    "description": "Create a VIP Segment containing the 20 most highly engaged Individuals",
+    "base_object": "Individual",
+    "filters": [],
+    "member_count": 100,
+    "created_at": "2025-10-30T11:22:56.871382",
+    "query": "SELECT Id, Name FROM Individual",
+    "salesforce_campaign_id": "701KX0000008xUWYAY"
+  },
+  {
+    "id": "ae3ed9c1-d142-48c5-bc29-e858237a944e",
+    "name": "Super Engaged Individuals",
+    "description": "AI-generated segment based on: Create a segment containing 50 individuals who are super engaged. Include the top 5 individuals by each channel - Email, SMS, Whatsapp, Push, Website. Thereafter create a content personalised to each of the 50 members in the segment based on their preferred channel, engagement score, favourite category and last purchased product. Next deliver the content on their preferred channel which could be email, sms or whatsapp",
+    "base_object": "Individual",
+    "filters": [
+      {
+        "field": "omnichannel_score",
+        "operator": ">=",
+        "value": "7"
+      }
+    ],
+    "member_count": 50,
+    "created_at": "2025-10-30T16:47:58.794565",
+    "query": "Engagement-based segment: 1 engagement filter(s)",
+    "salesforce_campaign_id": "701KX0000008xUgYAI",
+    "uses_engagement": true,
+    "limit": 50
+  },
+  {
+    "id": "6ea86aa9-ac71-49c7-b183-96b25d8fb780",
+    "name": "Positive High Intent Super Engaged Individuals",
+    "description": "AI-generated segment based on: create a segment containing 10 or less highly engaged individuals with a very high purchase intent and an emotional high to make a purchase soon! Apply a suitable name to the segment",
+    "base_object": "Individual",
+    "filters": [
+      {
+        "field": "omnichannel_score",
+        "operator": ">=",
+        "value": "5"
+      }
+    ],
+    "member_count": 10,
+    "created_at": "2025-11-03T16:49:58.634343",
+    "query": "Engagement-based segment: 1 engagement filter(s)",
+    "salesforce_campaign_id": "701KX0000008xUqYAI",
+    "uses_engagement": true,
+    "limit": 10,
+    "purchase_intent_filter": [
+      "Very High",
+      "Immediate",
+      "High",
+      "Considering"
+    ],
+    "sentiment_filter": [
+      "Happy",
+      "Elated",
+      "Excited",
+      "Calm",
+      "Content",
+      "Anxious",
+      "Stressed"
+    ]
+  },
+  {
+    "id": "d531c09f-e08e-4414-ac22-7d1ded08d381",
+    "name": "Positive High Intent Super Engaged Individuals",
+    "description": "AI-generated segment based on: Create a segment of 3 most highly engaged individuals who have a high purchase intent and are on an emotional high to make a purchase soon! Add a suitable name to the segment",
+    "base_object": "Individual",
+    "filters": [
+      {
+        "field": "omnichannel_score",
+        "operator": ">=",
+        "value": "5"
+      }
+    ],
+    "member_count": 3,
+    "created_at": "2025-11-03T21:01:12.572995",
+    "query": "Engagement-based segment: 1 engagement filter(s)",
+    "salesforce_campaign_id": null,
+    "uses_engagement": true,
+    "limit": 3,
+    "purchase_intent_filter": [
+      "Very High",
+      "Immediate",
+      "High",
+      "Considering"
+    ],
+    "sentiment_filter": [
+      "Happy",
+      "Elated",
+      "Excited",
+      "Calm",
+      "Content",
+      "Anxious",
+      "Stressed"
+    ]
+  },
+  {
+    "id": "9cf96238-7f27-4ac7-adb6-3418a7b6afda",
+    "name": "Positive High Intent Super Engaged Individuals",
+    "description": "AI-generated segment based on: create a segment of 3 most highly engaged individuals who are on an emotional high and have high intent to make a purchase",
+    "base_object": "Individual",
+    "filters": [
+      {
+        "field": "omnichannel_score",
+        "operator": ">=",
+        "value": "5"
+      }
+    ],
+    "member_count": 3,
+    "created_at": "2025-11-05T07:19:25.796216",
+    "query": "Engagement-based segment: 1 engagement filter(s)",
+    "salesforce_campaign_id": null,
+    "uses_engagement": true,
+    "limit": 3,
+    "purchase_intent_filter": [
+      "Very High",
+      "Immediate",
+      "High",
+      "Considering"
+    ],
+    "sentiment_filter": [
+      "Happy",
+      "Elated",
+      "Excited",
+      "Calm",
+      "Content",
+      "Anxious",
+      "Stressed"
+    ]
+  },
+  {
+    "id": "5f85fcef-fc06-4cd4-8ef9-205aa241d8eb",
+    "name": "High Intent Super Engaged Individuals",
+    "description": "AI-generated segment based on: Create a segment with 3 highly engaged individuals who are emotionally high and have a high purchase intent to make a purchase",
+    "base_object": "Individual",
+    "filters": [
+      {
+        "field": "omnichannel_score",
+        "operator": ">=",
+        "value": "5"
+      }
+    ],
+    "member_count": 3,
+    "created_at": "2025-11-05T17:53:36.603904",
+    "query": "Engagement-based segment: 1 engagement filter(s)",
+    "salesforce_campaign_id": null,
+    "uses_engagement": true,
+    "limit": 3,
+    "purchase_intent_filter": [
+      "Very High",
+      "Immediate",
+      "High",
+      "Considering"
+    ],
+    "sentiment_filter": [
+      "Happy",
+      "Elated",
+      "Excited",
+      "Calm",
+      "Content",
+      "Anxious",
+      "Stressed"
+    ]
+  }
+]

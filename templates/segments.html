@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segments - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>🎯 Segmentation</h1>
+                <div class="header-actions">
+                    <button onclick="createSegment()" class="btn btn-primary">+ Create Segment</button>
+                </div>
+            </header>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Your Segments</h2>
+                </div>
+                <div id="segmentsList"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Create New Segment</h2>
+                </div>
+                <form id="segmentForm">
+                    <div class="form-group">
+                        <label>Segment Name</label>
+                        <input type="text" id="segmentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="segmentDesc" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Base Object</label>
+                        <select id="baseObject">
+                            <option value="Individual">Individual</option>
+                            <option value="Contact">Contact</option>
+                            <option value="Lead">Lead</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Filters</label>
+                        <div id="filtersContainer"></div>
+                        <button type="button" onclick="addFilter()" class="btn btn-secondary btn-sm">+ Add Filter</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Segment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let filters = [];
+        
+        function addFilter() {
+            const container = document.getElementById('filtersContainer');
+            const filterDiv = document.createElement('div');
+            filterDiv.className = 'filter-row';
+            filterDiv.style = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+            filterDiv.innerHTML = `
+                    <select class="filter-field" style="flex: 1;">
+                        <option value="Name">Name</option>
+                        <option value="FirstName">First Name</option>
+                        <option value="LastName">Last Name</option>
+                        <option value="engagement_score">⭐ Overall Engagement Score</option>
+                        <option value="omnichannel_score">🌐 Omnichannel Score</option>
+                        <option value="preferred_channel">💬 Preferred Channel</option>
+                        <optgroup label="📧 Email Engagement">
+                            <option value="email_opens">📧 Email Opens</option>
+                            <option value="email_clicks">🖱️ Email Clicks</option>
+                            <option value="email_bounces">⚠️ Email Bounces</option>
+                            <option value="email_unsubscribes">🚫 Unsubscribes</option>
+                        </optgroup>
+                        <optgroup label="🌐 Website Engagement">
+                            <option value="website_product_views">👁️ Product Views</option>
+                            <option value="website_add_to_cart">🛒 Add to Cart</option>
+                            <option value="website_cart_abandons">❌ Cart Abandons</option>
+                            <option value="website_purchases">💰 Purchases</option>
+                            <option value="total_order_value">💵 Total Order Value</option>
+                        </optgroup>
+                        <optgroup label="📱 SMS Engagement">
+                            <option value="sms_sends">📤 SMS Sends</option>
+                            <option value="sms_opens">👁️ SMS Opens</option>
+                            <option value="sms_clicks">🖱️ SMS Clicks</option>
+                            <option value="sms_optouts">🚫 SMS Opt-outs</option>
+                            <option value="sms_open_rate">📊 SMS Open Rate %</option>
+                        </optgroup>
+                        <optgroup label="💬 WhatsApp Engagement">
+                            <option value="whatsapp_sends">📤 WhatsApp Sends</option>
+                            <option value="whatsapp_reads">✓✓ WhatsApp Reads</option>
+                            <option value="whatsapp_replies">💬 WhatsApp Replies</option>
+                            <option value="whatsapp_optouts">🚫 WhatsApp Opt-outs</option>
+                            <option value="whatsapp_read_rate">📊 WhatsApp Read Rate %</option>
+                        </optgroup>
+                        <optgroup label="🔔 Push Notifications">
+                            <option value="push_sends">📤 Push Sends</option>
+                            <option value="push_opens">👁️ Push Opens</option>
+                            <option value="push_clicks">🖱️ Push Clicks</option>
+                            <option value="push_open_rate">📊 Push Open Rate %</option>
+                        </optgroup>
+                        <optgroup label="📊 Combined Metrics">
+                            <option value="total_message_sends">📤 Total Message Sends</option>
+                            <option value="total_message_interactions">🎯 Total Message Interactions</option>
+                        </optgroup>
+                    </select>
+                <select class="filter-operator" style="flex: 1;">
+                    <option value="equals">Equals (=)</option>
+                    <option value="not_equals">Not Equals (≠)</option>
+                    <option value="greater_than">Greater Than (>)</option>
+                    <option value="greater_than_or_equal">Greater or Equal (≥)</option>
+                    <option value="less_than">Less Than (<)</option>
+                    <option value="less_than_or_equal">Less or Equal (≤)</option>
+                    <option value="contains">Contains</option>
+                </select>
+                <input type="text" class="filter-value" placeholder="Value" style="flex: 1; padding: 8px;">
+                <button type="button" onclick="this.parentElement.remove()" class="btn btn-danger btn-sm" style="padding: 5px 10px;">✕</button>
+            `;
+            container.appendChild(filterDiv);
+        }
+        
+        document.getElementById('segmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('segmentName').value;
+            const description = document.getElementById('segmentDesc').value;
+            const baseObject = document.getElementById('baseObject').value;
+            
+            // Collect filters
+            const filterRows = document.querySelectorAll('.filter-row');
+            const filters = Array.from(filterRows).map(row => ({
+                field: row.querySelector('.filter-field').value,
+                operator: row.querySelector('.filter-operator').value,
+                value: row.querySelector('.filter-value').value
+            }));
+            
+            try {
+                const response = await fetch('/api/segments/create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        base_object: baseObject,
+                        filters: filters
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Segment created with ${result.segment.member_count} members!`);
+                    document.getElementById('segmentForm').reset();
+                    document.getElementById('filtersContainer').innerHTML = '';
+                    loadSegments();
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Network error: ${error.message}`);
+            }
+        });
+        
+        async function loadSegments() {
+            const response = await fetch('/api/segments/list');
+            const segments = await response.json();
+            const list = document.getElementById('segmentsList');
+            
+            if (segments.length === 0) {
+                list.innerHTML = '<p style="padding: 20px; text-align: center; color: #666;">No segments created yet. Create your first segment below!</p>';
+                return;
+            }
+            
+            list.innerHTML = segments.map(s => `
+                <div class="segment-item" style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0 0 5px 0;">${s.name}</h3>
+                        <p style="margin: 5px 0; color: #666;">${s.description}</p>
+                        <small style="color: #999;">👥 ${s.member_count || 0} members | Created: ${new Date(s.created_at).toLocaleDateString()}</small>
+                    </div>
+                    <div>
+                        <button onclick="viewSegmentMembers('${s.id}')" class="btn btn-secondary btn-sm">👁️ View Members</button>
+                        <button onclick="syncToCampaign('${s.id}')" class="btn btn-primary btn-sm">📤 Sync to Campaign</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function viewSegmentMembers(segmentId) {
+            try {
+                const response = await fetch(`/api/segments/${segmentId}/members`);
+                const data = await response.json();
+                
+                if (data.members && data.members.length > 0) {
+                    let html = `<h2 style="margin: 0 0 10px 0;">🎯 Segment: ${data.segment.name}</h2>`;
+                    html += `<p style="color: #666; margin-bottom: 20px;">Total Members: <strong>${data.totalSize}</strong></p>`;
+                    
+                    // Create styled table with priority fields first
+                    html += '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><thead><tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">';
+                    
+                    // Priority fields in specific order
+                    const priorityFields = ['Name', 'omnichannel_score', 'preferred_channel', 'Current_Sentiment', 'Purchase_Intent', 'Favourite_Brand', 'Lifestyle_Quotient', 'Health_Profile'];
+                    const fieldLabels = {
+                        'Name': '👤 Name',
+                        'omnichannel_score': '📊 Engagement',
+                        'preferred_channel': '📱 Channel',
+                        'Current_Sentiment': '😊 Sentiment',
+                        'Purchase_Intent': '🛒 Intent',
+                        'Favourite_Brand': '❤️ Brand',
+                        'Lifestyle_Quotient': '🎯 Lifestyle',
+                        'Health_Profile': '💪 Health'
+                    };
+                    
+                    priorityFields.forEach(field => {
+                        html += `<th style="border: 1px solid #ddd; padding: 12px; color: white; font-weight: 600; white-space: nowrap;">${fieldLabels[field] || field}</th>`;
+                    });
+                    html += '</tr></thead><tbody>';
+                    
+                    // Helper function to get badge styling
+                    function getBadgeStyle(field, value) {
+                        if (field === 'Current_Sentiment') {
+                            const sentimentColors = {
+                                'Happy': 'background: #4caf50; color: white;',
+                                'Elated': 'background: #8bc34a; color: white;',
+                                'Anxious': 'background: #ff9800; color: white;',
+                                'Frustrated': 'background: #ff5722; color: white;',
+                                'Sad': 'background: #9e9e9e; color: white;',
+                                'Angry': 'background: #f44336; color: white;',
+                                'Disgusted': 'background: #795548; color: white;'
+                            };
+                            return sentimentColors[value] || 'background: #e0e0e0; color: #333;';
+                        } else if (field === 'Purchase_Intent') {
+                            const intentColors = {
+                                'Very High': 'background: #f44336; color: white;',
+                                'Immediate': 'background: #ff5722; color: white;',
+                                'High': 'background: #ff9800; color: white;',
+                                'Considering': 'background: #ffc107; color: #000;',
+                                'Medium': 'background: #ffeb3b; color: #000;',
+                                'Tepid': 'background: #cddc39; color: #000;',
+                                'Low': 'background: #9e9e9e; color: white;',
+                                'Not Interested': 'background: #607d8b; color: white;'
+                            };
+                            return intentColors[value] || 'background: #e0e0e0; color: #333;';
+                        } else if (field === 'preferred_channel') {
+                            return 'background: #e3f2fd; color: #1976d2;';
+                        } else if (field === 'Lifestyle_Quotient') {
+                            return 'background: #f3e5f5; color: #7b1fa2;';
+                        } else if (field === 'Health_Profile') {
+                            return 'background: #e8f5e9; color: #2e7d32;';
+                        }
+                        return 'background: #f5f5f5; color: #333;';
+                    }
+                    
+                    // Show first 50 members
+                    data.members.slice(0, 50).forEach((member, index) => {
+                        html += `<tr style="border-bottom: 1px solid #eee; ${index % 2 === 0 ? 'background: #fafafa;' : ''}">`;
+                        
+                        priorityFields.forEach(field => {
+                            let value = member[field];
+                            
+                            if (value === null || value === undefined || value === 'N/A') {
+                                html += `<td style="border: 1px solid #eee; padding: 10px; color: #999;">-</td>`;
+                            } else if (field === 'Name') {
+                                html += `<td style="border: 1px solid #eee; padding: 10px;"><strong>${value}</strong></td>`;
+                            } else if (field === 'omnichannel_score') {
+                                const score = parseFloat(value);
+                                const scoreColor = score >= 7 ? '#4caf50' : (score >= 5 ? '#ff9800' : '#f44336');
+                                html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: ${scoreColor}; color: white; font-weight: 600;">${score.toFixed(1)}</span></td>`;
+                            } else if (['Current_Sentiment', 'Purchase_Intent', 'preferred_channel', 'Lifestyle_Quotient', 'Health_Profile', 'Favourite_Brand'].includes(field)) {
+                                const badgeStyle = getBadgeStyle(field, value);
+                                html += `<td style="border: 1px solid #eee; padding: 10px;"><span style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 11px; ${badgeStyle}">${value}</span></td>`;
+                            } else {
+                                if (typeof value === 'object') {
+                                    value = JSON.stringify(value);
+                                }
+                                html += `<td style="border: 1px solid #eee; padding: 10px;">${value}</td>`;
+                            }
+                        });
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table></div>';
+                    
+                    if (data.totalSize > 50) {
+                        html += `<p style="margin-top: 15px; color: #666; text-align: center;">Showing first 50 of ${data.totalSize} members</p>`;
+                    }
+                    
+                    // Show in modal
+                    const modal = document.createElement('div');
+                    modal.style = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;';
+                    modal.innerHTML = `<div style="background: white; padding: 30px; border-radius: 12px; max-width: 95%; max-height: 90%; overflow: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                        ${html}
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="btn btn-secondary">✕ Close</button>
+                        </div>
+                    </div>`;
+                    document.body.appendChild(modal);
+                } else {
+                    alert('No members found in this segment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load segment members: ' + error.message);
+            }
+        }
+        
+        async function syncToCampaign(segmentId) {
+            if (!confirm('This will create a Salesforce Campaign and sync all segment members. Continue?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/segments/${segmentId}/sync`, {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Campaign created with ${result.campaign.member_count} members!\nCampaign ID: ${result.campaign.campaign_id}`);
+                    loadSegments();
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Failed to sync: ${error.message}`);
+            }
+        }
+        
+        loadSegments();
+    </script>
+</body>
+</html>
+

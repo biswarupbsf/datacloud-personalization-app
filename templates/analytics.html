@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Data Cloud Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        {% include 'sidebar.html' %}
+        
+        <div class="main-content">
+            <header class="page-header">
+                <h1>📈 Analytics</h1>
+            </header>
+            
+            <div class="dashboard-grid">
+                <div class="stat-card clickable-card" onclick="window.location.href='/segments'" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <h3>Total Segments</h3>
+                        <div class="stat-number" id="totalSegments">0</div>
+                        <small style="opacity: 0.7; font-size: 12px;">👉 Click to view</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card clickable-card" onclick="window.location.href='/data?object=Individual'" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Total Members</h3>
+                        <div class="stat-number" id="totalMembers">0</div>
+                        <small style="opacity: 0.7; font-size: 12px;">👉 Click to view</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card clickable-card" onclick="window.location.href='/emails'" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="stat-icon">📧</div>
+                    <div class="stat-content">
+                        <h3>Emails Sent</h3>
+                        <div class="stat-number" id="emailsSent">0</div>
+                        <small style="opacity: 0.7; font-size: 12px;">👉 Click to view</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card clickable-card" onclick="showEngagementDetails()" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <h3>Open Rate</h3>
+                        <div class="stat-number" id="openRate">0%</div>
+                        <small style="opacity: 0.7; font-size: 12px;">👉 Click for details</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Segment Analytics</h2>
+                </div>
+                <div id="segmentAnalytics"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadAnalytics() {
+            try {
+                console.log('Loading analytics...');
+                const response = await fetch('/api/analytics/segments');
+                const data = await response.json();
+                console.log('Analytics data:', data);
+                
+                document.getElementById('totalSegments').textContent = data.total_segments || 0;
+                document.getElementById('totalMembers').textContent = data.total_members || 0;
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+        
+        function showEngagementDetails() {
+            // Load engagement data from synthetic file
+            fetch('/data/synthetic_engagement.json')
+                .then(response => response.json())
+                .then(data => {
+                    const totalIndividuals = data.length;
+                    const totalEmailOpens = data.reduce((sum, ind) => sum + (ind.email_opens || 0), 0);
+                    const totalEmailClicks = data.reduce((sum, ind) => sum + (ind.email_clicks || 0), 0);
+                    const totalSMSOpens = data.reduce((sum, ind) => sum + (ind.sms_opens || 0), 0);
+                    const totalWhatsAppReads = data.reduce((sum, ind) => sum + (ind.whatsapp_reads || 0), 0);
+                    const totalPushOpens = data.reduce((sum, ind) => sum + (ind.push_opens || 0), 0);
+                    const avgEngagement = (data.reduce((sum, ind) => sum + (ind.engagement_score || 0), 0) / totalIndividuals).toFixed(1);
+                    
+                    // Create modal
+                    const modal = document.createElement('div');
+                    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+                    
+                    const modalContent = document.createElement('div');
+                    modalContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; max-width: 700px; max-height: 90%; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+                    
+                    let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">';
+                    html += '<h2 style="margin: 0;">📊 Engagement Details</h2>';
+                    html += '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">✕ Close</button>';
+                    html += '</div>';
+                    
+                    html += '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">';
+                    html += '<h3 style="margin: 0 0 10px 0; color: white;">Overall Performance</h3>';
+                    html += '<div style="font-size: 32px; font-weight: bold;">' + avgEngagement + '/10</div>';
+                    html += '<div style="opacity: 0.9;">Average Engagement Score</div>';
+                    html += '</div>';
+                    
+                    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">📧 EMAIL OPENS</div><div style="font-size: 24px; font-weight: bold; color: #667eea;">' + totalEmailOpens.toLocaleString() + '</div></div>';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">🖱️ EMAIL CLICKS</div><div style="font-size: 24px; font-weight: bold; color: #667eea;">' + totalEmailClicks.toLocaleString() + '</div></div>';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">📱 SMS OPENS</div><div style="font-size: 24px; font-weight: bold; color: #fa709a;">' + totalSMSOpens.toLocaleString() + '</div></div>';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">💬 WHATSAPP READS</div><div style="font-size: 24px; font-weight: bold; color: #25D366;">' + totalWhatsAppReads.toLocaleString() + '</div></div>';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">🔔 PUSH OPENS</div><div style="font-size: 24px; font-weight: bold; color: #f093fb;">' + totalPushOpens.toLocaleString() + '</div></div>';
+                    html += '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;"><div style="font-size: 12px; color: #666; margin-bottom: 5px;">👥 INDIVIDUALS</div><div style="font-size: 24px; font-weight: bold; color: #333;">' + totalIndividuals + '</div></div>';
+                    html += '</div>';
+                    
+                    html += '<div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;"><strong>💡 Insight:</strong> Your audience is highly engaged across multiple channels! Email has the highest open rate, followed by SMS and WhatsApp.</div>';
+                    
+                    modalContent.innerHTML = html;
+                    
+                    modal.className = 'modal-overlay';
+                    modal.appendChild(modalContent);
+                    document.body.appendChild(modal);
+                })
+                .catch(error => {
+                    alert('Could not load engagement data: ' + error.message);
+                });
+        }
+        
+        // Add hover effect for clickable cards
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAnalytics();
+            
+            const cards = document.querySelectorAll('.clickable-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

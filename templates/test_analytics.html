@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Analytics API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .test-box { border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Analytics API Test Page</h1>
+    
+    <button onclick="testDataCloud()">Test Data Cloud API</button>
+    <button onclick="testSegments()">Test Segments API</button>
+    <button onclick="testDebug()">Test Debug Status</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        async function testDataCloud() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-box">Testing /api/analytics/datacloud...</div>';
+            
+            try {
+                const response = await fetch('/api/analytics/datacloud');
+                const data = await response.json();
+                
+                results.innerHTML = `
+                    <div class="test-box ${data.error ? 'error' : 'success'}">
+                        <h3>Data Cloud API Response:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="test-box error">
+                        <h3>Error:</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testSegments() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-box">Testing /api/analytics/segments...</div>';
+            
+            try {
+                const response = await fetch('/api/analytics/segments');
+                const data = await response.json();
+                
+                results.innerHTML = `
+                    <div class="test-box ${data.error ? 'error' : 'success'}">
+                        <h3>Segments API Response:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="test-box error">
+                        <h3>Error:</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testDebug() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-box">Testing /api/debug/status...</div>';
+            
+            try {
+                const response = await fetch('/api/debug/status');
+                const data = await response.json();
+                
+                results.innerHTML = `
+                    <div class="test-box ${data.sf_manager_connected ? 'success' : 'error'}">
+                        <h3>Debug Status:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="test-box error">
+                        <h3>Error:</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
+
+

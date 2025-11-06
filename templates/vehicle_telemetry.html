@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Telemetry - Data Cloud App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styling to preserve icon sizes */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .sidebar-menu .menu-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 3px solid #667eea;
+        }
+
+        .sidebar-menu .menu-item .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu .menu-item span:not(.icon) {
+            font-size: 14px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card .change {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .telemetry-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .telemetry-section h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff5722;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .telemetry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .telemetry-table th {
+            background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+            color: white !important;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .telemetry-table th:hover {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+        }
+
+        .telemetry-table td {
+            padding: 8px 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .telemetry-table tr:hover {
+            background-color: #fff3e0;
+        }
+
+        .telemetry-table td small {
+            font-size: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-critical {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-none {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .status-moving {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .status-stopped {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .sort-icon {
+            margin-left: 5px;
+            font-size: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #ff5722;
+            color: white;
+            border-color: #ff5722;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    
+    <div class="main-content">
+        <div class="header">
+            <h1>📡 Vehicle Telemetry</h1>
+            <p>Real-time telematics events from all connected vehicles</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Events</h3>
+                <div class="value" id="totalEvents">0</div>
+                <div class="change">Last 7 days</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Vehicles</h3>
+                <div class="value" id="activeVehicles">0</div>
+                <div class="change">Currently transmitting</div>
+            </div>
+            <div class="stat-card">
+                <h3>Alert Events</h3>
+                <div class="value" id="alertEvents">0</div>
+                <div class="change">Requires attention</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Speed</h3>
+                <div class="value" id="avgSpeed">0</div>
+                <div class="change">km/h when moving</div>
+            </div>
+        </div>
+
+        <div class="telemetry-section">
+            <h2>📊 Telematics Events</h2>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Vehicle Make</label>
+                    <select id="filterMake" onchange="applyFilters()">
+                        <option value="">All Makes</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Alert Type</label>
+                    <select id="filterAlert" onchange="applyFilters()">
+                        <option value="">All Alerts</option>
+                        <option value="None">No Alerts</option>
+                        <option value="Low Fuel">Low Fuel</option>
+                        <option value="Engine Check">Engine Check</option>
+                        <option value="Low Tire Pressure">Low Tire Pressure</option>
+                        <option value="Service Due">Service Due</option>
+                        <option value="Battery Low">Battery Low</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="filterStatus" onchange="applyFilters()">
+                        <option value="">All Status</option>
+                        <option value="true">Moving</option>
+                        <option value="false">Stopped</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Location</label>
+                    <select id="filterLocation" onchange="applyFilters()">
+                        <option value="">All Locations</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table class="telemetry-table" id="telemetryTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('TelematicsId')">Telemetrics ID <span class="sort-icon" id="sort-TelematicsId">↕</span></th>
+                            <th onclick="sortTable('Timestamp')">Timestamp <span class="sort-icon" id="sort-Timestamp">↕</span></th>
+                            <th onclick="sortTable('Vehicle_Id')">Vehicle ID <span class="sort-icon" id="sort-Vehicle_Id">↕</span></th>
+                            <th onclick="sortTable('VehicleVIN')">VIN <span class="sort-icon" id="sort-VehicleVIN">↕</span></th>
+                            <th onclick="sortTable('VehicleMake')">Make <span class="sort-icon" id="sort-VehicleMake">↕</span></th>
+                            <th onclick="sortTable('VehicleModel')">Model <span class="sort-icon" id="sort-VehicleModel">↕</span></th>
+                            <th onclick="sortTable('TelematicsDeviceId')">Device ID <span class="sort-icon" id="sort-TelematicsDeviceId">↕</span></th>
+                            <th onclick="sortTable('LocationCity')">City <span class="sort-icon" id="sort-LocationCity">↕</span></th>
+                            <th onclick="sortTable('Latitude')">Latitude <span class="sort-icon" id="sort-Latitude">↕</span></th>
+                            <th onclick="sortTable('Longitude')">Longitude <span class="sort-icon" id="sort-Longitude">↕</span></th>
+                            <th onclick="sortTable('Speed')">Speed (km/h) <span class="sort-icon" id="sort-Speed">↕</span></th>
+                            <th onclick="sortTable('RPM')">RPM <span class="sort-icon" id="sort-RPM">↕</span></th>
+                            <th onclick="sortTable('FuelLevel')">Fuel % <span class="sort-icon" id="sort-FuelLevel">↕</span></th>
+                            <th onclick="sortTable('FuelConsumption')">Fuel Consumption <span class="sort-icon" id="sort-FuelConsumption">↕</span></th>
+                            <th onclick="sortTable('BatteryLevel')">Battery % <span class="sort-icon" id="sort-BatteryLevel">↕</span></th>
+                            <th onclick="sortTable('EngineTemp')">Engine Temp °C <span class="sort-icon" id="sort-EngineTemp">↕</span></th>
+                            <th onclick="sortTable('OilPressure')">Oil Pressure PSI <span class="sort-icon" id="sort-OilPressure">↕</span></th>
+                            <th onclick="sortTable('Odometer')">Odometer km <span class="sort-icon" id="sort-Odometer">↕</span></th>
+                            <th onclick="sortTable('TripDistance')">Trip km <span class="sort-icon" id="sort-TripDistance">↕</span></th>
+                            <th onclick="sortTable('TirePressure_FL')">Tire FL PSI <span class="sort-icon" id="sort-TirePressure_FL">↕</span></th>
+                            <th onclick="sortTable('TirePressure_FR')">Tire FR PSI <span class="sort-icon" id="sort-TirePressure_FR">↕</span></th>
+                            <th onclick="sortTable('TirePressure_RL')">Tire RL PSI <span class="sort-icon" id="sort-TirePressure_RL">↕</span></th>
+                            <th onclick="sortTable('TirePressure_RR')">Tire RR PSI <span class="sort-icon" id="sort-TirePressure_RR">↕</span></th>
+                            <th onclick="sortTable('IsEngineOn')">Engine On <span class="sort-icon" id="sort-IsEngineOn">↕</span></th>
+                            <th onclick="sortTable('IsMoving')">Moving <span class="sort-icon" id="sort-IsMoving">↕</span></th>
+                            <th onclick="sortTable('Acceleration')">Acceleration m/s² <span class="sort-icon" id="sort-Acceleration">↕</span></th>
+                            <th onclick="sortTable('HarshBraking')">Harsh Braking <span class="sort-icon" id="sort-HarshBraking">↕</span></th>
+                            <th onclick="sortTable('RapidAcceleration')">Rapid Accel <span class="sort-icon" id="sort-RapidAcceleration">↕</span></th>
+                            <th onclick="sortTable('Idling')">Idling <span class="sort-icon" id="sort-Idling">↕</span></th>
+                            <th onclick="sortTable('DiagnosticCode')">DTC <span class="sort-icon" id="sort-DiagnosticCode">↕</span></th>
+                            <th onclick="sortTable('AlertType')">Alert Type <span class="sort-icon" id="sort-AlertType">↕</span></th>
+                            <th onclick="sortTable('AlertSeverity')">Alert Severity <span class="sort-icon" id="sort-AlertSeverity">↕</span></th>
+                            <th onclick="sortTable('ConnectionStatus')">Connection <span class="sort-icon" id="sort-ConnectionStatus">↕</span></th>
+                            <th onclick="sortTable('SignalStrength')">Signal % <span class="sort-icon" id="sort-SignalStrength">↕</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="telemetryTableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button onclick="previousPage()" id="prevBtn">← Previous</button>
+                <span class="page-info">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                <button onclick="nextPage()" id="nextBtn">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allEvents = [];
+        let filteredEvents = [];
+        let currentSort = { column: 'Timestamp', direction: 'desc' };
+        let currentPage = 1;
+        const eventsPerPage = 50;
+
+        async function loadData() {
+            try {
+                const response = await fetch('/api/vehicle-telemetry-events');
+                allEvents = await response.json();
+                
+                // Populate filter dropdowns
+                populateFilters();
+                
+                // Apply initial filters and render
+                filteredEvents = [...allEvents];
+                updateStats();
+                sortTable('Timestamp'); // Sort by timestamp initially
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function populateFilters() {
+            // Get unique makes
+            const makes = [...new Set(allEvents.map(e => e.VehicleMake))].sort();
+            const makeSelect = document.getElementById('filterMake');
+            makes.forEach(make => {
+                const option = document.createElement('option');
+                option.value = make;
+                option.textContent = make;
+                makeSelect.appendChild(option);
+            });
+
+            // Get unique locations
+            const locations = [...new Set(allEvents.map(e => e.LocationCity))].sort();
+            const locationSelect = document.getElementById('filterLocation');
+            locations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const filterMake = document.getElementById('filterMake').value;
+            const filterAlert = document.getElementById('filterAlert').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterLocation = document.getElementById('filterLocation').value;
+
+            filteredEvents = allEvents.filter(event => {
+                if (filterMake && event.VehicleMake !== filterMake) return false;
+                if (filterAlert && event.AlertType !== filterAlert) return false;
+                if (filterStatus && event.IsMoving !== filterStatus) return false;
+                if (filterLocation && event.LocationCity !== filterLocation) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateStats();
+            renderTable();
+        }
+
+        function updateStats() {
+            const totalEvents = filteredEvents.length;
+            const activeVehicles = new Set(filteredEvents.map(e => e.Vehicle_Id)).size;
+            const alertEvents = filteredEvents.filter(e => e.AlertType !== 'None').length;
+            const movingEvents = filteredEvents.filter(e => e.IsMoving === 'true' && parseInt(e.Speed) > 0);
+            const avgSpeed = movingEvents.length > 0 
+                ? (movingEvents.reduce((sum, e) => sum + parseInt(e.Speed), 0) / movingEvents.length).toFixed(1)
+                : 0;
+
+            document.getElementById('totalEvents').textContent = totalEvents.toLocaleString();
+            document.getElementById('activeVehicles').textContent = activeVehicles;
+            document.getElementById('alertEvents').textContent = alertEvents;
+            document.getElementById('avgSpeed').textContent = avgSpeed;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('telemetryTableBody');
+            tbody.innerHTML = '';
+
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
+            const startIdx = (currentPage - 1) * eventsPerPage;
+            const endIdx = startIdx + eventsPerPage;
+            const pageEvents = filteredEvents.slice(startIdx, endIdx);
+
+            pageEvents.forEach(event => {
+                const row = document.createElement('tr');
+                
+                // Determine alert badge class
+                let alertClass = 'badge-none';
+                if (event.AlertSeverity === 'Critical') alertClass = 'badge-critical';
+                else if (event.AlertSeverity === 'Warning') alertClass = 'badge-warning';
+                else if (event.AlertSeverity === 'Info') alertClass = 'badge-info';
+
+                row.innerHTML = `
+                    <td><small>${event.TelematicsId}</small></td>
+                    <td><small>${event.Timestamp}</small></td>
+                    <td><small>${event.Vehicle_Id}</small></td>
+                    <td><small>${event.VehicleVIN}</small></td>
+                    <td>${event.VehicleMake}</td>
+                    <td>${event.VehicleModel}</td>
+                    <td><small>${event.TelematicsDeviceId}</small></td>
+                    <td>${event.LocationCity}</td>
+                    <td>${parseFloat(event.Latitude).toFixed(6)}</td>
+                    <td>${parseFloat(event.Longitude).toFixed(6)}</td>
+                    <td>${event.Speed}</td>
+                    <td>${event.RPM}</td>
+                    <td>${event.FuelLevel}</td>
+                    <td>${event.FuelConsumption}</td>
+                    <td>${event.BatteryLevel}</td>
+                    <td>${event.EngineTemp}</td>
+                    <td>${event.OilPressure}</td>
+                    <td>${event.Odometer}</td>
+                    <td>${event.TripDistance}</td>
+                    <td>${event.TirePressure_FL}</td>
+                    <td>${event.TirePressure_FR}</td>
+                    <td>${event.TirePressure_RL}</td>
+                    <td>${event.TirePressure_RR}</td>
+                    <td>${event.IsEngineOn === 'true' ? '✅' : '❌'}</td>
+                    <td class="${event.IsMoving === 'true' ? 'status-moving' : 'status-stopped'}">${event.IsMoving === 'true' ? '🚗' : '⏸️'}</td>
+                    <td>${event.Acceleration}</td>
+                    <td>${event.HarshBraking === 'true' ? '⚠️ Yes' : 'No'}</td>
+                    <td>${event.RapidAcceleration === 'true' ? '⚠️ Yes' : 'No'}</td>
+                    <td>${event.Idling === 'true' ? '⚠️ Yes' : 'No'}</td>
+                    <td>${event.DiagnosticCode || '-'}</td>
+                    <td>${event.AlertType !== 'None' 
+                        ? `<span class="badge ${alertClass}">${event.AlertType}</span>` 
+                        : '<span class="badge badge-none">None</span>'}</td>
+                    <td>${event.AlertSeverity !== 'None' 
+                        ? `<span class="badge ${alertClass}">${event.AlertSeverity}</span>` 
+                        : '<span class="badge badge-none">None</span>'}</td>
+                    <td>${event.ConnectionStatus}</td>
+                    <td>${event.SignalStrength}%</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+
+            // Update pagination
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'desc';
+            }
+
+            filteredEvents.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                // Handle numeric columns
+                const numericColumns = [
+                    'Speed', 'RPM', 'FuelLevel', 'FuelConsumption', 'BatteryLevel', 
+                    'EngineTemp', 'OilPressure', 'Odometer', 'TripDistance',
+                    'TirePressure_FL', 'TirePressure_FR', 'TirePressure_RL', 'TirePressure_RR',
+                    'Acceleration', 'SignalStrength'
+                ];
+                
+                if (numericColumns.includes(column)) {
+                    aVal = parseFloat(aVal) || 0;
+                    bVal = parseFloat(bVal) || 0;
+                }
+                
+                // Handle string columns
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            // Update sort icons
+            document.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.textContent = '↕';
+            });
+            document.getElementById(`sort-${column}`).textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
+
