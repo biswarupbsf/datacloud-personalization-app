@@ -16,11 +16,14 @@ class SimpleAuthConnector:
         self.org_id = None
         self.connected_at = None
     
-    def connect_soap(self, username, password):
+    def connect_soap(self, username, password, security_token=''):
         """
-        Connect using SOAP API with just username and password
-        No security token required if IP is whitelisted
+        Connect using SOAP API with username, password, and optional security token
+        Security token is appended to password if provided
         """
+        
+        # Append security token to password if provided (Salesforce standard)
+        full_password = password + security_token if security_token else password
         
         # SOAP endpoint
         soap_url = 'https://login.salesforce.com/services/Soap/u/59.0'
@@ -32,7 +35,7 @@ class SimpleAuthConnector:
   <soapenv:Body>
     <urn:login>
       <urn:username>{username}</urn:username>
-      <urn:password>{password}</urn:password>
+      <urn:password>{full_password}</urn:password>
     </urn:login>
   </soapenv:Body>
 </soapenv:Envelope>"""

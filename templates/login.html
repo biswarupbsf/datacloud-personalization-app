@@ -119,7 +119,7 @@
             }
         });
         
-        // Login Without Token Function
+        // Login Without Token Function (actually WITH token but simpler UI)
         async function loginWithoutToken() {
             const errorDiv = document.getElementById('errorMessage');
             const successDiv = document.getElementById('successMessage');
@@ -130,12 +130,21 @@
             successDiv.style.display = 'none';
             
             if (!username || !password) {
-                errorDiv.textContent = 'Please enter username and password';
+                errorDiv.textContent = 'Please enter username and password first';
                 errorDiv.style.display = 'block';
                 return;
             }
             
-            successDiv.textContent = '🔐 Connecting without security token...';
+            // Prompt for security token
+            const securityToken = prompt('⚠️ Heroku requires a Security Token to connect.\n\nPaste your Salesforce Security Token below:\n\n(Get it from: Setup → Personal → Reset Security Token)');
+            
+            if (!securityToken) {
+                errorDiv.textContent = 'Security token is required when connecting from Heroku';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            successDiv.textContent = '🔐 Connecting to Salesforce...';
             successDiv.style.display = 'block';
             
             try {
@@ -146,7 +155,8 @@
                     },
                     body: JSON.stringify({
                         username: username,
-                        password: password
+                        password: password,
+                        security_token: securityToken
                     })
                 });
                 
