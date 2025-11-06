@@ -121,6 +121,43 @@ def login_oauth():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 400
 
+@app.route('/login/auto', methods=['POST'])
+def login_auto():
+    """Auto-login using environment variables (no user input needed)"""
+    try:
+        # Get credentials from environment variables
+        username = os.environ.get('SF_USERNAME')
+        password = os.environ.get('SF_PASSWORD')
+        
+        if not username or not password:
+            return jsonify({
+                'success': False, 
+                'error': 'SF_USERNAME and SF_PASSWORD environment variables not set on Heroku'
+            }), 400
+        
+        # Connect using SOAP (no token needed)
+        simple_auth_manager.connect_soap(username, password, '')
+        
+        # Copy connection to sf_manager for compatibility
+        sf_manager.sf = simple_auth_manager.sf
+        sf_manager.username = simple_auth_manager.username
+        sf_manager.instance_url = simple_auth_manager.instance_url
+        sf_manager.org_id = simple_auth_manager.org_id
+        sf_manager.connected_at = simple_auth_manager.connected_at
+        
+        session['connected'] = True
+        session['username'] = simple_auth_manager.username
+        session['password'] = password  # Store for auto-reconnect after app reload
+        session.permanent = True
+        
+        return jsonify({
+            'success': True,
+            'message': f'Connected successfully as {username}!',
+            'org_info': simple_auth_manager.get_org_info()
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+
 @app.route('/logout')
 def logout():
     """Logout and clear session"""
