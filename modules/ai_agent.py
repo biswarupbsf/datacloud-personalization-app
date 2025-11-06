@@ -765,12 +765,17 @@ class AIAgent:
                     # Skip rows with errors
                     continue
             
+            # Debug: Log how many individuals we found
+            print(f"DEBUG: Found {len(individual_stats)} individuals before speed filter")
+            
             # Filter by speed threshold if specified
             if speed_threshold:
                 individual_stats = {k: v for k, v in individual_stats.items() if v['max_speed'] >= speed_threshold}
+                print(f"DEBUG: Found {len(individual_stats)} individuals after speed filter (>{speed_threshold} kmph)")
             
             # Sort by driving score
             sorted_individuals = sorted(individual_stats.items(), key=lambda x: x[1]['driving_score'], reverse=True)
+            print(f"DEBUG: Top 10 speeds: {[v['max_speed'] for k,v in sorted_individuals[:10]]}")
             
             # Take top N
             top_drivers = sorted_individuals[:limit]
@@ -778,10 +783,27 @@ class AIAgent:
             if not top_drivers:
                 return {
                     'intent': 'create_segment',
-                    'message': f"❌ No drivers found matching criteria (speed > {speed_threshold if speed_threshold else 'any'} kmph).",
+                    'message': f"❌ No drivers found matching criteria (speed > {speed_threshold if speed_threshold else 'any'} kmph). Found {len(sorted_individuals)} total drivers.",
                     'data': None,
                     'suggested_actions': ['Adjust criteria', 'Check data']
                 }
+            
+            # Convert to proper member format (list of dicts, not tuples)
+            members_list = []
+            for ind_id, stats in top_drivers:
+                member = {
+                    'IndividualId': ind_id,
+                    'Name': stats.get('name', ind_id),
+                    'driving_score': stats['driving_score'],
+                    'max_speed': stats['max_speed'],
+                    'safety_score': stats['safety_score'],
+                    'efficiency_score': stats['efficiency_score'],
+                    'avg_efficiency': stats['avg_efficiency'],
+                    'harsh_events': stats['harsh_events'],
+                    'vehicle_id': stats.get('vehicle_id', ''),
+                    'segment_type': 'driving'
+                }
+                members_list.append(member)
             
             # Create segment
             segment_name = f"Top {limit} Efficient & Safe Drivers"
@@ -794,8 +816,8 @@ class AIAgent:
                 'description': f"AI-generated driving segment: {original_message}",
                 'base_object': 'Individual',
                 'filters': [],
-                'member_count': len(top_drivers),
-                'members': top_drivers,
+                'member_count': len(members_list),
+                'members': members_list,
                 'created_at': datetime.now().isoformat(),
                 'type': 'driving'
             }
@@ -814,18 +836,19 @@ class AIAgent:
             # Build response message
             message_text = f"✅ **Segment Created Successfully!**\n\n"
             message_text += f"📊 **Segment Name:** {segment_name}\n"
-            message_text += f"👥 **Members:** {len(top_drivers)} drivers\n"
+            message_text += f"👥 **Members:** {len(members_list)} drivers\n"
             if speed_threshold:
                 message_text += f"🏎️ **Speed Filter:** Above {speed_threshold} kmph\n"
-            message_text += "\n**Top 10 Members:**\n"
+            message_text += f"📈 **Total drivers analyzed:** {len(telemetry_df)}\n"
+            message_text += f"🚗 **Drivers after filtering:** {len(sorted_individuals)}\n"
+            message_text += "\n**Top Members:**\n"
             
-            for i, (ind_id, stats) in enumerate(top_drivers[:10], 1):
-                name = stats.get('name', ind_id)
-                message_text += f"{i}. {name} - "
-                message_text += f"Score: {stats['driving_score']:.2f} | "
-                message_text += f"Max Speed: {stats['max_speed']:.1f} kmph | "
-                message_text += f"Safety: {stats['safety_score']:.1f}/100 | "
-                message_text += f"Efficiency: {stats['efficiency_score']:.1f}/100\n"
+            for i, member in enumerate(members_list[:10], 1):
+                message_text += f"{i}. {member['Name']} - "
+                message_text += f"Score: {member['driving_score']:.2f} | "
+                message_text += f"Max Speed: {member['max_speed']:.1f} kmph | "
+                message_text += f"Safety: {member['safety_score']:.1f}/100 | "
+                message_text += f"Efficiency: {member['efficiency_score']:.1f}/100\n"
             
             message_text += "\n✅ **Next steps:**\n"
             message_text += "• View full segment in the **Segments** page\n"
@@ -837,16 +860,19 @@ class AIAgent:
                 'message': message_text,
                 'data': {
                     'segment': segment,
-                    'members': top_drivers,
+                    'members': members_list,
                     'stats': individual_stats
                 },
                 'suggested_actions': ['View segment', 'Generate emails', 'Sync to Salesforce']
             }
             
         except Exception as e:
+            import traceback
+            error_trace = traceback.format_exc()
+            print(f"ERROR in _handle_driving_segment: {error_trace}")
             return {
                 'intent': 'create_segment',
-                'message': f"❌ Error creating driving segment: {str(e)}",
+                'message': f"❌ Error creating driving segment: {str(e)}\n\nPlease check the logs for details.",
                 'data': None,
                 'suggested_actions': ['Try again', 'Check data files']
             }
