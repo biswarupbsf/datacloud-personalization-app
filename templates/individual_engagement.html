@@ -227,45 +227,12 @@
             <p>Detailed omnichannel engagement metrics for all individuals</p>
         </div>
         
-        <div id="loadingOverlay" class="loading-overlay" style="display: flex;">
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
             <div style="text-align: center;">
                 <div class="spinner"></div>
                 <p style="margin-top: 20px; font-weight: 600; color: #667eea; font-size: 18px;">Loading engagement data...</p>
                 <p style="margin-top: 10px; color: #888; font-size: 14px;">Fetching channel metrics and individual insights</p>
             </div>
-        </div>
-        
-        <!-- Welcome State (shown initially) -->
-        <div id="welcomeState" style="display: none; text-align: center; padding: 80px 40px; background: white; border-radius: 12px; margin: 40px auto; max-width: 800px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-            <div style="font-size: 72px; margin-bottom: 20px;">📊</div>
-            <h2 style="color: #333; margin-bottom: 15px;">Welcome to Individual Engagement Dashboard</h2>
-            <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
-                Track and analyze omnichannel engagement across 6 channels:<br>
-                ✉️ Email • 💬 SMS • 📞 WhatsApp • 🔔 Push • 👥 Social • 🌐 Website
-            </p>
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
-                <h3 style="margin: 0 0 10px 0;">🎯 What You Can Do:</h3>
-                <div style="text-align: left; display: inline-block; margin: 0 auto;">
-                    <p style="margin: 8px 0;">✓ View 28 detailed engagement metrics per individual</p>
-                    <p style="margin: 8px 0;">✓ Filter by channel, score, and search by name</p>
-                    <p style="margin: 8px 0;">✓ Sort by any metric to find top performers</p>
-                    <p style="margin: 8px 0;">✓ Export complete data to CSV for analysis</p>
-                    <p style="margin: 8px 0;">✓ See channel engagement scores (0-100)</p>
-                </div>
-            </div>
-            <button onclick="loadEngagementData()" style="background: #667eea; color: white; border: none; padding: 15px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
-                🚀 Load Engagement Data
-            </button>
-        </div>
-        
-        <!-- Error State -->
-        <div id="errorState" style="display: none; text-align: center; padding: 60px 40px; background: #fff3f3; border: 2px solid #ffcdd2; border-radius: 12px; margin: 40px auto; max-width: 700px;">
-            <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
-            <h2 style="color: #d32f2f; margin-bottom: 15px;">Unable to Load Engagement Data</h2>
-            <p style="color: #666; font-size: 15px; margin-bottom: 25px;" id="errorMessage">An error occurred while fetching the data.</p>
-            <button onclick="loadEngagementData()" style="background: #d32f2f; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;">
-                🔄 Try Again
-            </button>
         </div>
         
         <!-- Summary Stats -->
@@ -406,18 +373,12 @@
         let currentSortColumn = 'omnichannel_score';
         let currentSortDirection = 'desc';
         
-        // Show welcome state on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-            document.getElementById('welcomeState').style.display = 'block';
-        });
+        // Auto-load data on page load
+        document.addEventListener('DOMContentLoaded', loadEngagementData);
         
         async function loadEngagementData() {
-            // Hide all states
-            document.getElementById('welcomeState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'none';
             document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
             
             try {
                 const response = await fetch('/api/individuals/engagement');
@@ -442,8 +403,8 @@
             } catch (error) {
                 console.error('Error loading engagement data:', error);
                 document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('errorState').style.display = 'block';
-                document.getElementById('errorMessage').textContent = error.message || 'An error occurred while fetching the data. Please try again.';
+                document.getElementById('engagementTableBody').innerHTML = '<tr><td colspan="28" style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Data</h3><p>' + error.message + '</p><button onclick="loadEngagementData()" style="margin-top: 20px; background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;">🔄 Try Again</button></td></tr>';
+                document.getElementById('mainContent').style.display = 'block';
             }
         }
         
