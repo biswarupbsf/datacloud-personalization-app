@@ -317,32 +317,38 @@
                         <th style="min-width: 120px; text-align: center;">Preferred Channel</th>
                         <th style="min-width: 150px; text-align: center;">🕐 Preferred Time</th>
                         <!-- Email Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e3f2fd;" onclick="sortTable('email_opens')">📧 Opens <span class="sort-icon" id="sort-email_opens">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e3f2fd;" onclick="sortTable('email_clicks')">📧 Clicks <span class="sort-icon" id="sort-email_clicks">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e3f2fd;" onclick="sortTable('email_deletes')">📧 Deletes <span class="sort-icon" id="sort-email_deletes">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #1976d2; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('email_opens')"><span style="font-size: 16px;">📧</span> Opens</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #1976d2; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('email_clicks')"><span style="font-size: 16px;">📧</span> Clicks</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #1976d2; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('email_deletes')"><span style="font-size: 16px;">📧</span> Deletes</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #0d47a1; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('email_engagement_score')"><span style="font-size: 16px;">📧</span> Score</th>
                         <!-- SMS Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fce4ec;" onclick="sortTable('sms_opens')">📱 Opens <span class="sort-icon" id="sort-sms_opens">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fce4ec;" onclick="sortTable('sms_clicks')">📱 Clicks <span class="sort-icon" id="sort-sms_clicks">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fce4ec;" onclick="sortTable('sms_deletes')">📱 Deletes <span class="sort-icon" id="sort-sms_deletes">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #c2185b; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('sms_opens')"><span style="font-size: 16px;">📱</span> Opens</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #c2185b; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('sms_clicks')"><span style="font-size: 16px;">📱</span> Clicks</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #c2185b; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('sms_deletes')"><span style="font-size: 16px;">📱</span> Deletes</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #880e4f; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('sms_engagement_score')"><span style="font-size: 16px;">📱</span> Score</th>
                         <!-- WhatsApp Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e8f5e9;" onclick="sortTable('whatsapp_opens')">💬 Opens <span class="sort-icon" id="sort-whatsapp_opens">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e8f5e9;" onclick="sortTable('whatsapp_clicks')">💬 Clicks <span class="sort-icon" id="sort-whatsapp_clicks">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #e8f5e9;" onclick="sortTable('whatsapp_deletes')">💬 Deletes <span class="sort-icon" id="sort-whatsapp_deletes">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #2e7d32; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('whatsapp_opens')"><span style="font-size: 16px;">💬</span> Opens</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #2e7d32; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('whatsapp_clicks')"><span style="font-size: 16px;">💬</span> Clicks</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #2e7d32; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('whatsapp_deletes')"><span style="font-size: 16px;">💬</span> Deletes</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #1b5e20; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('whatsapp_engagement_score')"><span style="font-size: 16px;">💬</span> Score</th>
                         <!-- Push Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #f3e5f5;" onclick="sortTable('push_opens')">🔔 Opens <span class="sort-icon" id="sort-push_opens">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #f3e5f5;" onclick="sortTable('push_clicks')">🔔 Clicks <span class="sort-icon" id="sort-push_clicks">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #f3e5f5;" onclick="sortTable('push_deletes')">🔔 Deletes <span class="sort-icon" id="sort-push_deletes">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #7b1fa2; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('push_opens')"><span style="font-size: 16px;">🔔</span> Opens</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #7b1fa2; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('push_clicks')"><span style="font-size: 16px;">🔔</span> Clicks</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #7b1fa2; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('push_deletes')"><span style="font-size: 16px;">🔔</span> Deletes</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #4a148c; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('push_engagement_score')"><span style="font-size: 16px;">🔔</span> Score</th>
                         <!-- Social Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fce4ec;" onclick="sortTable('social_views')">👥 Views <span class="sort-icon" id="sort-social_views">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fce4ec;" onclick="sortTable('social_clicks')">👥 Clicks <span class="sort-icon" id="sort-social_clicks">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #d81b60; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('social_views')"><span style="font-size: 16px;">👥</span> Views</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #d81b60; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('social_clicks')"><span style="font-size: 16px;">👥</span> Clicks</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #ad1457; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('social_engagement_score')"><span style="font-size: 16px;">👥</span> Score</th>
                         <!-- Website Metrics -->
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fff3e0;" onclick="sortTable('website_product_views')">🌐 Views <span class="sort-icon" id="sort-website_product_views">↕</span></th>
-                        <th class="sortable" style="min-width: 70px; text-align: center; background: #fff3e0;" onclick="sortTable('website_clicks')">🌐 Clicks <span class="sort-icon" id="sort-website_clicks">↕</span></th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #e65100; color: white; font-weight: 600; padding: 12px 8px; border-right: 2px solid white;" onclick="sortTable('website_product_views')"><span style="font-size: 16px;">🌐</span> Views</th>
+                        <th class="sortable" style="min-width: 80px; text-align: center; background: #e65100; color: white; font-weight: 600; padding: 12px 8px; border-right: 3px solid #333;" onclick="sortTable('website_clicks')"><span style="font-size: 16px;">🌐</span> Clicks</th>
+                        <th class="sortable" style="min-width: 90px; text-align: center; background: #bf360c; color: white; font-weight: 600; padding: 12px 8px;" onclick="sortTable('website_engagement_score')"><span style="font-size: 16px;">🌐</span> Score</th>
                     </tr>
                 </thead>
                 <tbody id="engagementTableBody">
                     <tr>
-                        <td colspan="11" style="text-align: center; padding: 40px;">
+                        <td colspan="28" style="text-align: center; padding: 40px;">
                             <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
                             <p>Loading engagement data...</p>
                         </td>
@@ -386,7 +392,7 @@
                 
             } catch (error) {
                 console.error('Error loading engagement data:', error);
-                document.getElementById('engagementTableBody').innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Data</h3><p>' + error.message + '</p></td></tr>';
+                document.getElementById('engagementTableBody').innerHTML = '<tr><td colspan="28" style="text-align: center; padding: 40px; color: #f44336;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><h3>Error Loading Data</h3><p>' + error.message + '</p></td></tr>';
             } finally {
                 document.getElementById('loadingOverlay').style.display = 'none';
             }
@@ -435,7 +441,7 @@
             const tbody = document.getElementById('engagementTableBody');
             
             if (filteredIndividuals.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="22" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">🔍</div><h3>No Results</h3><p>Try adjusting your filters</p></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="28" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">🔍</div><h3>No Results</h3><p>Try adjusting your filters</p></td></tr>';
                 document.getElementById('displayCount').textContent = '0';
                 document.getElementById('totalCount').textContent = allIndividuals.length;
                 return;
@@ -465,27 +471,33 @@
                 html += '<td class="metric-cell"><span class="channel-badge ' + channelClass + '">' + channelIcon + ' ' + channelName + '</span></td>';
                 html += '<td class="metric-cell"><span style="font-size: 11px; padding: 4px 8px; background: #f0f4ff; color: #4263eb; border-radius: 12px; display: inline-block;">' + (ind.preferred_contact_time || 'Not Set') + '</span></td>';
                 // Email metrics
-                html += '<td class="metric-cell" style="background: #f0f8ff;">' + parseInt(ind.email_opens || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f0f8ff;">' + parseInt(ind.email_clicks || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f0f8ff;">' + parseInt(ind.email_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e3f2fd; text-align: center;">' + parseInt(ind.email_opens || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e3f2fd; text-align: center;">' + parseInt(ind.email_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e3f2fd; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.email_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #bbdefb; text-align: center; font-weight: 600; border-right: 3px solid #333;"><span style="color: #0d47a1;">' + parseFloat(ind.email_engagement_score || 0).toFixed(1) + '</span></td>';
                 // SMS metrics
-                html += '<td class="metric-cell" style="background: #fff0f5;">' + parseInt(ind.sms_opens || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #fff0f5;">' + parseInt(ind.sms_clicks || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #fff0f5;">' + parseInt(ind.sms_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fce4ec; text-align: center;">' + parseInt(ind.sms_opens || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fce4ec; text-align: center;">' + parseInt(ind.sms_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fce4ec; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.sms_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #f8bbd0; text-align: center; font-weight: 600; border-right: 3px solid #333;"><span style="color: #880e4f;">' + parseFloat(ind.sms_engagement_score || 0).toFixed(1) + '</span></td>';
                 // WhatsApp metrics
-                html += '<td class="metric-cell" style="background: #f0fff0;">' + parseInt(ind.whatsapp_opens || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f0fff0;">' + parseInt(ind.whatsapp_clicks || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f0fff0;">' + parseInt(ind.whatsapp_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e8f5e9; text-align: center;">' + parseInt(ind.whatsapp_opens || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e8f5e9; text-align: center;">' + parseInt(ind.whatsapp_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e8f5e9; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.whatsapp_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #c8e6c9; text-align: center; font-weight: 600; border-right: 3px solid #333;"><span style="color: #1b5e20;">' + parseFloat(ind.whatsapp_engagement_score || 0).toFixed(1) + '</span></td>';
                 // Push metrics
-                html += '<td class="metric-cell" style="background: #f8f0ff;">' + parseInt(ind.push_opens || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f8f0ff;">' + parseInt(ind.push_clicks || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #f8f0ff;">' + parseInt(ind.push_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #f3e5f5; text-align: center;">' + parseInt(ind.push_opens || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #f3e5f5; text-align: center;">' + parseInt(ind.push_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #f3e5f5; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.push_deletes || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #e1bee7; text-align: center; font-weight: 600; border-right: 3px solid #333;"><span style="color: #4a148c;">' + parseFloat(ind.push_engagement_score || 0).toFixed(1) + '</span></td>';
                 // Social metrics
-                html += '<td class="metric-cell" style="background: #fff0f5;">' + parseInt(ind.social_views || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #fff0f5;">' + parseInt(ind.social_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fce4ec; text-align: center;">' + parseInt(ind.social_views || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fce4ec; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.social_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #f8bbd0; text-align: center; font-weight: 600; border-right: 3px solid #333;"><span style="color: #ad1457;">' + parseFloat(ind.social_engagement_score || 0).toFixed(1) + '</span></td>';
                 // Website metrics
-                html += '<td class="metric-cell" style="background: #fff8f0;">' + parseInt(ind.website_product_views || 0) + '</td>';
-                html += '<td class="metric-cell" style="background: #fff8f0;">' + parseInt(ind.website_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fff3e0; text-align: center;">' + parseInt(ind.website_product_views || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #fff3e0; text-align: center; border-right: 2px solid #666;">' + parseInt(ind.website_clicks || 0) + '</td>';
+                html += '<td class="metric-cell" style="background: #ffe0b2; text-align: center; font-weight: 600;"><span style="color: #bf360c;">' + parseFloat(ind.website_engagement_score || 0).toFixed(1) + '</span></td>';
                 html += '</tr>';
             });
             
@@ -664,21 +676,47 @@
         }
         
         function exportToCSV() {
-            let csv = 'Name,Omnichannel Score,Preferred Channel,Preferred Time,Email Opens,Email Clicks,SMS Opens,WhatsApp Reads,Push Opens,Website Views,Add to Cart,Order Value\n';
+            let csv = 'Name,Omnichannel Score,Preferred Channel,Preferred Time,';
+            csv += 'Email Opens,Email Clicks,Email Deletes,Email Score,';
+            csv += 'SMS Opens,SMS Clicks,SMS Deletes,SMS Score,';
+            csv += 'WhatsApp Opens,WhatsApp Clicks,WhatsApp Deletes,WhatsApp Score,';
+            csv += 'Push Opens,Push Clicks,Push Deletes,Push Score,';
+            csv += 'Social Views,Social Clicks,Social Score,';
+            csv += 'Website Views,Website Clicks,Website Score\n';
             
             filteredIndividuals.forEach(ind => {
                 csv += '"' + ind.Name + '",';
                 csv += ind.omnichannel_score + ',';
                 csv += ind.preferred_channel + ',';
                 csv += '"' + (ind.preferred_contact_time || 'Not Set') + '",';
-                csv += ind.email_opens + ',';
-                csv += ind.email_clicks + ',';
-                csv += ind.sms_opens + ',';
-                csv += ind.whatsapp_reads + ',';
-                csv += ind.push_opens + ',';
-                csv += ind.website_product_views + ',';
-                csv += ind.website_add_to_cart + ',';
-                csv += ind.total_order_value + '\n';
+                // Email
+                csv += (ind.email_opens || 0) + ',';
+                csv += (ind.email_clicks || 0) + ',';
+                csv += (ind.email_deletes || 0) + ',';
+                csv += (ind.email_engagement_score || 0) + ',';
+                // SMS
+                csv += (ind.sms_opens || 0) + ',';
+                csv += (ind.sms_clicks || 0) + ',';
+                csv += (ind.sms_deletes || 0) + ',';
+                csv += (ind.sms_engagement_score || 0) + ',';
+                // WhatsApp
+                csv += (ind.whatsapp_opens || 0) + ',';
+                csv += (ind.whatsapp_clicks || 0) + ',';
+                csv += (ind.whatsapp_deletes || 0) + ',';
+                csv += (ind.whatsapp_engagement_score || 0) + ',';
+                // Push
+                csv += (ind.push_opens || 0) + ',';
+                csv += (ind.push_clicks || 0) + ',';
+                csv += (ind.push_deletes || 0) + ',';
+                csv += (ind.push_engagement_score || 0) + ',';
+                // Social
+                csv += (ind.social_views || 0) + ',';
+                csv += (ind.social_clicks || 0) + ',';
+                csv += (ind.social_engagement_score || 0) + ',';
+                // Website
+                csv += (ind.website_product_views || 0) + ',';
+                csv += (ind.website_clicks || 0) + ',';
+                csv += (ind.website_engagement_score || 0) + '\n';
             });
             
             // Download
