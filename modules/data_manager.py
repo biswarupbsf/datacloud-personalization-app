@@ -164,10 +164,15 @@ class DataManager:
             
             # Count Individuals
             try:
+                print("DEBUG: Querying Individual count...")
                 individual_count = sf.query("SELECT COUNT() FROM Individual")
+                print(f"DEBUG: Individual query result: {individual_count}")
                 stats['individuals'] = individual_count['totalSize']
+                print(f"DEBUG: Individual count set to: {stats['individuals']}")
             except Exception as e:
-                print(f"Error counting Individuals: {e}")
+                print(f"ERROR counting Individuals: {str(e)}")
+                import traceback
+                traceback.print_exc()
                 stats['individuals'] = 0
             
             # Count UnifiedIndividuals
