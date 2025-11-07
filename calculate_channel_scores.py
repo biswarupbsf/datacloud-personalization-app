@@ -17,9 +17,10 @@ def calculate_channel_scores():
     for individual in engagement_data:
         # Get metrics for each channel (normalize to 0-100 scale)
         
-        # EMAIL SCORE (based on opens, clicks, campaigns engaged)
+        # EMAIL SCORE (based on opens, clicks, deletes, bounces)
         email_opens = int(individual.get('email_opens', 0))
         email_clicks = int(individual.get('email_clicks', 0))
+        email_deletes = int(individual.get('email_deletes', 0))
         email_campaigns = int(individual.get('email_campaigns_received', 0))
         email_bounces = int(individual.get('email_bounces', 0))
         
@@ -27,47 +28,54 @@ def calculate_channel_scores():
             email_open_rate = (email_opens / email_campaigns) * 100
             email_click_rate = (email_clicks / email_campaigns) * 100
             email_bounce_penalty = (email_bounces / email_campaigns) * 20
-            email_score = min(100, (email_open_rate * 0.4 + email_click_rate * 0.6) - email_bounce_penalty)
+            email_delete_penalty = (email_deletes / max(1, email_opens)) * 30  # Deletes as % of opens
+            email_score = min(100, (email_open_rate * 0.3 + email_click_rate * 0.5) - email_bounce_penalty - email_delete_penalty)
         else:
             email_score = 0
         
-        # SMS SCORE (based on opens, clicks, opt-outs)
+        # SMS SCORE (based on opens, clicks, deletes, opt-outs)
         sms_sends = int(individual.get('sms_sends', 0))
         sms_opens = int(individual.get('sms_opens', 0))
         sms_clicks = int(individual.get('sms_clicks', 0))
+        sms_deletes = int(individual.get('sms_deletes', 0))
         sms_optouts = int(individual.get('sms_optouts', 0))
         
         if sms_sends > 0:
             sms_open_rate = (sms_opens / sms_sends) * 100
             sms_click_rate = (sms_clicks / sms_sends) * 100
+            sms_delete_penalty = (sms_deletes / max(1, sms_opens)) * 20  # Deletes as % of opens
             sms_optout_penalty = (sms_optouts / sms_sends) * 50
-            sms_score = min(100, (sms_open_rate * 0.5 + sms_click_rate * 0.5) - sms_optout_penalty)
+            sms_score = min(100, (sms_open_rate * 0.4 + sms_click_rate * 0.5) - sms_delete_penalty - sms_optout_penalty)
         else:
             sms_score = 0
         
-        # WHATSAPP SCORE (based on reads, replies)
+        # WHATSAPP SCORE (based on opens, clicks, deletes, opt-outs)
         whatsapp_sends = int(individual.get('whatsapp_sends', 0))
-        whatsapp_reads = int(individual.get('whatsapp_reads', 0))
-        whatsapp_replies = int(individual.get('whatsapp_replies', 0))
+        whatsapp_opens = int(individual.get('whatsapp_opens', 0))
+        whatsapp_clicks = int(individual.get('whatsapp_clicks', 0))
+        whatsapp_deletes = int(individual.get('whatsapp_deletes', 0))
         whatsapp_optouts = int(individual.get('whatsapp_optouts', 0))
         
         if whatsapp_sends > 0:
-            whatsapp_read_rate = (whatsapp_reads / whatsapp_sends) * 100
-            whatsapp_reply_rate = (whatsapp_replies / whatsapp_sends) * 100
+            whatsapp_open_rate = (whatsapp_opens / whatsapp_sends) * 100
+            whatsapp_click_rate = (whatsapp_clicks / whatsapp_sends) * 100
+            whatsapp_delete_penalty = (whatsapp_deletes / max(1, whatsapp_opens)) * 15  # Lower penalty (WhatsApp has low deletes)
             whatsapp_optout_penalty = (whatsapp_optouts / whatsapp_sends) * 50
-            whatsapp_score = min(100, (whatsapp_read_rate * 0.4 + whatsapp_reply_rate * 0.6) - whatsapp_optout_penalty)
+            whatsapp_score = min(100, (whatsapp_open_rate * 0.3 + whatsapp_click_rate * 0.6) - whatsapp_delete_penalty - whatsapp_optout_penalty)
         else:
             whatsapp_score = 0
         
-        # PUSH SCORE (based on opens, clicks)
+        # PUSH SCORE (based on opens, clicks, deletes)
         push_sends = int(individual.get('push_sends', 0))
         push_opens = int(individual.get('push_opens', 0))
         push_clicks = int(individual.get('push_clicks', 0))
+        push_deletes = int(individual.get('push_deletes', 0))
         
         if push_sends > 0:
             push_open_rate = (push_opens / push_sends) * 100
             push_click_rate = (push_clicks / push_sends) * 100
-            push_score = min(100, push_open_rate * 0.5 + push_click_rate * 0.5)
+            push_delete_penalty = (push_deletes / max(1, push_opens)) * 25  # Push notifications often dismissed
+            push_score = min(100, (push_open_rate * 0.4 + push_click_rate * 0.5) - push_delete_penalty)
         else:
             push_score = 0
         
@@ -82,13 +90,17 @@ def calculate_channel_scores():
         purchase_score = min(100, (website_purchases / 10) * 100)
         website_score = (view_score * 0.3 + cart_score * 0.3 + purchase_score * 0.4)
         
-        # SOCIAL MEDIA SCORE (generate from engagement patterns)
-        # If they engage with email/web, they likely engage with social too
-        social_base = (email_score + website_score) / 2
-        # Add some variance
-        import random
-        social_variance = random.uniform(-20, 20)
-        social_score = max(0, min(100, social_base + social_variance))
+        # SOCIAL MEDIA SCORE (based on views, clicks)
+        social_views = int(individual.get('social_views', 0))
+        social_clicks = int(individual.get('social_clicks', 0))
+        
+        if social_views > 0:
+            # Normalize views (assume 100 views = 100%)
+            social_view_score = min(100, (social_views / 100) * 100)
+            social_click_rate = (social_clicks / social_views) * 100
+            social_score = (social_view_score * 0.4 + social_click_rate * 0.6)
+        else:
+            social_score = 0
         
         # Store channel scores
         individual['email_engagement_score'] = round(email_score, 1)
