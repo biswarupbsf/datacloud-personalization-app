@@ -50,7 +50,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfia4AC",
@@ -103,7 +104,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000TfiZ4AS",
@@ -156,7 +158,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfiT4AS",
@@ -209,7 +212,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfif4AC",
@@ -262,7 +266,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfiL4AS",
@@ -315,7 +320,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Night (10 PM-12 AM)"
   },
   {
     "id": "0PKKX000000Tfij4AC",
@@ -368,7 +374,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Late Night (10 PM-12 AM)"
   },
   {
     "id": "0PKKX000000Tfic4AC",
@@ -421,7 +428,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfii4AC",
@@ -474,7 +482,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfiU4AS",
@@ -527,7 +536,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000TfiY4AS",
@@ -580,7 +590,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfid4AC",
@@ -633,7 +644,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000Tfih4AC",
@@ -686,7 +698,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfie4AC",
@@ -739,7 +752,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000Tfib4AC",
@@ -792,7 +806,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfig4AC",
@@ -845,7 +860,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfiX4AS",
@@ -898,7 +914,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfiK4AS",
@@ -951,7 +968,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfiW4AS",
@@ -1004,7 +1022,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfiV4AS",
@@ -1057,7 +1076,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfik4AC",
@@ -1110,7 +1130,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfj64AC",
@@ -1163,7 +1184,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjO4AS",
@@ -1216,7 +1238,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfio4AC",
@@ -1269,7 +1292,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjA4AS",
@@ -1322,7 +1346,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfiy4AC",
@@ -1375,7 +1400,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjL4AS",
@@ -1428,7 +1454,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfiq4AC",
@@ -1481,7 +1508,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000Tfiv4AC",
@@ -1534,7 +1562,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfj74AC",
@@ -1587,7 +1616,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000TfjB4AS",
@@ -1640,7 +1670,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfim4AC",
@@ -1693,7 +1724,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Early Morning (6-8 AM)"
   },
   {
     "id": "0PKKX000000Tfj24AC",
@@ -1746,7 +1778,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfir4AC",
@@ -1799,7 +1832,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjN4AS",
@@ -1852,7 +1886,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfix4AC",
@@ -1905,7 +1940,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjF4AS",
@@ -1958,7 +1994,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfiz4AC",
@@ -2011,7 +2048,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfip4AC",
@@ -2064,7 +2102,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfin4AC",
@@ -2117,7 +2156,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000TfiQ4AS",
@@ -2170,7 +2210,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Night (10 PM-12 AM)"
   },
   {
     "id": "0PKKX000000TfiO4AS",
@@ -2223,7 +2264,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfj44AC",
@@ -2276,7 +2318,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000TfiN4AS",
@@ -2329,7 +2372,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfil4AC",
@@ -2382,7 +2426,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Night (10 PM-12 AM)"
   },
   {
     "id": "0PKKX000000Tfiu4AC",
@@ -2435,7 +2480,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000TfiP4AS",
@@ -2488,7 +2534,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjP4AS",
@@ -2541,7 +2588,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjD4AS",
@@ -2594,7 +2642,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfjQ4AS",
@@ -2647,7 +2696,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjE4AS",
@@ -2700,7 +2750,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjG4AS",
@@ -2753,7 +2804,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000TfjJ4AS",
@@ -2806,7 +2858,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfit4AC",
@@ -2859,7 +2912,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfiM4AS",
@@ -2912,7 +2966,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfj14AC",
@@ -2965,7 +3020,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfj54AC",
@@ -3018,7 +3074,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfj84AC",
@@ -3071,7 +3128,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000Tfj04AC",
@@ -3124,7 +3182,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjK4AS",
@@ -3177,7 +3236,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjC4AS",
@@ -3230,7 +3290,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000TfjM4AS",
@@ -3283,7 +3344,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfj34AC",
@@ -3336,7 +3398,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjR4AS",
@@ -3389,7 +3452,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000TfjS4AS",
@@ -3442,7 +3506,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfiw4AC",
@@ -3495,7 +3560,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfj94AC",
@@ -3548,7 +3614,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000TfjH4AS",
@@ -3601,7 +3668,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Night (10 PM-12 AM)"
   },
   {
     "id": "0PKKX000000Tfje4AC",
@@ -3654,7 +3722,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfis4AC",
@@ -3707,7 +3776,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfjI4AS",
@@ -3760,7 +3830,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfjg4AC",
@@ -3813,7 +3884,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000TfjT4AS",
@@ -3866,7 +3938,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfjq4AC",
@@ -3919,7 +3992,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000TfjV4AS",
@@ -3972,7 +4046,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjl4AC",
@@ -4025,7 +4100,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjm4AC",
@@ -4078,7 +4154,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfjp4AC",
@@ -4131,7 +4208,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfjb4AC",
@@ -4184,7 +4262,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfjW4AS",
@@ -4237,7 +4316,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfji4AC",
@@ -4290,7 +4370,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000Tfjo4AC",
@@ -4343,7 +4424,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000Tfju4AC",
@@ -4396,7 +4478,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000Tfja4AC",
@@ -4449,7 +4532,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000TfiR4AS",
@@ -4502,7 +4586,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfjh4AC",
@@ -4555,7 +4640,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfjr4AC",
@@ -4608,7 +4694,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjt4AC",
@@ -4661,7 +4748,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfiS4AS",
@@ -4714,7 +4802,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Morning (10-12 PM)"
   },
   {
     "id": "0PKKX000000Tfjj4AC",
@@ -4767,7 +4856,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Lunch Time (12-2 PM)"
   },
   {
     "id": "0PKKX000000Tfjs4AC",
@@ -4820,7 +4910,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "false"
+    "IsActiveDevice": "false",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjn4AC",
@@ -4873,7 +4964,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000Tfjk4AC",
@@ -4926,7 +5018,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Afternoon (2-4 PM)"
   },
   {
     "id": "0PKKX000000TfjZ4AS",
@@ -4979,7 +5072,8 @@
     "MessagingPlatform": "Signal",
     "DeviceType": "Android",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjc4AC",
@@ -5032,7 +5126,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjd4AC",
@@ -5085,7 +5180,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Evening (6-8 PM)"
   },
   {
     "id": "0PKKX000000Tfjf4AC",
@@ -5138,7 +5234,8 @@
     "MessagingPlatform": "WhatsApp",
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Morning (8-10 AM)"
   },
   {
     "id": "0PKKX000000TfjU4AS",
@@ -5191,7 +5288,8 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   },
   {
     "id": "0PKKX000000TfjY4AS",
@@ -5244,7 +5342,8 @@
     "MessagingPlatform": "WeChat",
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Night (8-10 PM)"
   },
   {
     "id": "0PKKX000000TfjX4AS",
@@ -5297,6 +5396,7 @@
     "MessagingPlatform": "Telegram",
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
-    "IsActiveDevice": "true"
+    "IsActiveDevice": "true",
+    "preferred_contact_time": "Late Afternoon (4-6 PM)"
   }
 ]
