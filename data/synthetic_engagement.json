@@ -51,7 +51,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 68.8,
+    "whatsapp_engagement_score": 70.0,
+    "push_engagement_score": 100,
+    "website_engagement_score": 72.3,
+    "social_engagement_score": 77.3,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfia4AC",
@@ -88,7 +95,7 @@
     "push_open_rate": "76.2",
     "total_message_sends": "63",
     "total_message_interactions": "91",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "6.73",
     "FirstName": "Ashish",
     "LastName": "Desai",
@@ -105,7 +112,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 77.1,
+    "whatsapp_engagement_score": 67.8,
+    "push_engagement_score": 69.0,
+    "website_engagement_score": 79.0,
+    "social_engagement_score": 100,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiZ4AS",
@@ -159,7 +173,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 61.1,
+    "whatsapp_engagement_score": 82.7,
+    "push_engagement_score": 51.8,
+    "website_engagement_score": 74.0,
+    "social_engagement_score": 73.6,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiT4AS",
@@ -213,7 +234,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 86.2,
+    "push_engagement_score": 54.0,
+    "website_engagement_score": 66.8,
+    "social_engagement_score": 83.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfif4AC",
@@ -267,7 +295,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 42.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 46.3,
+    "website_engagement_score": 76.5,
+    "social_engagement_score": 100,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiL4AS",
@@ -321,7 +356,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Night (10 PM-12 AM)"
+    "preferred_contact_time": "Late Night (10 PM-12 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 60.9,
+    "whatsapp_engagement_score": 76.0,
+    "push_engagement_score": 51.8,
+    "website_engagement_score": 63.4,
+    "social_engagement_score": 77.7,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfij4AC",
@@ -375,7 +417,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Late Night (10 PM-12 AM)"
+    "preferred_contact_time": "Late Night (10 PM-12 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 56.8,
+    "whatsapp_engagement_score": 80.0,
+    "push_engagement_score": 70.6,
+    "website_engagement_score": 54.5,
+    "social_engagement_score": 76.3,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfic4AC",
@@ -412,7 +461,7 @@
     "push_open_rate": "56.0",
     "total_message_sends": "61",
     "total_message_interactions": "77",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "6.17",
     "FirstName": "Megha",
     "LastName": "Pandey",
@@ -429,7 +478,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 85.7,
+    "whatsapp_engagement_score": 64.0,
+    "push_engagement_score": 44.0,
+    "website_engagement_score": 78.1,
+    "social_engagement_score": 100,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfii4AC",
@@ -483,7 +539,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 66.7,
+    "whatsapp_engagement_score": 34.7,
+    "push_engagement_score": 93.8,
+    "website_engagement_score": 62.6,
+    "social_engagement_score": 87.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiU4AS",
@@ -537,7 +600,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 52.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 100,
+    "website_engagement_score": 49.1,
+    "social_engagement_score": 85.7,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiY4AS",
@@ -591,7 +661,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 73.5,
+    "whatsapp_engagement_score": 62.9,
+    "push_engagement_score": 56.0,
+    "website_engagement_score": 38.4,
+    "social_engagement_score": 59.0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfid4AC",
@@ -645,7 +722,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 78.9,
+    "whatsapp_engagement_score": 49.2,
+    "push_engagement_score": 61.8,
+    "website_engagement_score": 76.1,
+    "social_engagement_score": 69.5,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfih4AC",
@@ -699,7 +783,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 44.7,
+    "whatsapp_engagement_score": 81.7,
+    "push_engagement_score": 55.2,
+    "website_engagement_score": 65.2,
+    "social_engagement_score": 83.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfie4AC",
@@ -753,7 +844,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 35.0,
+    "push_engagement_score": 86.7,
+    "website_engagement_score": 49.0,
+    "social_engagement_score": 71.3,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfib4AC",
@@ -807,7 +905,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 45.5,
+    "whatsapp_engagement_score": 94.0,
+    "push_engagement_score": 77.8,
+    "website_engagement_score": 44.4,
+    "social_engagement_score": 68.8,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfig4AC",
@@ -861,7 +966,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 36.0,
+    "push_engagement_score": 60.0,
+    "website_engagement_score": 60.1,
+    "social_engagement_score": 74.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiX4AS",
@@ -915,7 +1027,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 52.5,
+    "whatsapp_engagement_score": 47.8,
+    "push_engagement_score": 55.0,
+    "website_engagement_score": 50.6,
+    "social_engagement_score": 77.0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiK4AS",
@@ -969,7 +1088,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 75.0,
+    "whatsapp_engagement_score": 41.1,
+    "push_engagement_score": 91.2,
+    "website_engagement_score": 41.1,
+    "social_engagement_score": 89.5,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiW4AS",
@@ -1023,7 +1149,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 57.7,
+    "whatsapp_engagement_score": 42.2,
+    "push_engagement_score": 61.5,
+    "website_engagement_score": 51.7,
+    "social_engagement_score": 79.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiV4AS",
@@ -1077,7 +1210,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 66.7,
+    "whatsapp_engagement_score": 66.0,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 55.7,
+    "social_engagement_score": 71.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfik4AC",
@@ -1131,7 +1271,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 90.0,
+    "push_engagement_score": 25.0,
+    "website_engagement_score": 24.4,
+    "social_engagement_score": 72.3,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfj64AC",
@@ -1168,7 +1315,7 @@
     "push_open_rate": "66.7",
     "total_message_sends": "34",
     "total_message_interactions": "42",
-    "preferred_channel": "Email",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "3.08",
     "FirstName": "Jatin",
     "LastName": "Chatterjee",
@@ -1185,7 +1332,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 60.0,
+    "sms_engagement_score": 59.1,
+    "whatsapp_engagement_score": 96.0,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 28.0,
+    "social_engagement_score": 42.5,
+    "preferred_channel_score": 96.0
   },
   {
     "id": "0PKKX000000TfjO4AS",
@@ -1222,7 +1376,7 @@
     "push_open_rate": "56.2",
     "total_message_sends": "37",
     "total_message_interactions": "40",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "3.04",
     "FirstName": "Bhavna",
     "LastName": "Bose",
@@ -1239,7 +1393,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 65.5,
+    "sms_engagement_score": 65.4,
+    "whatsapp_engagement_score": 52.5,
+    "push_engagement_score": 46.9,
+    "website_engagement_score": 26.8,
+    "social_engagement_score": 54.4,
+    "preferred_channel_score": 65.5
   },
   {
     "id": "0PKKX000000Tfio4AC",
@@ -1293,7 +1454,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 85.0,
+    "sms_engagement_score": 75.0,
+    "whatsapp_engagement_score": 70.0,
+    "push_engagement_score": 68.8,
+    "website_engagement_score": 24.5,
+    "social_engagement_score": 37.8,
+    "preferred_channel_score": 85.0
   },
   {
     "id": "0PKKX000000TfjA4AS",
@@ -1330,7 +1498,7 @@
     "push_open_rate": "75.0",
     "total_message_sends": "24",
     "total_message_interactions": "36",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "2.85",
     "FirstName": "Varsha",
     "LastName": "Dhawan",
@@ -1347,7 +1515,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 69.1,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 64.0,
+    "push_engagement_score": 66.7,
+    "website_engagement_score": 33.1,
+    "social_engagement_score": 64.5,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfiy4AC",
@@ -1401,7 +1576,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 72.2,
+    "whatsapp_engagement_score": 28.0,
+    "push_engagement_score": 70.8,
+    "website_engagement_score": 37.9,
+    "social_engagement_score": 60.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjL4AS",
@@ -1455,7 +1637,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 42.9,
+    "whatsapp_engagement_score": 42.9,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 28.6,
+    "social_engagement_score": 77.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfiq4AC",
@@ -1492,7 +1681,7 @@
     "push_open_rate": "175.0",
     "total_message_sends": "32",
     "total_message_interactions": "42",
-    "preferred_channel": "Email",
+    "preferred_channel": "Push",
     "omnichannel_score": "2.77",
     "FirstName": "Manoj",
     "LastName": "Sharma",
@@ -1509,7 +1698,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 86.7,
+    "sms_engagement_score": 53.6,
+    "whatsapp_engagement_score": 36.0,
+    "push_engagement_score": 100,
+    "website_engagement_score": 30.9,
+    "social_engagement_score": 55.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfiv4AC",
@@ -1563,7 +1759,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 58.6,
+    "sms_engagement_score": 54.5,
+    "whatsapp_engagement_score": 42.5,
+    "push_engagement_score": 57.7,
+    "website_engagement_score": 28.8,
+    "social_engagement_score": 25.7,
+    "preferred_channel_score": 58.6
   },
   {
     "id": "0PKKX000000Tfj74AC",
@@ -1600,7 +1803,7 @@
     "push_open_rate": "100.0",
     "total_message_sends": "34",
     "total_message_interactions": "37",
-    "preferred_channel": "Email",
+    "preferred_channel": "Push",
     "omnichannel_score": "2.62",
     "FirstName": "Varsha",
     "LastName": "Naik",
@@ -1617,7 +1820,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 72.7,
+    "sms_engagement_score": 30.8,
+    "whatsapp_engagement_score": 45.7,
+    "push_engagement_score": 78.6,
+    "website_engagement_score": 22.5,
+    "social_engagement_score": 65.3,
+    "preferred_channel_score": 78.6
   },
   {
     "id": "0PKKX000000TfjB4AS",
@@ -1671,7 +1881,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 95.0,
+    "push_engagement_score": 33.3,
+    "website_engagement_score": 21.1,
+    "social_engagement_score": 64.7,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfim4AC",
@@ -1708,7 +1925,7 @@
     "push_open_rate": "87.5",
     "total_message_sends": "22",
     "total_message_interactions": "33",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "2.6",
     "FirstName": "Ajit",
     "LastName": "Bhatia",
@@ -1725,7 +1942,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Early Morning (6-8 AM)"
+    "preferred_contact_time": "Early Morning (6-8 AM)",
+    "email_engagement_score": 91.1,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 52.5,
+    "push_engagement_score": 62.5,
+    "website_engagement_score": 26.6,
+    "social_engagement_score": 49.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfj24AC",
@@ -1779,7 +2003,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 88.0,
+    "sms_engagement_score": 54.5,
+    "whatsapp_engagement_score": 33.3,
+    "push_engagement_score": 77.8,
+    "website_engagement_score": 25.9,
+    "social_engagement_score": 53.3,
+    "preferred_channel_score": 88.0
   },
   {
     "id": "0PKKX000000Tfir4AC",
@@ -1833,7 +2064,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 80.0,
+    "whatsapp_engagement_score": 66.7,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 18.7,
+    "social_engagement_score": 64.2,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjN4AS",
@@ -1870,7 +2108,7 @@
     "push_open_rate": "37.5",
     "total_message_sends": "31",
     "total_message_interactions": "30",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "2.58",
     "FirstName": "Jatin",
     "LastName": "Singh",
@@ -1887,7 +2125,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 61.5,
+    "sms_engagement_score": 83.3,
+    "whatsapp_engagement_score": 46.7,
+    "push_engagement_score": 31.2,
+    "website_engagement_score": 32.5,
+    "social_engagement_score": 36.0,
+    "preferred_channel_score": 83.3
   },
   {
     "id": "0PKKX000000Tfix4AC",
@@ -1941,7 +2186,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 38.9,
+    "whatsapp_engagement_score": 45.0,
+    "push_engagement_score": 36.1,
+    "website_engagement_score": 26.1,
+    "social_engagement_score": 46.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjF4AS",
@@ -1978,7 +2230,7 @@
     "push_open_rate": "41.7",
     "total_message_sends": "27",
     "total_message_interactions": "31",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "2.45",
     "FirstName": "Dev",
     "LastName": "Inamdar",
@@ -1995,7 +2247,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 55.0,
+    "sms_engagement_score": 75.0,
+    "whatsapp_engagement_score": 42.9,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 25.6,
+    "social_engagement_score": 54.4,
+    "preferred_channel_score": 75.0
   },
   {
     "id": "0PKKX000000Tfiz4AC",
@@ -2049,7 +2308,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 55.0,
+    "whatsapp_engagement_score": 56.0,
+    "push_engagement_score": 66.7,
+    "website_engagement_score": 23.9,
+    "social_engagement_score": 76.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfip4AC",
@@ -2103,7 +2369,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 14.3,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 30.3,
+    "social_engagement_score": 49.0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfin4AC",
@@ -2157,7 +2430,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 62.5,
+    "whatsapp_engagement_score": 50.0,
+    "push_engagement_score": 35.3,
+    "website_engagement_score": 27.5,
+    "social_engagement_score": 48.8,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiQ4AS",
@@ -2211,7 +2491,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Night (10 PM-12 AM)"
+    "preferred_contact_time": "Late Night (10 PM-12 AM)",
+    "email_engagement_score": 60.0,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 42.9,
+    "push_engagement_score": 38.2,
+    "website_engagement_score": 31.3,
+    "social_engagement_score": 38.0,
+    "preferred_channel_score": 60.0
   },
   {
     "id": "0PKKX000000TfiO4AS",
@@ -2248,7 +2535,7 @@
     "push_open_rate": "120.0",
     "total_message_sends": "30",
     "total_message_interactions": "30",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "2.31",
     "FirstName": "Preeti",
     "LastName": "Saxena",
@@ -2265,7 +2552,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 91.4,
+    "sms_engagement_score": 45.0,
+    "whatsapp_engagement_score": 24.0,
+    "push_engagement_score": 75.0,
+    "website_engagement_score": 33.4,
+    "social_engagement_score": 79.3,
+    "preferred_channel_score": 91.4
   },
   {
     "id": "0PKKX000000Tfj44AC",
@@ -2302,7 +2596,7 @@
     "push_open_rate": "76.9",
     "total_message_sends": "33",
     "total_message_interactions": "27",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "2.29",
     "FirstName": "Karan",
     "LastName": "Tandon",
@@ -2319,7 +2613,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 33.3,
+    "push_engagement_score": 61.5,
+    "website_engagement_score": 34.3,
+    "social_engagement_score": 85.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiN4AS",
@@ -2356,7 +2657,7 @@
     "push_open_rate": "62.5",
     "total_message_sends": "28",
     "total_message_interactions": "25",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "2.27",
     "FirstName": "Tanvi",
     "LastName": "Kapoor",
@@ -2373,7 +2674,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 71.1,
+    "sms_engagement_score": 38.5,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 56.2,
+    "website_engagement_score": 28.3,
+    "social_engagement_score": 39.2,
+    "preferred_channel_score": 71.1
   },
   {
     "id": "0PKKX000000Tfil4AC",
@@ -2427,7 +2735,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Night (10 PM-12 AM)"
+    "preferred_contact_time": "Late Night (10 PM-12 AM)",
+    "email_engagement_score": 67.7,
+    "sms_engagement_score": 20.0,
+    "whatsapp_engagement_score": 22.0,
+    "push_engagement_score": 47.2,
+    "website_engagement_score": 28.5,
+    "social_engagement_score": 61.6,
+    "preferred_channel_score": 67.7
   },
   {
     "id": "0PKKX000000Tfiu4AC",
@@ -2464,7 +2779,7 @@
     "push_open_rate": "150.0",
     "total_message_sends": "25",
     "total_message_interactions": "29",
-    "preferred_channel": "Email",
+    "preferred_channel": "Push",
     "omnichannel_score": "2.23",
     "FirstName": "Ajit",
     "LastName": "Roy",
@@ -2481,7 +2796,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 52.9,
+    "sms_engagement_score": 33.3,
+    "whatsapp_engagement_score": 36.0,
+    "push_engagement_score": 100,
+    "website_engagement_score": 29.3,
+    "social_engagement_score": 26.8,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiP4AS",
@@ -2518,7 +2840,7 @@
     "push_open_rate": "42.9",
     "total_message_sends": "12",
     "total_message_interactions": "12",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.88",
     "FirstName": "Payal",
     "LastName": "Thakur",
@@ -2535,7 +2857,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 57.1,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 42.9,
+    "website_engagement_score": 26.3,
+    "social_engagement_score": 51.2,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjP4AS",
@@ -2589,7 +2918,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 22.5,
+    "push_engagement_score": 100,
+    "website_engagement_score": 20.9,
+    "social_engagement_score": 51.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjD4AS",
@@ -2626,7 +2962,7 @@
     "push_open_rate": "300.0",
     "total_message_sends": "5",
     "total_message_interactions": "14",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.59",
     "FirstName": "Priya",
     "LastName": "Hegde",
@@ -2643,7 +2979,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 43.6,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 80.0,
+    "push_engagement_score": 100,
+    "website_engagement_score": 27.6,
+    "social_engagement_score": 25.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjQ4AS",
@@ -2697,7 +3040,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 97.8,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 43.8,
+    "website_engagement_score": 12.4,
+    "social_engagement_score": 65.0,
+    "preferred_channel_score": 97.8
   },
   {
     "id": "0PKKX000000TfjE4AS",
@@ -2751,7 +3101,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 20.0,
+    "website_engagement_score": 24.7,
+    "social_engagement_score": 51.6,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjG4AS",
@@ -2788,7 +3145,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "13",
     "total_message_interactions": "7",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.49",
     "FirstName": "Aarti",
     "LastName": "Krishnan",
@@ -2805,7 +3162,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 38.3,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 24.0,
+    "push_engagement_score": 0.0,
+    "website_engagement_score": 29.8,
+    "social_engagement_score": 32.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjJ4AS",
@@ -2859,7 +3223,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 33.3,
+    "whatsapp_engagement_score": 36.7,
+    "push_engagement_score": 100,
+    "website_engagement_score": 20.8,
+    "social_engagement_score": 47.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfit4AC",
@@ -2913,7 +3284,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 100,
+    "sms_engagement_score": 37.5,
+    "whatsapp_engagement_score": 36.0,
+    "push_engagement_score": 20.0,
+    "website_engagement_score": 22.1,
+    "social_engagement_score": 75.5,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiM4AS",
@@ -2950,7 +3328,7 @@
     "push_open_rate": "22.2",
     "total_message_sends": "15",
     "total_message_interactions": "8",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.39",
     "FirstName": "Rahul",
     "LastName": "Kulkarni",
@@ -2967,7 +3345,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 40.0,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 8.0,
+    "push_engagement_score": 16.7,
+    "website_engagement_score": 30.6,
+    "social_engagement_score": 24.7,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfj14AC",
@@ -3004,7 +3389,7 @@
     "push_open_rate": "55.6",
     "total_message_sends": "15",
     "total_message_interactions": "14",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "1.37",
     "FirstName": "Manish",
     "LastName": "Hegde",
@@ -3021,7 +3406,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 60.0,
+    "sms_engagement_score": 16.7,
+    "whatsapp_engagement_score": 60.0,
+    "push_engagement_score": 44.4,
+    "website_engagement_score": 27.6,
+    "social_engagement_score": 46.6,
+    "preferred_channel_score": 60.0
   },
   {
     "id": "0PKKX000000Tfj54AC",
@@ -3058,7 +3450,7 @@
     "push_open_rate": "50.0",
     "total_message_sends": "15",
     "total_message_interactions": "13",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.37",
     "FirstName": "Dinesh",
     "LastName": "Patil",
@@ -3075,7 +3467,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 55.4,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 20.0,
+    "push_engagement_score": 35.0,
+    "website_engagement_score": 19.0,
+    "social_engagement_score": 25.0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfj84AC",
@@ -3129,7 +3528,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 52.7,
+    "sms_engagement_score": 16.7,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 11.1,
+    "website_engagement_score": 23.9,
+    "social_engagement_score": 28.9,
+    "preferred_channel_score": 52.7
   },
   {
     "id": "0PKKX000000Tfj04AC",
@@ -3166,7 +3572,7 @@
     "push_open_rate": "50.0",
     "total_message_sends": "12",
     "total_message_interactions": "10",
-    "preferred_channel": "Email",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "1.34",
     "FirstName": "Amit",
     "LastName": "Rao",
@@ -3183,7 +3589,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 42.9,
+    "sms_engagement_score": 40.0,
+    "whatsapp_engagement_score": 60.0,
+    "push_engagement_score": 41.7,
+    "website_engagement_score": 23.0,
+    "social_engagement_score": 17.6,
+    "preferred_channel_score": 60.0
   },
   {
     "id": "0PKKX000000TfjK4AS",
@@ -3220,7 +3633,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "8",
     "total_message_interactions": "8",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.28",
     "FirstName": "Rekha",
     "LastName": "Shah",
@@ -3237,7 +3650,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 36.7,
+    "sms_engagement_score": 40.0,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 33.3,
+    "website_engagement_score": 17.0,
+    "social_engagement_score": 9.9,
+    "preferred_channel_score": 40.0
   },
   {
     "id": "0PKKX000000TfjC4AS",
@@ -3274,7 +3694,7 @@
     "push_open_rate": "60.0",
     "total_message_sends": "11",
     "total_message_interactions": "11",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "1.27",
     "FirstName": "Ankit",
     "LastName": "Tandon",
@@ -3291,7 +3711,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 47.7,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 30.0,
+    "push_engagement_score": 40.0,
+    "website_engagement_score": 19.6,
+    "social_engagement_score": 38.4,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjM4AS",
@@ -3328,7 +3755,7 @@
     "push_open_rate": "22.2",
     "total_message_sends": "17",
     "total_message_interactions": "6",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "1.27",
     "FirstName": "Kunal",
     "LastName": "Mukherjee",
@@ -3345,7 +3772,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 43.6,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 15.0,
+    "push_engagement_score": 16.7,
+    "website_engagement_score": 24.8,
+    "social_engagement_score": 24.5,
+    "preferred_channel_score": 43.6
   },
   {
     "id": "0PKKX000000Tfj34AC",
@@ -3382,7 +3816,7 @@
     "push_open_rate": "66.7",
     "total_message_sends": "12",
     "total_message_interactions": "9",
-    "preferred_channel": "Email",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "1.25",
     "FirstName": "Ankit",
     "LastName": "Uppal",
@@ -3399,7 +3833,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 48.0,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 80.0,
+    "push_engagement_score": 33.3,
+    "website_engagement_score": 17.9,
+    "social_engagement_score": 35.3,
+    "preferred_channel_score": 80.0
   },
   {
     "id": "0PKKX000000TfjR4AS",
@@ -3453,7 +3894,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 66.7,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 16.0,
+    "push_engagement_score": 30.0,
+    "website_engagement_score": 21.8,
+    "social_engagement_score": 39.6,
+    "preferred_channel_score": 66.7
   },
   {
     "id": "0PKKX000000TfjS4AS",
@@ -3507,7 +3955,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 55.0,
+    "sms_engagement_score": 37.5,
+    "whatsapp_engagement_score": 20.0,
+    "push_engagement_score": 18.8,
+    "website_engagement_score": 18.8,
+    "social_engagement_score": 19.0,
+    "preferred_channel_score": 55.0
   },
   {
     "id": "0PKKX000000Tfiw4AC",
@@ -3544,7 +3999,7 @@
     "push_open_rate": "75.0",
     "total_message_sends": "12",
     "total_message_interactions": "7",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "1.15",
     "FirstName": "Jatin",
     "LastName": "Hegde",
@@ -3561,7 +4016,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 72.0,
+    "sms_engagement_score": 10.0,
+    "whatsapp_engagement_score": 0.0,
+    "push_engagement_score": 62.5,
+    "website_engagement_score": 30.7,
+    "social_engagement_score": 54.3,
+    "preferred_channel_score": 72.0
   },
   {
     "id": "0PKKX000000Tfj94AC",
@@ -3598,7 +4060,7 @@
     "push_open_rate": "80.0",
     "total_message_sends": "11",
     "total_message_interactions": "7",
-    "preferred_channel": "Website",
+    "preferred_channel": "Email",
     "omnichannel_score": "0.97",
     "FirstName": "Vivek",
     "LastName": "Krishnan",
@@ -3615,7 +4077,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 42.2,
+    "sms_engagement_score": 0.0,
+    "whatsapp_engagement_score": 25.0,
+    "push_engagement_score": 40.0,
+    "website_engagement_score": 24.8,
+    "social_engagement_score": 29.5,
+    "preferred_channel_score": 42.2
   },
   {
     "id": "0PKKX000000TfjH4AS",
@@ -3652,7 +4121,7 @@
     "push_open_rate": "66.7",
     "total_message_sends": "11",
     "total_message_interactions": "8",
-    "preferred_channel": "Email",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.97",
     "FirstName": "Seema",
     "LastName": "Varma",
@@ -3669,7 +4138,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Night (10 PM-12 AM)"
+    "preferred_contact_time": "Late Night (10 PM-12 AM)",
+    "email_engagement_score": 38.0,
+    "sms_engagement_score": 0.0,
+    "whatsapp_engagement_score": 60.0,
+    "push_engagement_score": 33.3,
+    "website_engagement_score": 14.2,
+    "social_engagement_score": 17.9,
+    "preferred_channel_score": 60.0
   },
   {
     "id": "0PKKX000000Tfje4AC",
@@ -3723,7 +4199,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 10.7,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 41.7,
+    "website_engagement_score": 5.2,
+    "social_engagement_score": 21.6,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfis4AC",
@@ -3777,7 +4260,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 47.7,
+    "sms_engagement_score": 10.0,
+    "whatsapp_engagement_score": 30.0,
+    "push_engagement_score": 10.0,
+    "website_engagement_score": 15.7,
+    "social_engagement_score": 15.2,
+    "preferred_channel_score": 47.7
   },
   {
     "id": "0PKKX000000TfjI4AS",
@@ -3814,7 +4304,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "11",
     "total_message_interactions": "11",
-    "preferred_channel": "Email",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.93",
     "FirstName": "Rekha",
     "LastName": "Ahmed",
@@ -3831,7 +4321,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 38.0,
+    "sms_engagement_score": 62.5,
+    "whatsapp_engagement_score": 90.0,
+    "push_engagement_score": 16.7,
+    "website_engagement_score": 17.8,
+    "social_engagement_score": 39.9,
+    "preferred_channel_score": 90.0
   },
   {
     "id": "0PKKX000000Tfjg4AC",
@@ -3868,7 +4365,7 @@
     "push_open_rate": "62.5",
     "total_message_sends": "15",
     "total_message_interactions": "14",
-    "preferred_channel": "Push",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.9",
     "FirstName": "Vishal",
     "LastName": "Bhatt",
@@ -3885,7 +4382,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 15.7,
+    "sms_engagement_score": 16.7,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 8.8,
+    "social_engagement_score": 18.3,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjT4AS",
@@ -3922,7 +4426,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "12",
     "total_message_interactions": "10",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.86",
     "FirstName": "Bhavna",
     "LastName": "Thakur",
@@ -3939,7 +4443,14 @@
     "DeviceType": "Web",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 16.7,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 5.0,
+    "website_engagement_score": 9.7,
+    "social_engagement_score": 4.6,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfjq4AC",
@@ -3993,7 +4504,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 33.3,
+    "sms_engagement_score": 10.0,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 12.5,
+    "website_engagement_score": 8.5,
+    "social_engagement_score": 31.9,
+    "preferred_channel_score": 40.0
   },
   {
     "id": "0PKKX000000TfjV4AS",
@@ -4030,7 +4548,7 @@
     "push_open_rate": "66.7",
     "total_message_sends": "11",
     "total_message_interactions": "13",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.8",
     "FirstName": "Tanvi",
     "LastName": "Agnihotri",
@@ -4047,7 +4565,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 16.7,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 9.1,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 50.0
   },
   {
     "id": "0PKKX000000Tfjl4AC",
@@ -4084,7 +4609,7 @@
     "push_open_rate": "83.3",
     "total_message_sends": "14",
     "total_message_interactions": "15",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.78",
     "FirstName": "Siddharth",
     "LastName": "Yadav",
@@ -4101,7 +4626,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 10.0,
+    "sms_engagement_score": 62.5,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 58.3,
+    "website_engagement_score": 3.6,
+    "social_engagement_score": 13.6,
+    "preferred_channel_score": 62.5
   },
   {
     "id": "0PKKX000000Tfjm4AC",
@@ -4138,7 +4670,7 @@
     "push_open_rate": "66.7",
     "total_message_sends": "12",
     "total_message_interactions": "11",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.77",
     "FirstName": "Sonal",
     "LastName": "Saxena",
@@ -4155,7 +4687,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 12.0,
+    "sms_engagement_score": 33.3,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 33.3,
+    "website_engagement_score": 12.1,
+    "social_engagement_score": 26.4,
+    "preferred_channel_score": 33.3
   },
   {
     "id": "0PKKX000000Tfjp4AC",
@@ -4192,7 +4731,7 @@
     "push_open_rate": "75.0",
     "total_message_sends": "14",
     "total_message_interactions": "12",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "Push",
     "omnichannel_score": "0.75",
     "FirstName": "Vivek",
     "LastName": "Pandey",
@@ -4209,7 +4748,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 4.0,
+    "sms_engagement_score": 10.0,
+    "whatsapp_engagement_score": 48.0,
+    "push_engagement_score": 62.5,
+    "website_engagement_score": 8.5,
+    "social_engagement_score": 16.2,
+    "preferred_channel_score": 62.5
   },
   {
     "id": "0PKKX000000Tfjb4AC",
@@ -4263,7 +4809,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 14.5,
+    "sms_engagement_score": 30.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 100,
+    "website_engagement_score": 7.2,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjW4AS",
@@ -4317,7 +4870,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 33.3,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 66.7,
+    "website_engagement_score": 3.3,
+    "social_engagement_score": 19.9,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfji4AC",
@@ -4354,7 +4914,7 @@
     "push_open_rate": "20.0",
     "total_message_sends": "14",
     "total_message_interactions": "8",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.7",
     "FirstName": "Tarun",
     "LastName": "Agarwal",
@@ -4371,7 +4931,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 20.0,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 23.3,
+    "push_engagement_score": 10.0,
+    "website_engagement_score": 4.0,
+    "social_engagement_score": 2.0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfjo4AC",
@@ -4408,7 +4975,7 @@
     "push_open_rate": "150.0",
     "total_message_sends": "10",
     "total_message_interactions": "6",
-    "preferred_channel": "Website",
+    "preferred_channel": "Push",
     "omnichannel_score": "0.69",
     "FirstName": "Priya",
     "LastName": "Menon",
@@ -4425,7 +4992,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 20.0,
+    "sms_engagement_score": 0.0,
+    "whatsapp_engagement_score": 30.0,
+    "push_engagement_score": 100,
+    "website_engagement_score": 8.2,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfju4AC",
@@ -4462,7 +5036,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "9",
     "total_message_interactions": "10",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.65",
     "FirstName": "Naveen",
     "LastName": "Dewan",
@@ -4479,7 +5053,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 0.0,
+    "sms_engagement_score": 75.0,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 0.0,
+    "website_engagement_score": 5.5,
+    "social_engagement_score": 12.5,
+    "preferred_channel_score": 75.0
   },
   {
     "id": "0PKKX000000Tfja4AC",
@@ -4533,7 +5114,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 26.7,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 40.0,
+    "push_engagement_score": 15.0,
+    "website_engagement_score": 1.8,
+    "social_engagement_score": 22.6,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiR4AS",
@@ -4570,7 +5158,7 @@
     "push_open_rate": "40.0",
     "total_message_sends": "17",
     "total_message_interactions": "14",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.63",
     "FirstName": "Aarti",
     "LastName": "Tripathi",
@@ -4587,7 +5175,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 10.0,
+    "sms_engagement_score": 75.0,
+    "whatsapp_engagement_score": 36.0,
+    "push_engagement_score": 30.0,
+    "website_engagement_score": 8.2,
+    "social_engagement_score": 28.8,
+    "preferred_channel_score": 75.0
   },
   {
     "id": "0PKKX000000Tfjh4AC",
@@ -4624,7 +5219,7 @@
     "push_open_rate": "14.3",
     "total_message_sends": "12",
     "total_message_interactions": "6",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.59",
     "FirstName": "Manish",
     "LastName": "Reddy",
@@ -4641,7 +5236,14 @@
     "DeviceType": "iOS",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 35.0,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 26.7,
+    "push_engagement_score": 14.3,
+    "website_engagement_score": 7.2,
+    "social_engagement_score": 30.5,
+    "preferred_channel_score": 50.0
   },
   {
     "id": "0PKKX000000Tfjr4AC",
@@ -4678,7 +5280,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "17",
     "total_message_interactions": "8",
-    "preferred_channel": "SMS",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.59",
     "FirstName": "Tanvi",
     "LastName": "Choudhary",
@@ -4695,7 +5297,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 7.5,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 60.0,
+    "push_engagement_score": 0.0,
+    "website_engagement_score": 5.1,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 60.0
   },
   {
     "id": "0PKKX000000Tfjt4AC",
@@ -4732,7 +5341,7 @@
     "push_open_rate": "60.0",
     "total_message_sends": "13",
     "total_message_interactions": "12",
-    "preferred_channel": "Push",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.55",
     "FirstName": "Swati",
     "LastName": "Varma",
@@ -4749,7 +5358,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 10.9,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 50.0,
+    "push_engagement_score": 35.0,
+    "website_engagement_score": 2.7,
+    "social_engagement_score": 2.1,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfiS4AS",
@@ -4803,7 +5419,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Morning (10-12 PM)"
+    "preferred_contact_time": "Late Morning (10-12 PM)",
+    "email_engagement_score": 18.0,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": -25.0,
+    "push_engagement_score": 28.6,
+    "website_engagement_score": 1.2,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 50.0
   },
   {
     "id": "0PKKX000000Tfjj4AC",
@@ -4857,7 +5480,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.23.2",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Lunch Time (12-2 PM)"
+    "preferred_contact_time": "Lunch Time (12-2 PM)",
+    "email_engagement_score": 6.7,
+    "sms_engagement_score": 8.3,
+    "whatsapp_engagement_score": 70.0,
+    "push_engagement_score": 87.5,
+    "website_engagement_score": 6.0,
+    "social_engagement_score": 23.5,
+    "preferred_channel_score": 87.5
   },
   {
     "id": "0PKKX000000Tfjs4AC",
@@ -4911,7 +5541,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "false",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 6.7,
+    "sms_engagement_score": 0.0,
+    "whatsapp_engagement_score": 45.0,
+    "push_engagement_score": 28.6,
+    "website_engagement_score": 2.4,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 45.0
   },
   {
     "id": "0PKKX000000Tfjn4AC",
@@ -4948,7 +5585,7 @@
     "push_open_rate": "25.0",
     "total_message_sends": "16",
     "total_message_interactions": "8",
-    "preferred_channel": "Website",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.47",
     "FirstName": "Seema",
     "LastName": "Verma",
@@ -4965,7 +5602,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 8.3,
+    "sms_engagement_score": 20.0,
+    "whatsapp_engagement_score": 33.3,
+    "push_engagement_score": 18.8,
+    "website_engagement_score": 9.1,
+    "social_engagement_score": 5.8,
+    "preferred_channel_score": 33.3
   },
   {
     "id": "0PKKX000000Tfjk4AC",
@@ -5019,7 +5663,14 @@
     "DeviceType": "Android",
     "AppVersion": "3.0.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Afternoon (2-4 PM)"
+    "preferred_contact_time": "Afternoon (2-4 PM)",
+    "email_engagement_score": 8.9,
+    "sms_engagement_score": 30.0,
+    "whatsapp_engagement_score": 30.0,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 6.1,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 50.0
   },
   {
     "id": "0PKKX000000TfjZ4AS",
@@ -5056,7 +5707,7 @@
     "push_open_rate": "11.1",
     "total_message_sends": "16",
     "total_message_interactions": "4",
-    "preferred_channel": "Email",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.43",
     "FirstName": "Nisha",
     "LastName": "Ahmed",
@@ -5073,7 +5724,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 10.0,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 8.0,
+    "push_engagement_score": 11.1,
+    "website_engagement_score": 4.6,
+    "social_engagement_score": 10.8,
+    "preferred_channel_score": 25.0
   },
   {
     "id": "0PKKX000000Tfjc4AC",
@@ -5110,7 +5768,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "14",
     "total_message_interactions": "4",
-    "preferred_channel": "Website",
+    "preferred_channel": "Push",
     "omnichannel_score": "0.43",
     "FirstName": "Kapil",
     "LastName": "Gupta",
@@ -5127,7 +5785,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 8.3,
+    "sms_engagement_score": 12.5,
+    "whatsapp_engagement_score": 0.0,
+    "push_engagement_score": 18.8,
+    "website_engagement_score": 4.6,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 18.8
   },
   {
     "id": "0PKKX000000Tfjd4AC",
@@ -5164,7 +5829,7 @@
     "push_open_rate": "50.0",
     "total_message_sends": "5",
     "total_message_interactions": "8",
-    "preferred_channel": "Website",
+    "preferred_channel": "SMS",
     "omnichannel_score": "0.43",
     "FirstName": "Shreya",
     "LastName": "Raman",
@@ -5181,7 +5846,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Evening (6-8 PM)"
+    "preferred_contact_time": "Evening (6-8 PM)",
+    "email_engagement_score": 2.5,
+    "sms_engagement_score": 100,
+    "whatsapp_engagement_score": 0,
+    "push_engagement_score": 50.0,
+    "website_engagement_score": 8.5,
+    "social_engagement_score": 21.8,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000Tfjf4AC",
@@ -5218,7 +5890,7 @@
     "push_open_rate": "100.0",
     "total_message_sends": "14",
     "total_message_interactions": "11",
-    "preferred_channel": "WhatsApp",
+    "preferred_channel": "Push",
     "omnichannel_score": "0.36",
     "FirstName": "Nidhi",
     "LastName": "Kamath",
@@ -5235,7 +5907,14 @@
     "DeviceType": "iOS",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Morning (8-10 AM)"
+    "preferred_contact_time": "Morning (8-10 AM)",
+    "email_engagement_score": 5.7,
+    "sms_engagement_score": 16.7,
+    "whatsapp_engagement_score": 35.0,
+    "push_engagement_score": 62.5,
+    "website_engagement_score": 0.0,
+    "social_engagement_score": 9.9,
+    "preferred_channel_score": 62.5
   },
   {
     "id": "0PKKX000000TfjU4AS",
@@ -5272,7 +5951,7 @@
     "push_open_rate": "40.0",
     "total_message_sends": "9",
     "total_message_interactions": "8",
-    "preferred_channel": "Website",
+    "preferred_channel": "WhatsApp",
     "omnichannel_score": "0.35",
     "FirstName": "Nidhi",
     "LastName": "Naidu",
@@ -5289,7 +5968,14 @@
     "DeviceType": "Android",
     "AppVersion": "2.24.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 4.0,
+    "sms_engagement_score": 50.0,
+    "whatsapp_engagement_score": 100,
+    "push_engagement_score": 20.0,
+    "website_engagement_score": 6.1,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 100
   },
   {
     "id": "0PKKX000000TfjY4AS",
@@ -5343,7 +6029,14 @@
     "DeviceType": "Web",
     "AppVersion": "2.24.0",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Night (8-10 PM)"
+    "preferred_contact_time": "Night (8-10 PM)",
+    "email_engagement_score": 1.5,
+    "sms_engagement_score": 25.0,
+    "whatsapp_engagement_score": 20.0,
+    "push_engagement_score": 38.9,
+    "website_engagement_score": 5.1,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 38.9
   },
   {
     "id": "0PKKX000000TfjX4AS",
@@ -5380,7 +6073,7 @@
     "push_open_rate": "0.0",
     "total_message_sends": "10",
     "total_message_interactions": "4",
-    "preferred_channel": "Email",
+    "preferred_channel": "Push",
     "omnichannel_score": "0.09",
     "FirstName": "Nikhil",
     "LastName": "Qureshi",
@@ -5397,6 +6090,13 @@
     "DeviceType": "Web",
     "AppVersion": "2.23.1",
     "IsActiveDevice": "true",
-    "preferred_contact_time": "Late Afternoon (4-6 PM)"
+    "preferred_contact_time": "Late Afternoon (4-6 PM)",
+    "email_engagement_score": 10.0,
+    "sms_engagement_score": 12.5,
+    "whatsapp_engagement_score": 13.3,
+    "push_engagement_score": 16.7,
+    "website_engagement_score": 1.5,
+    "social_engagement_score": 0,
+    "preferred_channel_score": 16.7
   }
 ]

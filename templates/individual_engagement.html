@@ -126,18 +126,22 @@
         }
         
         .channel-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 16px;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
         }
         
-        .channel-email { background: #e3f2fd; color: #1976d2; }
-        .channel-sms { background: #fce4ec; color: #c2185b; }
-        .channel-whatsapp { background: #e8f5e9; color: #2e7d32; }
-        .channel-push { background: #f3e5f5; color: #7b1fa2; }
-        .channel-website { background: #fff3e0; color: #e65100; }
+        .channel-email { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); color: #1565c0; border: 1px solid #90caf9; }
+        .channel-sms { background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%); color: #ad1457; border: 1px solid #f48fb1; }
+        .channel-whatsapp { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #1b5e20; border: 1px solid #81c784; }
+        .channel-push { background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); color: #6a1b9a; border: 1px solid #ba68c8; }
+        .channel-website { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #e65100; border: 1px solid #ffb74d; }
+        .channel-social { background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%); color: #c2185b; border: 1px solid #ec407a; }
         
         .metric-cell {
             text-align: center;
@@ -271,11 +275,12 @@
                     <label>Preferred Channel</label>
                     <select id="filterChannel" onchange="applyFilters()">
                         <option value="">All Channels</option>
-                        <option value="Email">Email</option>
-                        <option value="SMS">SMS</option>
-                        <option value="WhatsApp">WhatsApp</option>
-                        <option value="Push">Push</option>
-                        <option value="Website">Website</option>
+                        <option value="Email">📧 Email</option>
+                        <option value="SMS">📱 SMS</option>
+                        <option value="WhatsApp">💬 WhatsApp</option>
+                        <option value="Push">🔔 Push</option>
+                        <option value="Website">🌐 Website</option>
+                        <option value="Social">👥 Social</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -426,12 +431,24 @@
             filteredIndividuals.forEach(ind => {
                 const scoreValue = parseFloat(ind.omnichannel_score || 0);
                 const scoreClass = scoreValue >= 7 ? 'score-high' : (scoreValue >= 5 ? 'score-medium' : 'score-low');
-                const channelClass = 'channel-' + (ind.preferred_channel || 'email').toLowerCase();
+                const channelName = ind.preferred_channel || 'Email';
+                const channelClass = 'channel-' + channelName.toLowerCase();
+                
+                // Get channel icon
+                const channelIcons = {
+                    'Email': '📧',
+                    'SMS': '📱',
+                    'WhatsApp': '💬',
+                    'Push': '🔔',
+                    'Website': '🌐',
+                    'Social': '👥'
+                };
+                const channelIcon = channelIcons[channelName] || '📧';
                 
                 html += '<tr onclick="showIndividualDetails(\'' + ind.Id + '\')">';
                 html += '<td><strong>' + (ind.Name || '') + '</strong></td>';
                 html += '<td class="metric-cell"><span class="score-badge ' + scoreClass + '">' + scoreValue.toFixed(1) + '</span></td>';
-                html += '<td class="metric-cell"><span class="channel-badge ' + channelClass + '">' + (ind.preferred_channel || 'Email') + '</span></td>';
+                html += '<td class="metric-cell"><span class="channel-badge ' + channelClass + '">' + channelIcon + ' ' + channelName + '</span></td>';
                 html += '<td class="metric-cell"><span style="font-size: 11px; padding: 4px 8px; background: #f0f4ff; color: #4263eb; border-radius: 12px; display: inline-block;">' + (ind.preferred_contact_time || 'Not Set') + '</span></td>';
                 html += '<td class="metric-cell">' + parseInt(ind.email_opens || 0) + '</td>';
                 html += '<td class="metric-cell">' + parseInt(ind.email_clicks || 0) + '</td>';
@@ -470,6 +487,34 @@
             html += '<div style="font-size: 48px; font-weight: bold;">' + ind.omnichannel_score.toFixed(1) + '/10</div>';
             html += '<div style="opacity: 0.9;">📱 Preferred Channel: ' + ind.preferred_channel + '</div>';
             html += '<div style="opacity: 0.9;">🕐 Best Time to Contact: ' + (ind.preferred_contact_time || 'Not Set') + '</div>';
+            html += '</div>';
+            
+            // Channel Engagement Scores
+            html += '<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">';
+            html += '<h3 style="margin: 0 0 15px 0; color: #333;">📊 Channel Engagement Scores</h3>';
+            
+            const channelScores = [
+                { name: 'Email', icon: '📧', score: ind.email_engagement_score || 0, color: '#1565c0' },
+                { name: 'SMS', icon: '📱', score: ind.sms_engagement_score || 0, color: '#ad1457' },
+                { name: 'WhatsApp', icon: '💬', score: ind.whatsapp_engagement_score || 0, color: '#1b5e20' },
+                { name: 'Push', icon: '🔔', score: ind.push_engagement_score || 0, color: '#6a1b9a' },
+                { name: 'Website', icon: '🌐', score: ind.website_engagement_score || 0, color: '#e65100' },
+                { name: 'Social', icon: '👥', score: ind.social_engagement_score || 0, color: '#c2185b' }
+            ];
+            
+            channelScores.forEach(channel => {
+                const isPreferred = channel.name === ind.preferred_channel;
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">';
+                html += '<span style="font-size: 13px; font-weight: ' + (isPreferred ? 'bold' : '500') + ';">' + channel.icon + ' ' + channel.name + (isPreferred ? ' ⭐' : '') + '</span>';
+                html += '<span style="font-size: 13px; font-weight: 600; color: ' + channel.color + ';">' + channel.score.toFixed(1) + '/100</span>';
+                html += '</div>';
+                html += '<div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">';
+                html += '<div style="background: ' + channel.color + '; height: 100%; width: ' + channel.score + '%; transition: width 0.3s;"></div>';
+                html += '</div>';
+                html += '</div>';
+            });
+            
             html += '</div>';
             
             html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">';
