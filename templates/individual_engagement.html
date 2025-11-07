@@ -256,9 +256,10 @@
     {% include 'sidebar.html' %}
     
     <div class="main-content">
-        <div class="header" style="margin-bottom: 15px;">
-            <h1 style="margin-bottom: 5px; font-size: 28px;">🎯 Individual Engagement Dashboard</h1>
-            <p style="margin: 0; color: #666; font-size: 14px;">Detailed omnichannel engagement metrics for all individuals</p>
+        <!-- Header Section -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px 30px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);">
+            <h1 style="margin: 0 0 8px 0; font-size: 32px; color: white; font-weight: 700;">🎯 Individual Engagement Dashboard</h1>
+            <p style="margin: 0; color: rgba(255, 255, 255, 0.95); font-size: 15px;">Detailed omnichannel engagement metrics for all individuals</p>
         </div>
         
         <div id="loadingOverlay" class="loading-overlay" style="display: none;">
@@ -269,8 +270,10 @@
             </div>
         </div>
         
-        <!-- Summary Stats (Always Visible) -->
-        <div class="stats-grid">
+        <!-- Summary Stats Section -->
+        <div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+            <h2 style="margin: 0 0 20px 0; font-size: 20px; color: #333; font-weight: 700;">📊 Summary Metrics</h2>
+            <div class="stats-grid">
             <div class="stat-card-small">
                 <h4>Total Individuals</h4>
                 <div class="value" id="totalIndividuals">0</div>
@@ -328,6 +331,7 @@
                 <div class="value" id="totalWebsiteClicks">0</div>
             </div>
         </div>
+        </div> <!-- End Summary Stats Section -->
         
         <!-- Main Content (Filters & Table) -->
         <div id="mainContent" style="display: none;">
