@@ -162,10 +162,10 @@ class DataManager:
             except:
                 stats['opportunities'] = 0
             
-            # Count Individuals
+            # Count Individuals (Data Cloud object)
             try:
-                print("DEBUG: Querying Individual count...")
-                individual_count = sf.query("SELECT COUNT() FROM Individual")
+                print("DEBUG: Querying Individual count from ssot__Individual__dlm...")
+                individual_count = sf.query("SELECT COUNT() FROM ssot__Individual__dlm")
                 print(f"DEBUG: Individual query result: {individual_count}")
                 stats['individuals'] = individual_count['totalSize']
                 print(f"DEBUG: Individual count set to: {stats['individuals']}")
