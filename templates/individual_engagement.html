@@ -235,8 +235,7 @@
             </div>
         </div>
         
-        <!-- Summary Stats -->
-        <div id="mainContent" style="display: none;">
+        <!-- Summary Stats (Always Visible) -->
         <div class="stats-grid">
             <div class="stat-card-small">
                 <h4>Total Individuals</h4>
@@ -247,23 +246,57 @@
                 <div class="value" id="avgEngagement">0</div>
             </div>
             <div class="stat-card-small">
-                <h4>Total Email Opens</h4>
+                <h4>✉️ Total Email Opens</h4>
                 <div class="value" id="totalEmailOpens">0</div>
             </div>
             <div class="stat-card-small">
-                <h4>Total SMS Opens</h4>
+                <h4>✉️ Total Email Clicks</h4>
+                <div class="value" id="totalEmailClicks">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>💬 Total SMS Opens</h4>
                 <div class="value" id="totalSMSOpens">0</div>
             </div>
             <div class="stat-card-small">
-                <h4>Total WhatsApp Reads</h4>
-                <div class="value" id="totalWhatsAppReads">0</div>
+                <h4>💬 Total SMS Clicks</h4>
+                <div class="value" id="totalSMSClicks">0</div>
             </div>
             <div class="stat-card-small">
-                <h4>Total Website Actions</h4>
-                <div class="value" id="totalWebActions">0</div>
+                <h4>📞 Total WhatsApp Opens</h4>
+                <div class="value" id="totalWhatsAppOpens">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>📞 Total WhatsApp Clicks</h4>
+                <div class="value" id="totalWhatsAppClicks">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>🔔 Total Push Opens</h4>
+                <div class="value" id="totalPushOpens">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>🔔 Total Push Clicks</h4>
+                <div class="value" id="totalPushClicks">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>👥 Total Social Views</h4>
+                <div class="value" id="totalSocialViews">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>👥 Total Social Clicks</h4>
+                <div class="value" id="totalSocialClicks">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>🌐 Total Website Views</h4>
+                <div class="value" id="totalWebsiteViews">0</div>
+            </div>
+            <div class="stat-card-small">
+                <h4>🌐 Total Website Clicks</h4>
+                <div class="value" id="totalWebsiteClicks">0</div>
             </div>
         </div>
         
+        <!-- Main Content (Filters & Table) -->
+        <div id="mainContent" style="display: none;">
         <!-- Filters -->
         <div class="filters-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -414,17 +447,41 @@
             const avgEng = (allIndividuals.reduce((sum, ind) => sum + parseFloat(ind.engagement_score || 0), 0) / allIndividuals.length).toFixed(1);
             document.getElementById('avgEngagement').textContent = avgEng;
             
+            // Email stats
             const totalEmailOpens = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.email_opens || 0), 0);
             document.getElementById('totalEmailOpens').textContent = totalEmailOpens.toLocaleString();
+            const totalEmailClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.email_clicks || 0), 0);
+            document.getElementById('totalEmailClicks').textContent = totalEmailClicks.toLocaleString();
             
-            const totalSMS = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.sms_opens || 0), 0);
-            document.getElementById('totalSMSOpens').textContent = totalSMS.toLocaleString();
+            // SMS stats
+            const totalSMSOpens = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.sms_opens || 0), 0);
+            document.getElementById('totalSMSOpens').textContent = totalSMSOpens.toLocaleString();
+            const totalSMSClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.sms_clicks || 0), 0);
+            document.getElementById('totalSMSClicks').textContent = totalSMSClicks.toLocaleString();
             
-            const totalWhatsApp = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.whatsapp_reads || 0), 0);
-            document.getElementById('totalWhatsAppReads').textContent = totalWhatsApp.toLocaleString();
+            // WhatsApp stats
+            const totalWhatsAppOpens = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.whatsapp_opens || 0), 0);
+            document.getElementById('totalWhatsAppOpens').textContent = totalWhatsAppOpens.toLocaleString();
+            const totalWhatsAppClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.whatsapp_clicks || 0), 0);
+            document.getElementById('totalWhatsAppClicks').textContent = totalWhatsAppClicks.toLocaleString();
             
-            const totalWeb = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.website_product_views || 0) + parseInt(ind.website_add_to_cart || 0), 0);
-            document.getElementById('totalWebActions').textContent = totalWeb.toLocaleString();
+            // Push stats
+            const totalPushOpens = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.push_opens || 0), 0);
+            document.getElementById('totalPushOpens').textContent = totalPushOpens.toLocaleString();
+            const totalPushClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.push_clicks || 0), 0);
+            document.getElementById('totalPushClicks').textContent = totalPushClicks.toLocaleString();
+            
+            // Social stats
+            const totalSocialViews = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.social_views || 0), 0);
+            document.getElementById('totalSocialViews').textContent = totalSocialViews.toLocaleString();
+            const totalSocialClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.social_clicks || 0), 0);
+            document.getElementById('totalSocialClicks').textContent = totalSocialClicks.toLocaleString();
+            
+            // Website stats
+            const totalWebsiteViews = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.website_product_views || 0), 0);
+            document.getElementById('totalWebsiteViews').textContent = totalWebsiteViews.toLocaleString();
+            const totalWebsiteClicks = allIndividuals.reduce((sum, ind) => sum + parseInt(ind.website_clicks || 0), 0);
+            document.getElementById('totalWebsiteClicks').textContent = totalWebsiteClicks.toLocaleString();
         }
         
         function applyFilters() {
