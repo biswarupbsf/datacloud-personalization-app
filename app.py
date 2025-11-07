@@ -902,6 +902,7 @@ def get_individuals_engagement():
                 'total_message_sends': item.get('total_message_sends', 0),
                 'total_message_interactions': item.get('total_message_interactions', 0),
                 'preferred_channel': item.get('preferred_channel', 'Email'),
+                'preferred_contact_time': item.get('preferred_contact_time', 'Not Set'),
                 'products_browsed': item.get('products_browsed', []),
                 'products_purchased': item.get('products_purchased', []),
                 'favorite_category': item.get('favorite_category', ''),
