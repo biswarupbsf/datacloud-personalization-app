@@ -21,29 +21,29 @@
             
             <div class="dashboard-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">👥</div>
+                    <div class="stat-icon">🏢</div>
                     <div class="stat-content">
-                        <h3>Individuals</h3>
-                        <div class="stat-number">{{ stats.individuals|default(0) }}</div>
-                        <a href="/data?object=Individual" class="stat-link">View all →</a>
+                        <h3>Accounts</h3>
+                        <div class="stat-number">{{ stats.accounts|default(0) }}</div>
+                        <a href="/data?object=Account" class="stat-link">View all →</a>
                     </div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📇</div>
+                    <div class="stat-icon">📋</div>
                     <div class="stat-content">
-                        <h3>Contacts</h3>
-                        <div class="stat-number">{{ stats.contacts|default(0) }}</div>
-                        <a href="/data?object=Contact" class="stat-link">View all →</a>
+                        <h3>Cases</h3>
+                        <div class="stat-number">{{ stats.cases|default(0) }}</div>
+                        <a href="/data?object=Case" class="stat-link">View all →</a>
                     </div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📢</div>
+                    <div class="stat-icon">🔗</div>
                     <div class="stat-content">
-                        <h3>Campaigns</h3>
-                        <div class="stat-number">{{ stats.campaigns|default(0) }}</div>
-                        <a href="/data?object=Campaign" class="stat-link">View all →</a>
+                        <h3>Account Contacts</h3>
+                        <div class="stat-number">{{ stats.account_contacts|default(0) }}</div>
+                        <a href="/data?object=AccountContactRelation" class="stat-link">View all →</a>
                     </div>
                 </div>
                 

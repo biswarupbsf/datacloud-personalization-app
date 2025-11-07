@@ -131,26 +131,29 @@ class DataManager:
         try:
             stats = {}
             
-            # Count Individuals
+            # Count Accounts
             try:
-                ind_count = sf.query("SELECT COUNT() FROM Individual")
-                stats['individuals'] = ind_count['totalSize']
-            except:
-                stats['individuals'] = 0
+                account_count = sf.query("SELECT COUNT() FROM Account")
+                stats['accounts'] = account_count['totalSize']
+            except Exception as e:
+                print(f"Error counting Accounts: {e}")
+                stats['accounts'] = 0
             
-            # Count Contacts
+            # Count Cases
             try:
-                contact_count = sf.query("SELECT COUNT() FROM Contact")
-                stats['contacts'] = contact_count['totalSize']
-            except:
-                stats['contacts'] = 0
+                case_count = sf.query("SELECT COUNT() FROM Case")
+                stats['cases'] = case_count['totalSize']
+            except Exception as e:
+                print(f"Error counting Cases: {e}")
+                stats['cases'] = 0
             
-            # Count Campaigns
+            # Count AccountContactRelation
             try:
-                campaign_count = sf.query("SELECT COUNT() FROM Campaign")
-                stats['campaigns'] = campaign_count['totalSize']
-            except:
-                stats['campaigns'] = 0
+                acr_count = sf.query("SELECT COUNT() FROM AccountContactRelation")
+                stats['account_contacts'] = acr_count['totalSize']
+            except Exception as e:
+                print(f"Error counting AccountContactRelation: {e}")
+                stats['account_contacts'] = 0
             
             # Count Opportunities
             try:
