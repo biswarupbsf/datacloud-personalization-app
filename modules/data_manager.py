@@ -198,6 +198,19 @@ class DataManager:
                 print(f"Error counting Synthetic Profiles: {e}")
                 stats['synthetic_profiles'] = 0
             
+            # Count Leads (Data Cloud object)
+            try:
+                print("DEBUG: Querying Lead count from ssot__Lead__dlm...")
+                lead_count = sf.query("SELECT COUNT() FROM ssot__Lead__dlm")
+                print(f"DEBUG: Lead query result: {lead_count}")
+                stats['leads'] = lead_count['totalSize']
+                print(f"DEBUG: Lead count set to: {stats['leads']}")
+            except Exception as e:
+                print(f"ERROR counting Leads: {str(e)}")
+                import traceback
+                traceback.print_exc()
+                stats['leads'] = 0
+            
             return stats
         except Exception as e:
             return {'error': str(e)}
