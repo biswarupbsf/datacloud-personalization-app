@@ -162,6 +162,37 @@ class DataManager:
             except:
                 stats['opportunities'] = 0
             
+            # Count Individuals
+            try:
+                individual_count = sf.query("SELECT COUNT() FROM Individual")
+                stats['individuals'] = individual_count['totalSize']
+            except Exception as e:
+                print(f"Error counting Individuals: {e}")
+                stats['individuals'] = 0
+            
+            # Count UnifiedIndividuals
+            try:
+                unified_count = sf.query("SELECT COUNT() FROM UnifiedIndividual__dlm")
+                stats['unified_individuals'] = unified_count['totalSize']
+            except Exception as e:
+                print(f"Error counting UnifiedIndividuals: {e}")
+                stats['unified_individuals'] = 0
+            
+            # Count Synthetic Profiles (from our app's data file)
+            try:
+                import json
+                import os
+                data_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'synthetic_engagement.json')
+                if os.path.exists(data_file):
+                    with open(data_file, 'r') as f:
+                        synthetic_data = json.load(f)
+                        stats['synthetic_profiles'] = len(synthetic_data)
+                else:
+                    stats['synthetic_profiles'] = 0
+            except Exception as e:
+                print(f"Error counting Synthetic Profiles: {e}")
+                stats['synthetic_profiles'] = 0
+            
             return stats
         except Exception as e:
             return {'error': str(e)}

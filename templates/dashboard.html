@@ -57,6 +57,45 @@
                 </div>
             </div>
             
+            <!-- Second Row: Data Cloud Profiles -->
+            <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="stat-card">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-content">
+                        <h3>Individuals</h3>
+                        <div class="stat-number">{{ stats.individuals|default(0) }}</div>
+                        <a href="/data?object=Individual" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Unified Individuals</h3>
+                        <div class="stat-number">{{ stats.unified_individuals|default(0) }}</div>
+                        <a href="/data?object=UnifiedIndividual__dlm" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🧪</div>
+                    <div class="stat-content">
+                        <h3>Synthetic Profiles</h3>
+                        <div class="stat-number">{{ stats.synthetic_profiles|default(0) }}</div>
+                        <a href="/individual_engagement" class="stat-link">View all →</a>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="opacity: 0.3; pointer-events: none;">
+                    <div class="stat-icon">➕</div>
+                    <div class="stat-content">
+                        <h3>Add More</h3>
+                        <div class="stat-number">-</div>
+                        <span class="stat-link" style="color: #ccc;">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+            
             <div class="quick-actions">
                 <h2>🚀 Quick Actions</h2>
                 <div class="action-grid">
