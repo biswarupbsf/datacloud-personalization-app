@@ -152,8 +152,7 @@ class PersonalizedImageGenerator:
                 "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
                 input={
                     "target_image": target_image_url,
-                    "source_image": face_image_url,
-                    "cache_days": 1
+                    "swap_image": face_image_url
                 }
             )
             
