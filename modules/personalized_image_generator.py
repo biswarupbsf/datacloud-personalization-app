@@ -104,18 +104,20 @@ class PersonalizedImageGenerator:
         # Prepare the face image (convert base64 to URL if needed)
         face_image_url = self._prepare_face_image(profile_pic_url)
         
-        # Call Fal.ai API
+        # Call Fal.ai API - Two-step process for face-swap
         try:
             import fal_client
             
-            # Use FLUX dev model - works with prompts without needing face image upload
-            # We'll describe the person in the prompt instead
-            enhanced_prompt = f"Professional photograph of {individual_data.get('Name', 'person')}, {scenario_prompt}, photorealistic, high quality, detailed"
+            print(f"Starting face-swap generation for {individual_data.get('Name', 'Unknown')}")
+            print(f"Face image URL: {face_image_url[:100]}...")
+            print(f"Scenario: {scenario_prompt[:100]}...")
             
-            handler = fal_client.submit(
+            # Step 1: Generate base image from prompt (generic person)
+            print("Step 1: Generating base image with FLUX...")
+            base_handler = fal_client.submit(
                 "fal-ai/flux/dev",
                 arguments={
-                    "prompt": enhanced_prompt,
+                    "prompt": scenario_prompt,
                     "image_size": "landscape_16_9",
                     "num_inference_steps": 28,
                     "guidance_scale": 3.5,
@@ -123,8 +125,27 @@ class PersonalizedImageGenerator:
                     "enable_safety_checker": False
                 }
             )
+            base_result = base_handler.get()
             
-            result = handler.get()
+            if not base_result or 'images' not in base_result or not base_result['images']:
+                raise Exception("Failed to generate base image")
+            
+            base_image_url = base_result['images'][0]['url']
+            print(f"Base image generated: {base_image_url}")
+            
+            # Step 2: Swap face with profile picture
+            print("Step 2: Swapping face with profile picture...")
+            swap_handler = fal_client.submit(
+                "easel-ai/advanced-face-swap",
+                arguments={
+                    "face_image_0": face_image_url,
+                    "target_image": base_image_url,
+                    "workflow_type": "user_hair"
+                }
+            )
+            
+            result = swap_handler.get()
+            print(f"Face-swap result received: {result}")
             
             if result and 'images' in result and len(result['images']) > 0:
                 return {
@@ -154,18 +175,27 @@ class PersonalizedImageGenerator:
     def _prepare_face_image(self, profile_pic_url):
         """
         Prepare face image for Fal.ai API
-        Convert base64 to temporary URL if needed
+        Convert base64 to temporary URL using Fal.ai's upload service
         """
         
         # If it's already a URL, return it
         if profile_pic_url.startswith('http'):
             return profile_pic_url
         
-        # If it's a base64 data URI, we need to handle it
+        # If it's a base64 data URI, upload to Fal.ai storage
         if profile_pic_url.startswith('data:image'):
-            # For now, return the base64 directly
-            # Fal.ai accepts base64 data URIs
-            return profile_pic_url
+            try:
+                import fal_client
+                
+                # Upload base64 image to Fal.ai's temporary storage
+                print("Uploading base64 image to Fal.ai storage...")
+                uploaded_url = fal_client.upload_file(profile_pic_url)
+                print(f"Uploaded successfully: {uploaded_url}")
+                return uploaded_url
+            except Exception as e:
+                print(f"Error uploading image: {e}")
+                # Fallback to base64
+                return profile_pic_url
         
         # If it's a local path, construct full URL
         if profile_pic_url.startswith('/static'):
