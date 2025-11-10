@@ -250,6 +250,25 @@
         .export-btn:hover {
             background: #45a049;
         }
+        
+        .profile-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -387,7 +406,7 @@
             <table class="engagement-table">
                 <thead>
                     <tr>
-                        <th style="min-width: 150px;" onclick="sortTable('Name')">Name <span class="sort-icon" id="sort-Name">↕</span></th>
+                        <th style="min-width: 200px;" onclick="sortTable('Name')">Profile <span class="sort-icon" id="sort-Name">↕</span></th>
                         <th class="sortable" style="min-width: 100px; text-align: center;" onclick="sortTable('omnichannel_score')">Omni Score <span class="sort-icon" id="sort-omnichannel_score">↕</span></th>
                         <th style="min-width: 120px; text-align: center;">Preferred Channel</th>
                         <th style="min-width: 150px; text-align: center;">🕐 Preferred Time</th>
@@ -571,7 +590,10 @@
                 const channelIcon = channelIcons[channelName] || '📧';
                 
                 html += '<tr onclick="showIndividualDetails(\'' + ind.Id + '\')">';
-                html += '<td><strong>' + (ind.Name || '') + '</strong></td>';
+                html += '<td><div class="profile-cell">';
+                html += '<img src="' + (ind.profile_picture_url || 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(ind.Name || 'User')) + '" class="profile-pic" alt="' + (ind.Name || '') + '">';
+                html += '<div class="profile-info"><strong>' + (ind.Name || '') + '</strong></div>';
+                html += '</div></td>';
                 html += '<td class="metric-cell"><span class="score-badge ' + scoreClass + '">' + scoreValue.toFixed(1) + '</span></td>';
                 html += '<td class="metric-cell"><span class="channel-badge ' + channelClass + '">' + channelIcon + ' ' + channelName + '</span></td>';
                 html += '<td class="metric-cell"><span style="font-size: 11px; padding: 4px 8px; background: #f0f4ff; color: #4263eb; border-radius: 12px; display: inline-block;">' + (ind.preferred_contact_time || 'Not Set') + '</span></td>';
@@ -623,7 +645,10 @@
             modalContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; max-width: 800px; max-height: 90%; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
             
             let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">';
+            html += '<div style="display: flex; align-items: center; gap: 15px;">';
+            html += '<img src="' + (ind.profile_picture_url || 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(ind.Name || 'User')) + '" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;" alt="' + ind.Name + '">';
             html += '<h2 style="margin: 0;">📊 ' + ind.Name + '</h2>';
+            html += '</div>';
             html += '<button onclick="this.closest(\'.modal-overlay\').remove()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">✕ Close</button>';
             html += '</div>';
             
