@@ -21,6 +21,7 @@ from modules.segmentation_engine import SegmentationEngine
 from modules.email_generator import EmailGenerator
 from modules.datacloud_analytics import DataCloudAnalytics
 from modules.ai_agent import AIAgent
+from modules.personalized_image_generator import PersonalizedImageGenerator
 
 app = Flask(__name__)
 # Use environment variable for secret key (consistent across restarts)
@@ -46,6 +47,7 @@ segmentation_engine = SegmentationEngine()
 email_generator = EmailGenerator()
 datacloud_analytics = DataCloudAnalytics()
 ai_agent = AIAgent()
+image_generator = PersonalizedImageGenerator()
 
 # ============================================================================
 # AUTHENTICATION & CONNECTION ROUTES
@@ -1107,6 +1109,127 @@ def upload_profile_picture():
         return jsonify({
             'success': True,
             'message': f'Profile picture uploaded for {person_name}!'
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/personalized-images')
+def personalized_images_page():
+    """Personalized Image Generation Dashboard"""
+    if 'connected' not in session:
+        return redirect(url_for('login'))
+    
+    return render_template('personalized_images.html')
+
+@app.route('/api/personalized-images/generate', methods=['POST'])
+def generate_personalized_image():
+    """Generate a personalized image for an individual"""
+    try:
+        data = request.get_json()
+        individual_id = data.get('individual_id')
+        custom_prompt = data.get('custom_prompt')
+        
+        if not individual_id:
+            return jsonify({'success': False, 'error': 'Individual ID required'}), 400
+        
+        # Load individual data
+        engagement_file = 'data/synthetic_engagement.json'
+        insights_file = 'data/individual_insights.json'
+        
+        with open(engagement_file, 'r') as f:
+            engagement_data = json.load(f)
+        
+        # Find the individual
+        individual = None
+        for item in engagement_data:
+            if item.get('id') == individual_id:
+                individual = item
+                break
+        
+        if not individual:
+            return jsonify({'success': False, 'error': 'Individual not found'}), 404
+        
+        # Load latest insights for this individual
+        try:
+            with open(insights_file, 'r') as f:
+                insights_data = json.load(f)
+            
+            # Get latest insight for this individual
+            individual_insights = [i for i in insights_data if i.get('Individual_Id') == individual_id]
+            if individual_insights:
+                latest_insight = individual_insights[0]  # Already sorted by timestamp
+                individual['fitness_milestone'] = latest_insight.get('Fitness_Milestone')
+                individual['favourite_brand'] = latest_insight.get('Favourite_Brand')
+                individual['favourite_destination'] = latest_insight.get('Favourite_Destination')
+                individual['hobby'] = latest_insight.get('Hobby')
+                individual['lifestyle_quotient'] = latest_insight.get('Lifestyle_Quotient')
+                individual['current_sentiment'] = latest_insight.get('Current_Sentiment')
+        except:
+            pass  # Use defaults if insights not available
+        
+        # Generate personalized image
+        result = image_generator.generate_personalized_image(individual, custom_prompt)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/personalized-images/batch', methods=['POST'])
+def generate_batch_images():
+    """Generate personalized images for a batch of individuals"""
+    try:
+        data = request.get_json()
+        individual_ids = data.get('individual_ids', [])
+        max_images = data.get('max_images', 10)
+        
+        if not individual_ids:
+            return jsonify({'success': False, 'error': 'Individual IDs required'}), 400
+        
+        # Load data
+        engagement_file = 'data/synthetic_engagement.json'
+        with open(engagement_file, 'r') as f:
+            engagement_data = json.load(f)
+        
+        # Filter individuals
+        individuals = [item for item in engagement_data if item.get('id') in individual_ids]
+        
+        # Generate images
+        results = image_generator.generate_campaign_batch({}, individuals, max_images)
+        
+        return jsonify({
+            'success': True,
+            'results': results,
+            'count': len(results)
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/personalized-images/scenarios/<individual_id>')
+def get_scenario_suggestions(individual_id):
+    """Get scenario suggestions for an individual"""
+    try:
+        # Load individual data
+        engagement_file = 'data/synthetic_engagement.json'
+        with open(engagement_file, 'r') as f:
+            engagement_data = json.load(f)
+        
+        individual = None
+        for item in engagement_data:
+            if item.get('id') == individual_id:
+                individual = item
+                break
+        
+        if not individual:
+            return jsonify({'success': False, 'error': 'Individual not found'}), 404
+        
+        suggestions = image_generator.get_scenario_suggestions(individual)
+        
+        return jsonify({
+            'success': True,
+            'suggestions': suggestions
         })
         
     except Exception as e:
