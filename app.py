@@ -1156,21 +1156,67 @@ def generate_personalized_image():
         print(f"✅ Found individual: {individual.get('Name')}")
         
         # Load latest insights for this individual
+        promotional_messages = []
         try:
             with open(insights_file, 'r') as f:
                 insights_data = json.load(f)
             
-            # Get latest insight for this individual
-            individual_insights = [i for i in insights_data if i.get('Individual_Id') == individual_id]
+            # Get ALL insights for this individual (sorted by timestamp)
+            individual_insights = sorted(
+                [i for i in insights_data if i.get('Individual_Id') == individual_id],
+                key=lambda x: x.get('Event_Timestamp', ''),
+                reverse=True
+            )
+            
             if individual_insights:
-                latest_insight = individual_insights[0]  # Already sorted by timestamp
+                latest_insight = individual_insights[0]  # Most recent
                 individual['fitness_milestone'] = latest_insight.get('Fitness_Milestone')
                 individual['favourite_brand'] = latest_insight.get('Favourite_Brand')
                 individual['favourite_destination'] = latest_insight.get('Favourite_Destination')
                 individual['hobby'] = latest_insight.get('Hobby')
                 individual['lifestyle_quotient'] = latest_insight.get('Lifestyle_Quotient')
                 individual['current_sentiment'] = latest_insight.get('Current_Sentiment')
-                print(f"📊 Loaded insights: {latest_insight.get('Hobby')} + {latest_insight.get('Favourite_Brand')}")
+                individual['favourite_exercise'] = latest_insight.get('Favourite_Exercise', 'Treadmill Running')
+                individual['health_profile'] = latest_insight.get('Health_Profile')
+                
+                print(f"📊 Loaded insights: {latest_insight.get('Hobby')} + {latest_insight.get('Favourite_Brand')} + {latest_insight.get('Favourite_Exercise')}")
+                
+                # Check for Health Profile alerts
+                if latest_insight.get('Health_Profile') == 'Hypertensive':
+                    promotional_messages.append({
+                        'type': 'health_alert',
+                        'icon': '⚕️',
+                        'title': 'Health Check Recommended',
+                        'message': f"Based on your health profile, we recommend scheduling a consultation with a healthcare provider. Your wellbeing is our priority!",
+                        'cta': 'Find a Doctor',
+                        'priority': 'high'
+                    })
+                
+                # Check for fitness milestone progression (offer 50% discount)
+                if len(individual_insights) >= 2:
+                    previous_insight = individual_insights[1]
+                    current_milestone = latest_insight.get('Fitness_Milestone')
+                    previous_milestone = previous_insight.get('Fitness_Milestone')
+                    
+                    milestone_order = ['Beginner', 'Intermediate', 'Advanced', 'Elite']
+                    
+                    if (current_milestone in milestone_order and 
+                        previous_milestone in milestone_order and
+                        milestone_order.index(current_milestone) > milestone_order.index(previous_milestone)):
+                        
+                        promotional_messages.append({
+                            'type': 'milestone_offer',
+                            'icon': '🎉',
+                            'title': 'Congratulations on Your Progress!',
+                            'message': f"You've advanced from {previous_milestone} to {current_milestone}! Celebrate with 50% OFF Premium Membership for 3 months.",
+                            'cta': 'Claim Your Offer',
+                            'discount': '50%',
+                            'priority': 'high'
+                        })
+                        print(f"🎉 Milestone progression detected: {previous_milestone} → {current_milestone}")
+                
+                individual['promotional_messages'] = promotional_messages
+                
         except Exception as insights_error:
             print(f"⚠️ Could not load insights: {insights_error}")
             pass  # Use defaults if insights not available
@@ -1179,6 +1225,11 @@ def generate_personalized_image():
         print(f"🚀 Starting image generation...")
         result = image_generator.generate_personalized_image(individual, custom_prompt)
         print(f"✅ Generation complete: {result.get('success')}")
+        
+        # Add promotional messages to result
+        if promotional_messages:
+            result['promotional_messages'] = promotional_messages
+            print(f"💰 Added {len(promotional_messages)} promotional messages")
         
         return jsonify(result)
         

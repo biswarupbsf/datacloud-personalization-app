@@ -390,6 +390,11 @@
                 
                 if (result.success) {
                     displayResult(result);
+                    
+                    // Display promotional messages if any
+                    if (result.promotional_messages && result.promotional_messages.length > 0) {
+                        displayPromotionalMessages(result.promotional_messages);
+                    }
                 } else {
                     document.getElementById('resultsContainer').innerHTML = `
                         <div class="result-card" style="border-left: 4px solid #f44336;">
@@ -463,6 +468,41 @@
             link.href = url;
             link.download = `personalized_${selectedIndividual.Name}_${Date.now()}.png`;
             link.click();
+        }
+        
+        function displayPromotionalMessages(messages) {
+            let messagesHtml = '';
+            
+            messages.forEach(msg => {
+                const borderColor = msg.priority === 'high' ? (msg.type === 'health_alert' ? '#f44336' : '#4caf50') : '#2196f3';
+                const bgColor = msg.priority === 'high' ? (msg.type === 'health_alert' ? '#ffebee' : '#e8f5e9') : '#e3f2fd';
+                
+                messagesHtml += `
+                    <div style="background: ${bgColor}; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 5px solid ${borderColor}; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: start; gap: 15px;">
+                            <div style="font-size: 32px;">${msg.icon}</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0 0 10px 0; color: #333;">${msg.title}</h3>
+                                <p style="margin: 0 0 15px 0; color: #555; line-height: 1.6;">${msg.message}</p>
+                                ${msg.discount ? `<div style="background: white; padding: 8px 12px; border-radius: 6px; display: inline-block; font-weight: bold; color: ${borderColor}; margin-bottom: 10px;">💰 ${msg.discount} OFF</div>` : ''}
+                                <button onclick="handlePromoAction('${msg.type}')" style="background: ${borderColor}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; margin-top: 10px;">
+                                    ${msg.cta} →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('resultsContainer').insertAdjacentHTML('beforeend', messagesHtml);
+        }
+        
+        function handlePromoAction(type) {
+            if (type === 'health_alert') {
+                alert('🏥 Redirecting to Doctor Finder...\n\nIn a production app, this would connect to your healthcare provider network or telemedicine service.');
+            } else if (type === 'milestone_offer') {
+                alert('🎉 Congratulations!\n\nYour 50% discount code: FITNESS50\n\nIn a production app, this would apply the discount to your cart and take you to checkout.');
+            }
         }
     </script>
 </body>

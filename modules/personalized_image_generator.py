@@ -77,6 +77,7 @@ class PersonalizedImageGenerator:
         lifestyle = individual_data.get('lifestyle_quotient', 'Active')
         sentiment = individual_data.get('current_sentiment', 'Motivated')
         upcoming_event = individual_data.get('upcoming_event', None)
+        favourite_exercise = individual_data.get('favourite_exercise', 'Treadmill Running')
         
         # Sentiment-to-mood mapping for more nuanced imagery
         sentiment_mood = {
@@ -104,7 +105,7 @@ class PersonalizedImageGenerator:
         activity_scenarios = {
             'Hiking': f"Professional action photograph of athletic person hiking on a scenic mountain trail during golden hour, wearing premium {favourite_brand} outdoor gear and hiking boots, {sentiment_mood} expression, {destination_background} in the background, {lifestyle.lower()} adventure lifestyle aesthetic, achieving {fitness_milestone}, photorealistic, high-quality outdoor photography, cinematic lighting",
             
-            'Running': f"Dynamic action shot of fit athletic person running powerfully on a premium treadmill in an ultra-modern luxury gym, wearing stylish {favourite_brand} athletic wear and running shoes, {sentiment_mood} expression showing determination, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} goal, professional fitness photography, dramatic gym lighting with natural light streaming in, photorealistic, 8K quality",
+            'Running': f"Dynamic action shot of fit athletic person powerfully exercising on {favourite_exercise.lower()} in an ultra-modern luxury gym, wearing stylish {favourite_brand} athletic wear, {sentiment_mood} expression showing determination, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} goal, professional fitness photography, dramatic gym lighting with natural light streaming in, photorealistic, 8K quality",
             
             'Yoga': f"Serene photograph of person in perfect yoga pose on an exclusive rooftop studio or beach, wearing elegant {favourite_brand} yoga outfit, {sentiment_mood} and mindful expression, {destination_background} creating a stunning backdrop, sunrise or sunset golden hour lighting, {lifestyle.lower()} wellness lifestyle, celebrating {fitness_milestone}, zen and peaceful atmosphere, professional wellness photography, highly detailed",
             
