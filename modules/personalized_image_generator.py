@@ -62,36 +62,78 @@ class PersonalizedImageGenerator:
             }
     
     def _generate_scenario_prompt(self, individual_data):
-        """Generate personalized scenario prompt based on individual's profile"""
+        """
+        Generate HYPER-PERSONALIZED scenario prompt based on ALL psychographic insights
+        Dynamically incorporates: hobby, brand, destination, lifestyle, fitness, sentiment, events
+        """
         
         name = individual_data.get('Name', 'person')
         
-        # Get insights data
-        fitness_milestone = individual_data.get('fitness_milestone', 'beginner')
+        # Get ALL psychographic insights
+        fitness_milestone = individual_data.get('fitness_milestone', 'Active Lifestyle')
         favourite_brand = individual_data.get('favourite_brand', 'Nike')
-        favourite_destination = individual_data.get('favourite_destination', 'beach')
-        hobby = individual_data.get('hobby', 'running')
+        favourite_destination = individual_data.get('favourite_destination', 'Singapore')
+        hobby = individual_data.get('hobby', 'Running')
         lifestyle = individual_data.get('lifestyle_quotient', 'Active')
-        sentiment = individual_data.get('current_sentiment', 'Happy')
+        sentiment = individual_data.get('current_sentiment', 'Motivated')
+        upcoming_event = individual_data.get('upcoming_event', None)
         
-        # Map hobbies/preferences to scenarios
-        scenario_templates = {
-            'Hiking': f"Professional photo of person hiking on a scenic mountain trail, wearing {favourite_brand} gear, beautiful landscape in background, golden hour lighting, adventure lifestyle photography",
-            'Running': f"Action shot of person running on a modern treadmill in a premium gym, wearing {favourite_brand} athletic wear, energetic and focused expression, bright gym lighting, fitness motivation",
-            'Yoga': f"Person doing yoga pose on a peaceful beach at sunrise, wearing {favourite_brand} yoga outfit, serene ocean view, wellness and mindfulness theme",
-            'Cycling': f"Person cycling on a scenic road with {favourite_destination} landscape in background, wearing professional {favourite_brand} cycling gear, dynamic action shot",
-            'Swimming': f"Person swimming in crystal clear pool, professional swimmer aesthetic, {favourite_brand} swimwear, refreshing and energetic vibe",
-            'Reading': f"Person relaxing with a book in a cozy {favourite_destination}-style setting, sophisticated and peaceful atmosphere, warm lighting",
-            'Photography': f"Person with professional camera equipment, exploring {favourite_destination}, creative photographer aesthetic, {favourite_brand} gear visible",
-            'Cooking': f"Person in modern kitchen preparing gourmet meal, professional chef aesthetic, {favourite_brand} cookware, warm inviting atmosphere"
+        # Sentiment-to-mood mapping for more nuanced imagery
+        sentiment_mood = {
+            'Happy': 'joyful, smiling, celebrating',
+            'Excited': 'energetic, enthusiastic, dynamic',
+            'Motivated': 'focused, determined, powerful',
+            'Relaxed': 'calm, peaceful, serene',
+            'Confident': 'strong, assured, professional'
+        }.get(sentiment, 'energetic and positive')
+        
+        # Destination-specific background elements
+        destination_elements = {
+            'Singapore': 'iconic Singapore skyline with Marina Bay Sands visible through floor-to-ceiling windows',
+            'Paris': 'elegant Parisian architecture or Eiffel Tower in the distance',
+            'Tokyo': 'modern Tokyo cityscape with neon lights',
+            'New York': 'Manhattan skyline visible in background',
+            'London': 'classic London architecture, Big Ben or London Eye visible',
+            'Dubai': 'luxurious Dubai skyline with Burj Khalifa',
+            'Beach': 'pristine beach with crystal clear water and palm trees',
+            'Mountains': 'majestic mountain range with snow-capped peaks'
+        }
+        destination_background = destination_elements.get(favourite_destination, f'scenic {favourite_destination} landscape')
+        
+        # Activity-specific scenarios with FULL personalization
+        activity_scenarios = {
+            'Hiking': f"Professional action photograph of athletic person hiking on a scenic mountain trail during golden hour, wearing premium {favourite_brand} outdoor gear and hiking boots, {sentiment_mood} expression, {destination_background} in the background, {lifestyle.lower()} adventure lifestyle aesthetic, achieving {fitness_milestone}, photorealistic, high-quality outdoor photography, cinematic lighting",
+            
+            'Running': f"Dynamic action shot of fit athletic person running powerfully on a premium treadmill in an ultra-modern luxury gym, wearing stylish {favourite_brand} athletic wear and running shoes, {sentiment_mood} expression showing determination, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} goal, professional fitness photography, dramatic gym lighting with natural light streaming in, photorealistic, 8K quality",
+            
+            'Yoga': f"Serene photograph of person in perfect yoga pose on an exclusive rooftop studio or beach, wearing elegant {favourite_brand} yoga outfit, {sentiment_mood} and mindful expression, {destination_background} creating a stunning backdrop, sunrise or sunset golden hour lighting, {lifestyle.lower()} wellness lifestyle, celebrating {fitness_milestone}, zen and peaceful atmosphere, professional wellness photography, highly detailed",
+            
+            'Cycling': f"Epic action shot of cyclist riding a premium road bike on a scenic route, wearing professional {favourite_brand} cycling gear and helmet, {sentiment_mood} and focused, {destination_background} landscape surrounding them, {lifestyle.lower()} athletic lifestyle, achieving {fitness_milestone}, dynamic motion blur on wheels, professional cycling photography, golden hour lighting",
+            
+            'Swimming': f"Professional photograph of swimmer in a luxurious infinity pool, wearing {favourite_brand} swimwear, {sentiment_mood} expression, {destination_background} creating stunning views, {lifestyle.lower()} lifestyle aesthetic, celebrating {fitness_milestone}, crystal clear water, natural lighting, resort photography quality",
+            
+            'Reading': f"Sophisticated photograph of person reading in an elegant setting - luxury lounge or cafe, wearing casual {favourite_brand} lifestyle clothing, {sentiment_mood} and relaxed, {destination_background} visible through windows, {lifestyle.lower()} intellectual lifestyle, cozy atmospheric lighting, high-end lifestyle photography, warm tones",
+            
+            'Photography': f"Creative portrait of photographer with professional camera equipment, wearing {favourite_brand} gear, {sentiment_mood} and passionate expression, actively photographing {destination_background}, {lifestyle.lower()} creative lifestyle, artistic composition, professional lifestyle photography, natural lighting",
+            
+            'Cooking': f"Professional culinary photograph of person preparing gourmet cuisine in a modern luxury kitchen, wearing {favourite_brand} chef attire or apron, {sentiment_mood} and passionate, kitchen with view of {destination_background}, {lifestyle.lower()} lifestyle aesthetic, premium cookware and ingredients visible, warm atmospheric lighting, food photography quality"
         }
         
-        # Default scenario
-        default_scenario = f"Professional lifestyle photo of person engaged in {hobby.lower()}, wearing {favourite_brand} apparel, {lifestyle.lower()} lifestyle aesthetic, high-quality commercial photography"
+        # Check if there's an upcoming event to incorporate
+        event_context = ""
+        if upcoming_event and upcoming_event != 'None':
+            event_context = f" preparing for upcoming {upcoming_event},"
         
-        scenario = scenario_templates.get(hobby, default_scenario)
+        # Get activity-specific scenario or create comprehensive default
+        base_scenario = activity_scenarios.get(hobby, 
+            f"Professional lifestyle photograph of athletic person engaged in {hobby.lower()}{event_context} wearing premium {favourite_brand} apparel and gear, {sentiment_mood} expression, {destination_background} in the background, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone}, high-quality commercial photography, photorealistic, dramatic lighting"
+        )
         
-        return scenario
+        # Add upcoming event emphasis if present
+        if upcoming_event and upcoming_event != 'None':
+            base_scenario += f" Image should convey preparation and excitement for {upcoming_event} event."
+        
+        return base_scenario
     
     def _call_fal_api(self, profile_pic_url, scenario_prompt, individual_data):
         """
