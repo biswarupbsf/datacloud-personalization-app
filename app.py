@@ -963,6 +963,90 @@ def execute_query():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 400
 
+@app.route('/upload-profile-picture', methods=['GET', 'POST'])
+def upload_profile_picture():
+    """Upload profile picture for current user"""
+    if request.method == 'GET':
+        return '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Upload Profile Picture</title>
+            <style>
+                body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+                .upload-box { border: 2px dashed #667eea; padding: 40px; text-align: center; border-radius: 10px; }
+                input[type="file"] { margin: 20px 0; }
+                button { background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+                button:hover { background: #5568d3; }
+                .success { color: green; font-weight: bold; margin-top: 20px; }
+                .error { color: red; font-weight: bold; margin-top: 20px; }
+            </style>
+        </head>
+        <body>
+            <h1>📸 Upload Your Profile Picture</h1>
+            <div class="upload-box">
+                <p>Upload your profile picture (JPG, PNG, max 5MB)</p>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" name="profile_picture" accept="image/*" required><br>
+                    <button type="submit">Upload Picture</button>
+                </form>
+                <div id="message"></div>
+            </div>
+            <script>
+                document.getElementById('uploadForm').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const response = await fetch('/upload-profile-picture', {method: 'POST', body: formData});
+                    const result = await response.json();
+                    const msgDiv = document.getElementById('message');
+                    if (result.success) {
+                        msgDiv.className = 'success';
+                        msgDiv.textContent = '✅ ' + result.message + ' - Refresh the Individual Engagement page to see it!';
+                    } else {
+                        msgDiv.className = 'error';
+                        msgDiv.textContent = '❌ ' + result.error;
+                    }
+                };
+            </script>
+        </body>
+        </html>
+        '''
+    
+    # Handle POST - save the uploaded file
+    if 'profile_picture' not in request.files:
+        return jsonify({'success': False, 'error': 'No file uploaded'}), 400
+    
+    file = request.files['profile_picture']
+    if file.filename == '':
+        return jsonify({'success': False, 'error': 'No file selected'}), 400
+    
+    # Save to static/images/biswarup_banerjee.jpg
+    try:
+        import os
+        filepath = os.path.join('static', 'images', 'biswarup_banerjee.jpg')
+        file.save(filepath)
+        
+        # Update the JSON data
+        data_file = os.path.join('data', 'synthetic_engagement.json')
+        with open(data_file, 'r') as f:
+            profiles = json.load(f)
+        
+        for profile in profiles:
+            if profile.get('Name') == 'Biswarup Banerjee':
+                profile['profile_picture_url'] = '/static/images/biswarup_banerjee.jpg'
+                break
+        
+        with open(data_file, 'w') as f:
+            json.dump(profiles, f, indent=2)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Profile picture uploaded successfully!',
+            'path': '/static/images/biswarup_banerjee.jpg'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/health')
 def health_check():
     """Health check endpoint"""
