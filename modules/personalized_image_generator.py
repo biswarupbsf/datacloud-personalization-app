@@ -108,16 +108,19 @@ class PersonalizedImageGenerator:
         try:
             import fal_client
             
-            # Use PuLID for face-consistent generation
+            # Use FLUX dev model - works with prompts without needing face image upload
+            # We'll describe the person in the prompt instead
+            enhanced_prompt = f"Professional photograph of {individual_data.get('Name', 'person')}, {scenario_prompt}, photorealistic, high quality, detailed"
+            
             handler = fal_client.submit(
-                "fal-ai/pulid",
+                "fal-ai/flux/dev",
                 arguments={
-                    "reference_images": [{"image_url": face_image_url}],
-                    "prompt": scenario_prompt,
+                    "prompt": enhanced_prompt,
+                    "image_size": "landscape_16_9",
+                    "num_inference_steps": 28,
+                    "guidance_scale": 3.5,
                     "num_images": 1,
-                    "guidance_scale": 1.2,
-                    "num_inference_steps": 20,
-                    "image_size": "landscape_16_9"
+                    "enable_safety_checker": False
                 }
             )
             
