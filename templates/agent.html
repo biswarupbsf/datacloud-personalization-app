@@ -242,9 +242,9 @@
                             <h3>📊 Investigate Data</h3>
                             <p>Show me the Individual table contents</p>
                         </div>
-                        <div class="prompt-card" onclick="sendQuickMessage('Create a segment for highly engaged individuals')">
-                            <h3>🎯 Create Segment</h3>
-                            <p>Create a segment for highly engaged individuals</p>
+                        <div class="prompt-card" onclick="sendQuickMessage('Create a segment of 5 most highly engaged individuals')">
+                            <h3>🎯 Create Segment + AI Images</h3>
+                            <p>Create segment with personalized content</p>
                         </div>
                         <div class="prompt-card" onclick="sendQuickMessage('Generate VIP welcome emails')">
                             <h3>📧 Generate Emails</h3>
@@ -322,7 +322,7 @@
                 document.getElementById('typingIndicator').style.display = 'none';
                 
                 if (data.success && data.response) {
-                    addMessage(data.response.message, 'agent', data.response.suggested_actions);
+                    addMessage(data.response.message, 'agent', data.response.suggested_actions, data.response.data);
                 } else {
                     addMessage('❌ Sorry, I encountered an error processing your request.', 'agent');
                 }
@@ -341,7 +341,7 @@
             sendMessage();
         }
         
-        function addMessage(text, type, suggestedActions = []) {
+        function addMessage(text, type, suggestedActions = [], responseData = null) {
             const messagesContainer = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message message-${type}`;
@@ -355,11 +355,83 @@
                 actionsHTML += '</div>';
             }
             
+            // Check if we have personalized images to display
+            let imagesHTML = '';
+            if (responseData && responseData.personalized_images && responseData.personalized_images.length > 0) {
+                imagesHTML = '<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">';
+                
+                responseData.personalized_images.forEach((img, idx) => {
+                    imagesHTML += `
+                        <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 2px solid #667eea;">
+                            <h3 style="margin: 0 0 15px 0; color: #667eea; font-size: 18px;">
+                                ${idx + 1}. ${img.name}
+                            </h3>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                ${img.image_url ? `<img src="${img.image_url}" alt="Generated for ${img.name}" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" />` : '<div style="background: #f0f0f0; padding: 20px; text-align: center; border-radius: 8px;">Image generation in progress...</div>'}
+                                
+                                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>🏃 Exercise:</strong> ${img.insights?.favourite_exercise || 'N/A'}
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>❤️ Brand:</strong> ${img.insights?.favourite_brand || 'N/A'}
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>✈️ Destination:</strong> ${img.insights?.favourite_destination || 'N/A'}
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>🎯 Lifestyle:</strong> ${img.insights?.lifestyle || 'N/A'}
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>💪 Health:</strong> ${img.insights?.health_profile || 'N/A'}
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                        <strong>🏋️ Milestone:</strong> ${img.insights?.fitness_milestone || 'N/A'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${img.messages && img.messages.length > 0 ? `
+                                <div style="margin-top: 15px;">
+                                    ${img.messages.map(msg => {
+                                        const borderColor = msg.priority === 'high' ? (msg.type === 'health_alert' ? '#f44336' : '#4caf50') : '#2196f3';
+                                        const bgColor = msg.priority === 'high' ? (msg.type === 'health_alert' ? '#ffebee' : '#e8f5e9') : '#e3f2fd';
+                                        return `
+                                            <div style="background: ${bgColor}; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ${borderColor};">
+                                                <div style="display: flex; align-items: start; gap: 10px;">
+                                                    <div style="font-size: 24px;">${msg.icon}</div>
+                                                    <div style="flex: 1;">
+                                                        <h4 style="margin: 0 0 8px 0; color: #333; font-size: 14px;">${msg.title}</h4>
+                                                        <p style="margin: 0 0 10px 0; color: #555; font-size: 12px;">${msg.message}</p>
+                                                        ${msg.discount ? `<div style="background: white; padding: 6px 10px; border-radius: 4px; display: inline-block; font-weight: bold; color: ${borderColor}; font-size: 12px;">💰 ${msg.discount} OFF</div>` : ''}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            <details style="margin-top: 15px; font-size: 12px; color: #666;">
+                                <summary style="cursor: pointer; font-weight: 600;">View AI Prompt</summary>
+                                <div style="background: #f8f9fa; padding: 10px; margin-top: 10px; border-radius: 6px; font-family: monospace; white-space: pre-wrap; word-break: break-word;">
+                                    ${img.prompt || 'No prompt available'}
+                                </div>
+                            </details>
+                        </div>
+                    `;
+                });
+                
+                imagesHTML += '</div>';
+            }
+            
             messageDiv.innerHTML = `
                 <div class="message-bubble">
                     ${text.replace(/\n/g, '<br>')}
                     ${actionsHTML}
                 </div>
+                ${imagesHTML}
             `;
             
             messagesContainer.appendChild(messageDiv);

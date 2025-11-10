@@ -20,16 +20,17 @@ class AIAgent:
         }
         self.available_actions = {
             'create_segment': ['create a segment', 'create segment', 'new segment', 'make a segment', 'make segment', 'build segment', 'segment of', 'filter individuals', 'filter users'],
+            'personalize_content': ['personalize', 'personalise', 'generate images', 'create images', 'personalized images', 'personalised content', 'ai images', 'face swap', 'custom images'],
             'send_email_test': ['generate html', 'create html', 'render', 'html format', 'send email', 'send to', 'email to', 'send to my email', 'test email', 'email me', 'send it to', 'whatsapp message', 'send whatsapp', 'mobile number', 'see all', 'view all', 'all 50', 'all members', 'all content', '50 contents', 'entire segment'],
             'view_segment': ['show me the', 'view the', 'last segment', 'recent segment', 'my segment', 'segment I created', 'what segment', 'which segment', 'list segments'],
-            'generate_email': ['personalize', 'personalise', 'content', 'deliver', 'campaign', 'write email'],
+            'generate_email': ['write email', 'email content', 'deliver', 'campaign'],
             'investigate_table': ['investigate', 'explore', 'query', 'table contents', 'show table', 'display table'],
             'create_records': ['create records', 'add data', 'insert', 'generate data', 'synthetic'],
             'show_analytics': ['analytics', 'stats', 'metrics', 'performance', 'report'],
             'explain_data': ['explain', 'what is', 'describe', 'tell me about']
         }
     
-    def process_request(self, user_message, sf, data_manager, segmentation_engine, email_generator, datacloud_analytics):
+    def process_request(self, user_message, sf, data_manager, segmentation_engine, email_generator, datacloud_analytics, image_generator=None):
         """Process a natural language request and return structured response"""
         
         user_message_lower = user_message.lower()
@@ -63,7 +64,10 @@ class AIAgent:
                 response = self._handle_investigate_table(user_message, user_message_lower, sf, data_manager)
             
             elif intent == 'create_segment':
-                response = self._handle_create_segment(user_message, user_message_lower, sf, segmentation_engine)
+                response = self._handle_create_segment(user_message, user_message_lower, sf, segmentation_engine, image_generator)
+            
+            elif intent == 'personalize_content':
+                response = self._handle_personalize_content(user_message, user_message_lower, sf, segmentation_engine, image_generator)
             
             elif intent == 'generate_email':
                 response = self._handle_generate_email(user_message, user_message_lower, sf, email_generator, segmentation_engine)
@@ -294,7 +298,7 @@ class AIAgent:
                 'suggested_actions': ['Check data file', 'Regenerate data']
             }
     
-    def _handle_create_segment(self, original_message, message, sf, segmentation_engine):
+    def _handle_create_segment(self, original_message, message, sf, segmentation_engine, image_generator=None):
         """Handle segment creation requests - ACTUALLY CREATE THE SEGMENT"""
         
         # Parse request for segment requirements
@@ -484,19 +488,65 @@ class AIAgent:
                     self.context['last_segment_created'] = segment
                     self.context['last_segment_id'] = segment['id']
                     self.context['last_segment_name'] = segment_name
+                    self.context['last_segment_members'] = members
                     self.context['last_action'] = 'create_segment'
+                    
+                    # Auto-generate personalized images for top 5 if conditions are met
+                    personalized_images = []
+                    if image_generator and member_count <= 10 and member_count > 0:
+                        try:
+                            print(f"🎨 Auto-generating personalized content for {min(member_count, 5)} top engaged members...")
+                            message_text += f"\n\n🎨 **Generating Personalized AI Images...**\n"
+                            
+                            # Generate for top 5 (or fewer if segment is smaller)
+                            top_members = members[:5]
+                            for idx, member in enumerate(top_members, 1):
+                                try:
+                                    member_name = member.get('Name', 'Unknown')
+                                    print(f"  Generating image for {member_name}...")
+                                    
+                                    # Generate personalized image using the existing system
+                                    result = image_generator.generate_personalized_image(member, custom_prompt=None)
+                                    
+                                    if result.get('success'):
+                                        personalized_images.append({
+                                            'name': member_name,
+                                            'image_url': result.get('image_url'),
+                                            'prompt': result.get('prompt_used'),
+                                            'messages': result.get('promotional_messages', [])
+                                        })
+                                        print(f"    ✅ Generated for {member_name}")
+                                    else:
+                                        print(f"    ❌ Failed for {member_name}: {result.get('error')}")
+                                except Exception as e:
+                                    print(f"    ❌ Error generating for {member_name}: {str(e)}")
+                                    continue
+                            
+                            if personalized_images:
+                                message_text += f"✅ Generated {len(personalized_images)} personalized images with hyper-targeted content!\n"
+                                message_text += f"Each image includes profile picture, favorite exercise, brand, destination, and lifestyle!\n"
+                        except Exception as e:
+                            print(f"❌ Error in auto-personalization: {str(e)}")
+                            message_text += f"\n⚠️ Could not auto-generate images. You can generate them manually later.\n"
+                    
+                    response_data = {
+                        'segment': segment,
+                        'members': members[:20],  # First 20 for display
+                        'total_members': member_count
+                    }
+                    
+                    if personalized_images:
+                        response_data['personalized_images'] = personalized_images
+                        message_text += f"\n💡 Scroll down to see the personalized AI-generated images!"
                     
                     return {
                         'intent': 'create_segment',
                         'message': message_text,
-                        'data': {
-                            'segment': segment,
-                            'members': members[:20],  # First 20 for display
-                            'total_members': member_count
-                        },
+                        'data': response_data,
                         'suggested_actions': [
                             f'Generate emails for {segment_name}',
                             'View segment details',
+                            'Regenerate personalized images',
                             'Create another segment'
                         ]
                     }
@@ -537,6 +587,139 @@ class AIAgent:
                     'Create super engaged segment',
                     'Create top 50 individuals',
                     'Go to Segments page'
+                ]
+            }
+    
+    def _handle_personalize_content(self, original_message, message, sf, segmentation_engine, image_generator):
+        """Handle requests to generate personalized AI images for segment members"""
+        
+        if not image_generator:
+            return {
+                'intent': 'personalize_content',
+                'message': "❌ **Personalized Image Generation Not Available**\n\nThe AI image generation system is not configured. Please contact your administrator.",
+                'data': None,
+                'suggested_actions': ['Check configuration', 'View available features']
+            }
+        
+        # Check if we have a recent segment to work with
+        last_segment = self.context.get('last_segment_created')
+        last_members = self.context.get('last_segment_members', [])
+        
+        if not last_segment or not last_members:
+            return {
+                'intent': 'personalize_content',
+                'message': "❌ **No Segment Found**\n\nPlease create a segment first, then I can generate personalized content for its members.\n\nExample: 'Create a segment of 5 most highly engaged individuals'",
+                'data': None,
+                'suggested_actions': [
+                    'Create segment of 5 highly engaged individuals',
+                    'View available segments'
+                ]
+            }
+        
+        # Generate personalized images
+        try:
+            segment_name = last_segment.get('name', 'the segment')
+            member_count = len(last_members)
+            
+            message_text = f"🎨 **Generating Hyper-Personalized AI Images**\n\n"
+            message_text += f"📊 **Segment:** {segment_name}\n"
+            message_text += f"👥 **Members:** Processing top {min(member_count, 5)} individuals...\n\n"
+            
+            personalized_images = []
+            top_members = last_members[:5]  # Generate for top 5
+            
+            for idx, member in enumerate(top_members, 1):
+                try:
+                    member_name = member.get('Name', 'Unknown')
+                    member_id = member.get('id', member.get('Id', 'unknown'))
+                    
+                    print(f"🎨 Generating personalized image {idx}/5 for {member_name}...")
+                    message_text += f"⏳ Generating for {member_name}...\n"
+                    
+                    # Generate using the personalized image system
+                    result = image_generator.generate_personalized_image(member, custom_prompt=None)
+                    
+                    if result.get('success'):
+                        personalized_images.append({
+                            'id': member_id,
+                            'name': member_name,
+                            'image_url': result.get('image_url'),
+                            'prompt': result.get('prompt_used'),
+                            'messages': result.get('promotional_messages', []),
+                            'insights': {
+                                'favourite_exercise': member.get('favourite_exercise', 'N/A'),
+                                'favourite_brand': member.get('Favourite_Brand', 'N/A'),
+                                'favourite_destination': member.get('Favourite_Destination', 'N/A'),
+                                'lifestyle': member.get('Lifestyle_Quotient', 'N/A'),
+                                'health_profile': member.get('Health_Profile', 'N/A'),
+                                'fitness_milestone': member.get('Fitness_Milestone', 'N/A')
+                            }
+                        })
+                        print(f"  ✅ Success: Generated for {member_name}")
+                    else:
+                        error_msg = result.get('error', 'Unknown error')
+                        print(f"  ❌ Failed: {error_msg}")
+                        message_text += f"  ❌ Failed for {member_name}: {error_msg}\n"
+                        
+                except Exception as e:
+                    print(f"  ❌ Error for {member_name}: {str(e)}")
+                    message_text += f"  ❌ Error for {member_name}\n"
+                    continue
+            
+            if personalized_images:
+                message_text = f"✅ **Personalized Content Generated Successfully!**\n\n"
+                message_text += f"📊 **Segment:** {segment_name}\n"
+                message_text += f"🎨 **Generated:** {len(personalized_images)} hyper-personalized AI images\n\n"
+                message_text += f"**✨ Each image includes:**\n"
+                message_text += f"• Face-swapped profile picture\n"
+                message_text += f"• Individual doing their favorite exercise\n"
+                message_text += f"• Their favorite brand incorporated\n"
+                message_text += f"• Favorite destination in background\n"
+                message_text += f"• Lifestyle quotient reflected\n"
+                message_text += f"• Health alerts (if hypertensive)\n"
+                message_text += f"• 50% discount offer (if crossed fitness milestone)\n\n"
+                message_text += f"💡 Scroll down to see all generated images and promotional messages!"
+                
+                return {
+                    'intent': 'personalize_content',
+                    'message': message_text,
+                    'data': {
+                        'personalized_images': personalized_images,
+                        'segment': last_segment,
+                        'total_generated': len(personalized_images)
+                    },
+                    'suggested_actions': [
+                        'Generate emails with these images',
+                        'Download images',
+                        'Create another segment',
+                        'View segment details'
+                    ]
+                }
+            else:
+                return {
+                    'intent': 'personalize_content',
+                    'message': "❌ **Failed to Generate Images**\n\nCould not generate any personalized images. Please try again or check your API configuration.",
+                    'data': None,
+                    'suggested_actions': [
+                        'Try again',
+                        'Check API configuration',
+                        'View segment members'
+                    ]
+                }
+                
+        except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
+            print(f"❌ Error in _handle_personalize_content: {error_details}")
+            
+            return {
+                'intent': 'personalize_content',
+                'message': f"❌ **Error Generating Personalized Content**\n\n{str(e)}\n\nPlease try again or check your configuration.",
+                'data': None,
+                'suggested_actions': [
+                    'Try again',
+                    'Create a new segment',
+                    'Check API status'
                 ]
             }
     

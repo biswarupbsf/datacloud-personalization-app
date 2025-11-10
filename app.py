@@ -704,7 +704,8 @@ def agent_chat():
             data_manager,
             segmentation_engine,
             email_generator,
-            datacloud_analytics
+            datacloud_analytics,
+            image_generator  # Pass image generator for personalized content
         )
         
         return jsonify({'success': True, 'response': response})
