@@ -1085,7 +1085,7 @@ def upload_profile_picture():
         </html>
         '''
     
-    # Handle POST - save base64 image to JSON
+    # Handle POST - upload to Cloudinary and save URL
     try:
         data = request.get_json()
         person_name = data.get('person_name')
@@ -1094,31 +1094,74 @@ def upload_profile_picture():
         if not person_name or not image_data:
             return jsonify({'success': False, 'error': 'Missing person name or image data'}), 400
         
-        # Update the JSON data
+        # Upload to Cloudinary for PERMANENT storage
+        import cloudinary
+        import cloudinary.uploader
+        
+        # Configure Cloudinary
+        cloudinary.config(
+            cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+            api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
+            api_secret=os.environ.get('CLOUDINARY_API_SECRET', '')
+        )
+        
+        print(f"📤 Uploading profile picture for {person_name} to Cloudinary...")
+        
+        # Upload to Cloudinary
+        result = cloudinary.uploader.upload(
+            image_data,
+            folder="profile_pictures",
+            public_id=f"profile_{person_name.replace(' ', '_')}",
+            overwrite=True,
+            resource_type="image",
+            transformation=[
+                {'width': 512, 'height': 512, 'crop': 'fill', 'gravity': 'face'}
+            ]
+        )
+        
+        cloudinary_url = result.get('secure_url')
+        print(f"✅ Uploaded to Cloudinary: {cloudinary_url}")
+        
+        # Save URL to BOTH working data AND persistent profile pictures mapping
+        # 1. Update working synthetic_engagement.json
         data_file = os.path.join('data', 'synthetic_engagement.json')
         with open(data_file, 'r') as f:
             profiles = json.load(f)
         
-        updated = False
         for profile in profiles:
             if profile.get('Name') == person_name:
-                profile['profile_picture_url'] = image_data
-                updated = True
+                profile['profile_picture_url'] = cloudinary_url
                 break
-        
-        if not updated:
-            return jsonify({'success': False, 'error': f'Person "{person_name}" not found'}), 404
         
         with open(data_file, 'w') as f:
             json.dump(profiles, f, indent=2)
         
+        # 2. Update persistent profile_pictures.json (tracked in git)
+        profile_pics_file = os.path.join('data', 'profile_pictures.json')
+        try:
+            with open(profile_pics_file, 'r') as f:
+                profile_pics_mapping = json.load(f)
+        except:
+            profile_pics_mapping = {}
+        
+        profile_pics_mapping[person_name] = cloudinary_url
+        
+        with open(profile_pics_file, 'w') as f:
+            json.dump(profile_pics_mapping, f, indent=2)
+        
+        print(f"💾 Saved to profile_pictures.json: {person_name} -> {cloudinary_url}")
+        
         return jsonify({
             'success': True,
-            'message': f'Profile picture uploaded for {person_name}!'
+            'message': f'Profile picture uploaded for {person_name}!',
+            'cloudinary_url': cloudinary_url
         })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"❌ Upload error: {error_details}")
+        return jsonify({'success': False, 'error': str(e), 'details': error_details}), 500
 
 @app.route('/personalized-images')
 def personalized_images_page():
