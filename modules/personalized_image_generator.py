@@ -108,19 +108,20 @@ class PersonalizedImageGenerator:
         try:
             import fal_client
             
-            # Use face-to-many model for face swap
-            result = fal_client.subscribe(
-                "fal-ai/face-to-many",
+            # Use PuLID for face-consistent generation
+            handler = fal_client.submit(
+                "fal-ai/pulid",
                 arguments={
-                    "image_url": face_image_url,
+                    "reference_images": [{"image_url": face_image_url}],
                     "prompt": scenario_prompt,
                     "num_images": 1,
-                    "guidance_scale": 7.5,
-                    "num_inference_steps": 50,
-                    "style": "Photographic"
-                },
-                with_logs=False,
+                    "guidance_scale": 1.2,
+                    "num_inference_steps": 20,
+                    "image_size": "landscape_16_9"
+                }
             )
+            
+            result = handler.get()
             
             if result and 'images' in result and len(result['images']) > 0:
                 return {
@@ -128,7 +129,7 @@ class PersonalizedImageGenerator:
                     'image_url': result['images'][0]['url'],
                     'prompt': scenario_prompt,
                     'metadata': {
-                        'model': 'fal-ai/face-to-many',
+                        'model': 'fal-ai/pulid',
                         'individual': individual_data.get('Name', 'Unknown'),
                         'seed': result.get('seed', None)
                     }
@@ -140,9 +141,11 @@ class PersonalizedImageGenerator:
                 }
                 
         except Exception as e:
+            import traceback
             return {
                 'success': False,
-                'error': f'Fal.ai API error: {str(e)}'
+                'error': f'Fal.ai API error: {str(e)}',
+                'details': traceback.format_exc()
             }
     
     def _prepare_face_image(self, profile_pic_url):
