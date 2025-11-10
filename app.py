@@ -1083,7 +1083,7 @@ def upload_profile_picture():
         image_data = data.get('image_data')
         
         if not person_name or not image_data:
-            return jsonify({{'success': False, 'error': 'Missing person name or image data'}}), 400
+            return jsonify({'success': False, 'error': 'Missing person name or image data'}), 400
         
         # Update the JSON data
         data_file = os.path.join('data', 'synthetic_engagement.json')
@@ -1098,18 +1098,18 @@ def upload_profile_picture():
                 break
         
         if not updated:
-            return jsonify({{'success': False, 'error': f'Person "{{person_name}}" not found'}}), 404
+            return jsonify({'success': False, 'error': f'Person "{person_name}" not found'}), 404
         
         with open(data_file, 'w') as f:
             json.dump(profiles, f, indent=2)
         
-        return jsonify({{
+        return jsonify({
             'success': True,
-            'message': f'Profile picture uploaded for {{person_name}}!'
-        }})
+            'message': f'Profile picture uploaded for {person_name}!'
+        })
         
     except Exception as e:
-        return jsonify({{'success': False, 'error': str(e)}}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/health')
 def health_check():
