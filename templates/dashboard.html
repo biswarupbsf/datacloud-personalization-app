@@ -14,6 +14,9 @@
             <header class="page-header">
                 <h1>📊 Dashboard</h1>
                 <div class="header-actions">
+                    <button onclick="refreshDashboard()" class="btn btn-primary" id="refreshBtn" style="margin-right: 10px;">
+                        🔄 Refresh Stats
+                    </button>
                     <span class="user-info">👤 {{ username }}</span>
                     <a href="/logout" class="btn btn-secondary">Logout</a>
                 </div>
@@ -219,6 +222,23 @@
     </div>
     
     <script>
+        // Refresh entire dashboard
+        async function refreshDashboard() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Refreshing...';
+            
+            try {
+                // Reload the entire page to get fresh stats from Salesforce
+                window.location.reload();
+            } catch (error) {
+                console.error('Error refreshing dashboard:', error);
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Refresh Stats';
+                alert('Error refreshing dashboard. Please try again.');
+            }
+        }
+        
         // Load Real Data Cloud Analytics
         async function loadDataCloudStats() {
             try {
