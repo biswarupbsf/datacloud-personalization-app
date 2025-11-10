@@ -55,7 +55,10 @@ class SegmentationEngine:
             member_count = len(members)
             query = f"Engagement-based segment: {len(engagement_filters)} engagement filter(s)"
         else:
-            # Execute standard SOQL query
+            # Execute standard SOQL query (requires Salesforce connection)
+            if sf is None:
+                # No Salesforce connection - cannot create non-engagement segments
+                raise Exception("Salesforce connection required for non-engagement segments. Please login to Salesforce or use engagement-based filters.")
             query = self._build_query(base_object, filters)
             results = sf.query(query)
             member_count = results['totalSize']
