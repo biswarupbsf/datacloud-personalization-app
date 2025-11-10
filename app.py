@@ -965,87 +965,151 @@ def execute_query():
 
 @app.route('/upload-profile-picture', methods=['GET', 'POST'])
 def upload_profile_picture():
-    """Upload profile picture for current user"""
+    """Upload profile picture for any individual (stores as base64 in JSON)"""
     if request.method == 'GET':
-        return '''
+        # Load all individuals for dropdown
+        try:
+            data_file = os.path.join('data', 'synthetic_engagement.json')
+            with open(data_file, 'r') as f:
+                profiles = json.load(f)
+            names_list = [p.get('Name', '') for p in profiles if p.get('Name')]
+            names_options = ''.join([f'<option value="{name}">{name}</option>' for name in sorted(names_list)])
+        except:
+            names_options = '<option value="Biswarup Banerjee">Biswarup Banerjee</option>'
+        
+        return f'''
         <!DOCTYPE html>
         <html>
         <head>
             <title>Upload Profile Picture</title>
             <style>
-                body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
-                .upload-box { border: 2px dashed #667eea; padding: 40px; text-align: center; border-radius: 10px; }
-                input[type="file"] { margin: 20px 0; }
-                button { background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-                button:hover { background: #5568d3; }
-                .success { color: green; font-weight: bold; margin-top: 20px; }
-                .error { color: red; font-weight: bold; margin-top: 20px; }
+                body {{ font-family: Arial; max-width: 700px; margin: 50px auto; padding: 20px; background: #f5f7fa; }}
+                h1 {{ color: #667eea; }}
+                .upload-box {{ background: white; border: 2px dashed #667eea; padding: 40px; text-align: center; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+                select, input[type="file"] {{ width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }}
+                button {{ background: #667eea; color: white; border: none; padding: 15px 40px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }}
+                button:hover {{ background: #5568d3; }}
+                .success {{ color: green; font-weight: bold; margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 5px; }}
+                .error {{ color: red; font-weight: bold; margin-top: 20px; padding: 15px; background: #ffebee; border-radius: 5px; }}
+                .preview {{ max-width: 200px; max-height: 200px; margin: 20px auto; border-radius: 10px; display: none; }}
+                label {{ font-weight: 600; color: #333; display: block; margin-top: 15px; text-align: left; }}
             </style>
         </head>
         <body>
-            <h1>📸 Upload Your Profile Picture</h1>
+            <h1>📸 Upload Profile Picture</h1>
             <div class="upload-box">
-                <p>Upload your profile picture (JPG, PNG, max 5MB)</p>
-                <form id="uploadForm" enctype="multipart/form-data">
-                    <input type="file" name="profile_picture" accept="image/*" required><br>
-                    <button type="submit">Upload Picture</button>
+                <p style="color: #666;">Upload profile pictures for any individual (Stored as base64 - works on Heroku!)</p>
+                <form id="uploadForm">
+                    <label>Select Individual:</label>
+                    <select name="person_name" id="personName" required>
+                        {names_options}
+                    </select>
+                    
+                    <label>Choose Profile Picture (JPG, PNG, max 2MB):</label>
+                    <input type="file" name="profile_picture" id="fileInput" accept="image/*" required>
+                    
+                    <img id="preview" class="preview" />
+                    
+                    <button type="submit">📤 Upload Picture</button>
                 </form>
                 <div id="message"></div>
             </div>
             <script>
-                document.getElementById('uploadForm').onsubmit = async (e) => {
+                // Preview image
+                document.getElementById('fileInput').onchange = (e) => {{
+                    const file = e.target.files[0];
+                    if (file) {{
+                        const reader = new FileReader();
+                        reader.onload = (e) => {{
+                            const preview = document.getElementById('preview');
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }};
+                        reader.readAsDataURL(file);
+                    }}
+                }};
+                
+                // Upload
+                document.getElementById('uploadForm').onsubmit = async (e) => {{
                     e.preventDefault();
-                    const formData = new FormData(e.target);
-                    const response = await fetch('/upload-profile-picture', {method: 'POST', body: formData});
-                    const result = await response.json();
-                    const msgDiv = document.getElementById('message');
-                    if (result.success) {
-                        msgDiv.className = 'success';
-                        msgDiv.textContent = '✅ ' + result.message + ' - Refresh the Individual Engagement page to see it!';
-                    } else {
-                        msgDiv.className = 'error';
-                        msgDiv.textContent = '❌ ' + result.error;
-                    }
-                };
+                    
+                    const fileInput = document.getElementById('fileInput');
+                    const file = fileInput.files[0];
+                    const personName = document.getElementById('personName').value;
+                    
+                    if (!file) {{
+                        alert('Please select a file');
+                        return;
+                    }}
+                    
+                    // Read file as base64
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {{
+                        const base64Image = e.target.result;
+                        
+                        // Send to server
+                        const response = await fetch('/upload-profile-picture', {{
+                            method: 'POST',
+                            headers: {{'Content-Type': 'application/json'}},
+                            body: JSON.stringify({{
+                                person_name: personName,
+                                image_data: base64Image
+                            }})
+                        }});
+                        
+                        const result = await response.json();
+                        const msgDiv = document.getElementById('message');
+                        
+                        if (result.success) {{
+                            msgDiv.className = 'success';
+                            msgDiv.textContent = '✅ ' + result.message + ' - Refresh Individual Engagement to see it!';
+                        }} else {{
+                            msgDiv.className = 'error';
+                            msgDiv.textContent = '❌ ' + result.error;
+                        }}
+                    }};
+                    
+                    reader.readAsDataURL(file);
+                }};
             </script>
         </body>
         </html>
         '''
     
-    # Handle POST - save the uploaded file
-    if 'profile_picture' not in request.files:
-        return jsonify({'success': False, 'error': 'No file uploaded'}), 400
-    
-    file = request.files['profile_picture']
-    if file.filename == '':
-        return jsonify({'success': False, 'error': 'No file selected'}), 400
-    
-    # Save to static/images/biswarup_banerjee.jpg
+    # Handle POST - save base64 image to JSON
     try:
-        import os
-        filepath = os.path.join('static', 'images', 'biswarup_banerjee.jpg')
-        file.save(filepath)
+        data = request.get_json()
+        person_name = data.get('person_name')
+        image_data = data.get('image_data')
+        
+        if not person_name or not image_data:
+            return jsonify({{'success': False, 'error': 'Missing person name or image data'}}), 400
         
         # Update the JSON data
         data_file = os.path.join('data', 'synthetic_engagement.json')
         with open(data_file, 'r') as f:
             profiles = json.load(f)
         
+        updated = False
         for profile in profiles:
-            if profile.get('Name') == 'Biswarup Banerjee':
-                profile['profile_picture_url'] = '/static/images/biswarup_banerjee.jpg'
+            if profile.get('Name') == person_name:
+                profile['profile_picture_url'] = image_data
+                updated = True
                 break
+        
+        if not updated:
+            return jsonify({{'success': False, 'error': f'Person "{{person_name}}" not found'}}), 404
         
         with open(data_file, 'w') as f:
             json.dump(profiles, f, indent=2)
         
-        return jsonify({
+        return jsonify({{
             'success': True,
-            'message': 'Profile picture uploaded successfully!',
-            'path': '/static/images/biswarup_banerjee.jpg'
-        })
+            'message': f'Profile picture uploaded for {{person_name}}!'
+        }})
+        
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({{'success': False, 'error': str(e)}}), 500
 
 @app.route('/health')
 def health_check():
