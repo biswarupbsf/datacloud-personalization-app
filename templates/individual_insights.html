@@ -439,6 +439,7 @@
                         <th style="min-width: 130px;">💪 Health</th>
                         <th style="min-width: 120px;">🏋️ Fitness</th>
                         <th style="min-width: 140px;">🛒 Intent</th>
+                        <th style="min-width: 160px;">🏃 Favourite Exercise</th>
                         <th style="min-width: 150px;">❤️ Favourite Brand</th>
                         <th style="min-width: 180px;">✈️ Favourite Destination</th>
                         <th style="min-width: 130px;">🎨 Hobby</th>
@@ -594,6 +595,7 @@
                 html += '<td>' + insight.Health_Profile + '</td>';
                 html += '<td>' + insight.Fitness_Milestone + '</td>';
                 html += '<td><span class="intent-badge ' + intentClass + '">' + insight.Purchase_Intent + '</span></td>';
+                html += '<td><strong>' + (insight.Favourite_Exercise || 'Treadmill Running') + '</strong></td>';
                 html += '<td>' + insight.Favourite_Brand + '</td>';
                 html += '<td>' + insight.Favourite_Destination + '</td>';
                 html += '<td>' + insight.Hobby + '</td>';
@@ -690,7 +692,7 @@
             }
             
             // Create CSV content
-            const headers = ['Name', 'Email', 'Phone', 'Timestamp', 'Sentiment', 'Lifestyle', 'Health', 'Fitness', 'Purchase Intent', 'Brand', 'Destination', 'Hobby', 'Event'];
+            const headers = ['Name', 'Email', 'Phone', 'Timestamp', 'Sentiment', 'Lifestyle', 'Health', 'Fitness', 'Purchase Intent', 'Favourite Exercise', 'Brand', 'Destination', 'Hobby', 'Event'];
             let csv = headers.join(',') + '\n';
             
             filteredInsights.forEach(insight => {
@@ -704,6 +706,7 @@
                     insight.Health_Profile,
                     insight.Fitness_Milestone,
                     insight.Purchase_Intent,
+                    insight.Favourite_Exercise || 'Treadmill Running',
                     insight.Favourite_Brand,
                     insight.Favourite_Destination,
                     insight.Hobby,
