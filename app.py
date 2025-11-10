@@ -1380,6 +1380,22 @@ def get_scenario_suggestions(individual_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/profile-pictures/export')
+def export_profile_pictures():
+    """Export current profile picture URLs (for committing to git)"""
+    try:
+        profile_pics_file = os.path.join('data', 'profile_pictures.json')
+        with open(profile_pics_file, 'r') as f:
+            profile_pics = json.load(f)
+        
+        return jsonify({
+            'success': True,
+            'profile_pictures': profile_pics,
+            'instructions': 'Copy this JSON and update data/profile_pictures.json in your local repo, then commit and push'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/health')
 def health_check():
     """Health check endpoint"""
