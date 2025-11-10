@@ -49,6 +49,28 @@ datacloud_analytics = DataCloudAnalytics()
 ai_agent = AIAgent()
 image_generator = PersonalizedImageGenerator()
 
+# Auto-connect to Salesforce if credentials are in environment variables
+def auto_connect_salesforce():
+    """Automatically connect to Salesforce using environment variables"""
+    sf_username = os.environ.get('SF_USERNAME')
+    sf_password = os.environ.get('SF_PASSWORD')
+    sf_security_token = os.environ.get('SF_SECURITY_TOKEN', '')
+    
+    if sf_username and sf_password:
+        try:
+            print(f"🔄 Auto-connecting to Salesforce as {sf_username}...")
+            sf_manager.connect(sf_username, sf_password, sf_security_token)
+            print(f"✅ Auto-connected to Salesforce successfully!")
+            print(f"   Instance: {sf_manager.instance_url}")
+            return True
+        except Exception as e:
+            print(f"⚠️ Auto-connect failed: {str(e)}")
+            return False
+    return False
+
+# Try auto-connect on startup
+AUTO_CONNECTED = auto_connect_salesforce()
+
 # ============================================================================
 # AUTHENTICATION & CONNECTION ROUTES
 # ============================================================================
@@ -56,12 +78,20 @@ image_generator = PersonalizedImageGenerator()
 @app.route('/')
 def index():
     """Landing page / Dashboard"""
-    if 'connected' not in session:
+    # Check if auto-connected or manually connected via session
+    if not sf_manager.is_connected() and 'connected' not in session:
         return redirect(url_for('login'))
+    
+    # If auto-connected but no session, create one
+    if AUTO_CONNECTED and 'connected' not in session:
+        session['connected'] = True
+        session['username'] = os.environ.get('SF_USERNAME', 'Auto-connected User')
+        session.permanent = True
     
     # Get dashboard stats
     stats = data_manager.get_dashboard_stats(sf_manager.sf)
-    return render_template('dashboard.html', stats=stats, username=session.get('username'))
+    username = session.get('username', os.environ.get('SF_USERNAME', 'User'))
+    return render_template('dashboard.html', stats=stats, username=username)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
