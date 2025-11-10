@@ -13,7 +13,7 @@ import requests
 
 class PersonalizedImageGenerator:
     def __init__(self):
-        self.fal_api_key = os.environ.get('FAL_API_KEY', '')
+        self.fal_api_key = os.environ.get('FAL_KEY', '')
         
     def generate_personalized_image(self, individual_data, scenario_prompt=None):
         """
