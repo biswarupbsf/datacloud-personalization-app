@@ -498,12 +498,44 @@ class AIAgent:
                             print(f"🎨 Auto-generating personalized content for {min(member_count, 5)} top engaged members...")
                             message_text += f"\n\n🎨 **Generating Personalized AI Images...**\n"
                             
+                            # Load insights data for enrichment
+                            insights_file = os.path.join('data', 'individual_insights.json')
+                            try:
+                                with open(insights_file, 'r') as f:
+                                    all_insights = json.load(f)
+                                print(f"  ✅ Loaded {len(all_insights)} insights records for enrichment")
+                            except Exception as e:
+                                print(f"  ⚠️ Could not load insights: {e}")
+                                all_insights = []
+                            
                             # Generate for top 5 (or fewer if segment is smaller)
                             top_members = members[:5]
                             for idx, member in enumerate(top_members, 1):
                                 try:
                                     member_name = member.get('Name', 'Unknown')
                                     print(f"  Generating image for {member_name}...")
+                                    
+                                    # Enrich member data with insights before generation
+                                    member_insights = [ins for ins in all_insights if ins.get('Individual_Name') == member_name]
+                                    if member_insights:
+                                        # Sort by timestamp to get latest
+                                        member_insights.sort(key=lambda x: x.get('Event_Timestamp', ''), reverse=True)
+                                        latest_insight = member_insights[0]
+                                        
+                                        # Merge insights into member data
+                                        member['favourite_exercise'] = latest_insight.get('Favourite_Exercise', 'Treadmill Running')
+                                        member['favourite_brand'] = latest_insight.get('Favourite_Brand', 'Nike')
+                                        member['favourite_destination'] = latest_insight.get('Favourite_Destination', 'Singapore')
+                                        member['hobby'] = latest_insight.get('Hobby', 'Running')
+                                        member['lifestyle_quotient'] = latest_insight.get('Lifestyle_Quotient', 'Active')
+                                        member['current_sentiment'] = latest_insight.get('Current_Sentiment', 'Happy')
+                                        member['fitness_milestone'] = latest_insight.get('Fitness_Milestone', 'Intermediate')
+                                        member['health_profile'] = latest_insight.get('Health_Profile', 'Healthy')
+                                        member['upcoming_event'] = latest_insight.get('Imminent_Event', '')
+                                        
+                                        print(f"    ✅ Enriched with insights: {member['favourite_exercise']}, {member['favourite_brand']}")
+                                    else:
+                                        print(f"    ⚠️ No insights found for {member_name}")
                                     
                                     # Generate personalized image using the existing system
                                     result = image_generator.generate_personalized_image(member, custom_prompt=None)
@@ -625,6 +657,17 @@ class AIAgent:
             message_text += f"📊 **Segment:** {segment_name}\n"
             message_text += f"👥 **Members:** Processing top {min(member_count, 5)} individuals...\n\n"
             
+            # Load insights data for enrichment
+            import os
+            insights_file = os.path.join('data', 'individual_insights.json')
+            try:
+                with open(insights_file, 'r') as f:
+                    all_insights = json.load(f)
+                print(f"✅ Loaded {len(all_insights)} insights records")
+            except Exception as e:
+                print(f"⚠️ Could not load insights: {e}")
+                all_insights = []
+            
             personalized_images = []
             top_members = last_members[:5]  # Generate for top 5
             
@@ -635,6 +678,28 @@ class AIAgent:
                     
                     print(f"🎨 Generating personalized image {idx}/5 for {member_name}...")
                     message_text += f"⏳ Generating for {member_name}...\n"
+                    
+                    # Enrich member data with insights
+                    member_insights = [ins for ins in all_insights if ins.get('Individual_Name') == member_name]
+                    if member_insights:
+                        # Sort by timestamp to get latest
+                        member_insights.sort(key=lambda x: x.get('Event_Timestamp', ''), reverse=True)
+                        latest_insight = member_insights[0]
+                        
+                        # Merge insights into member data
+                        member['favourite_exercise'] = latest_insight.get('Favourite_Exercise', 'Treadmill Running')
+                        member['favourite_brand'] = latest_insight.get('Favourite_Brand', 'Nike')
+                        member['favourite_destination'] = latest_insight.get('Favourite_Destination', 'Singapore')
+                        member['hobby'] = latest_insight.get('Hobby', 'Running')
+                        member['lifestyle_quotient'] = latest_insight.get('Lifestyle_Quotient', 'Active')
+                        member['current_sentiment'] = latest_insight.get('Current_Sentiment', 'Happy')
+                        member['fitness_milestone'] = latest_insight.get('Fitness_Milestone', 'Intermediate')
+                        member['health_profile'] = latest_insight.get('Health_Profile', 'Healthy')
+                        member['upcoming_event'] = latest_insight.get('Imminent_Event', '')
+                        
+                        print(f"  ✅ Enriched {member_name} with insights: {member['favourite_exercise']}, {member['favourite_brand']}")
+                    else:
+                        print(f"  ⚠️ No insights found for {member_name}, using defaults")
                     
                     # Generate using the personalized image system
                     result = image_generator.generate_personalized_image(member, custom_prompt=None)
