@@ -125,17 +125,16 @@ class PersonalizedImageGenerator:
             print(f"👤 Face image URL: {face_image_url[:100]}...")
             print(f"📝 Scenario: {scenario_prompt[:100]}...")
             
-            # Step 1: Generate base scene image with SDXL
+            # Step 1: Generate base scene image with SDXL (using latest version)
             print("⚡ Step 1: Generating base scene with SDXL...")
             base_output = replicate.run(
-                "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+                "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
                 input={
                     "prompt": scenario_prompt,
                     "width": 1024,
                     "height": 768,
                     "num_inference_steps": 30,
-                    "guidance_scale": 7.5,
-                    "scheduler": "K_EULER"
+                    "guidance_scale": 7.5
                 }
             )
             
@@ -147,13 +146,14 @@ class PersonalizedImageGenerator:
             
             print(f"✅ Base scene generated: {target_image_url[:100]}...")
             
-            # Step 2: Face-swap using Replicate's face-swap model
+            # Step 2: Face-swap using Replicate's face-swap model (updated version)
             print("🔄 Step 2: Swapping face with profile picture...")
             swap_output = replicate.run(
-                "yan-ops/face_swap:d5900f9ebed33e7ae6f649a710feef37d71c0e03c53a8b0bc2b69a5c18dc036d",
+                "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
                 input={
                     "target_image": target_image_url,
-                    "swap_image": face_image_url
+                    "source_image": face_image_url,
+                    "cache_days": 1
                 }
             )
             
