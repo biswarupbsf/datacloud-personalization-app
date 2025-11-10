@@ -10,10 +10,19 @@ import base64
 import io
 from PIL import Image
 import requests
+import cloudinary
+import cloudinary.uploader
 
 class PersonalizedImageGenerator:
     def __init__(self):
         self.fal_api_key = os.environ.get('FAL_KEY', '')
+        
+        # Configure Cloudinary
+        cloudinary.config(
+            cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'demo'),
+            api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
+            api_secret=os.environ.get('CLOUDINARY_API_SECRET', '')
+        )
         
     def generate_personalized_image(self, individual_data, scenario_prompt=None):
         """
@@ -175,26 +184,42 @@ class PersonalizedImageGenerator:
     def _prepare_face_image(self, profile_pic_url):
         """
         Prepare face image for Fal.ai API
-        Convert base64 to temporary URL using Fal.ai's upload service
+        Convert base64 to public URL using Cloudinary
         """
         
         # If it's already a URL, return it
         if profile_pic_url.startswith('http'):
             return profile_pic_url
         
-        # If it's a base64 data URI, upload to Fal.ai storage
+        # If it's a base64 data URI, upload to Cloudinary for public access
         if profile_pic_url.startswith('data:image'):
             try:
-                import fal_client
+                # Check if Cloudinary is configured
+                if not os.environ.get('CLOUDINARY_API_KEY'):
+                    print("⚠️ Cloudinary not configured - trying Fal.ai upload...")
+                    # Fallback to Fal.ai upload
+                    import fal_client
+                    uploaded_url = fal_client.upload_file(profile_pic_url)
+                    print(f"✅ Uploaded to Fal.ai: {uploaded_url}")
+                    return uploaded_url
                 
-                # Upload base64 image to Fal.ai's temporary storage
-                print("Uploading base64 image to Fal.ai storage...")
-                uploaded_url = fal_client.upload_file(profile_pic_url)
-                print(f"Uploaded successfully: {uploaded_url}")
+                # Upload to Cloudinary
+                print("📤 Uploading base64 image to Cloudinary...")
+                result = cloudinary.uploader.upload(
+                    profile_pic_url,
+                    folder="profile_pictures",
+                    resource_type="image",
+                    transformation=[
+                        {'width': 512, 'height': 512, 'crop': 'fill', 'gravity': 'face'}
+                    ]
+                )
+                uploaded_url = result.get('secure_url')
+                print(f"✅ Uploaded successfully: {uploaded_url}")
                 return uploaded_url
+                
             except Exception as e:
-                print(f"Error uploading image: {e}")
-                # Fallback to base64
+                print(f"❌ Error uploading image: {e}")
+                # Last resort fallback to base64
                 return profile_pic_url
         
         # If it's a local path, construct full URL

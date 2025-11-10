@@ -8,3 +8,4 @@ pandas==2.1.4
 numpy==1.26.2
 fal-client==0.4.1
 Pillow==10.1.0
+cloudinary==1.36.0
