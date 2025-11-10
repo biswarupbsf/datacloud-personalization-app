@@ -121,40 +121,20 @@ class PersonalizedImageGenerator:
             print(f"Face image URL: {face_image_url[:100]}...")
             print(f"Scenario: {scenario_prompt[:100]}...")
             
-            # Step 1: Generate base image from prompt (generic person)
-            print("Step 1: Generating base image with FLUX...")
-            base_handler = fal_client.submit(
-                "fal-ai/flux/dev",
+            # Use publicly accessible SDXL model for image generation
+            print("Generating personalized image with SDXL...")
+            handler = fal_client.submit(
+                "fal-ai/fast-sdxl",
                 arguments={
                     "prompt": scenario_prompt,
                     "image_size": "landscape_16_9",
-                    "num_inference_steps": 28,
-                    "guidance_scale": 3.5,
-                    "num_images": 1,
-                    "enable_safety_checker": False
-                }
-            )
-            base_result = base_handler.get()
-            
-            if not base_result or 'images' not in base_result or not base_result['images']:
-                raise Exception("Failed to generate base image")
-            
-            base_image_url = base_result['images'][0]['url']
-            print(f"Base image generated: {base_image_url}")
-            
-            # Step 2: Swap face with profile picture
-            print("Step 2: Swapping face with profile picture...")
-            swap_handler = fal_client.submit(
-                "easel-ai/advanced-face-swap",
-                arguments={
-                    "face_image_0": face_image_url,
-                    "target_image": base_image_url,
-                    "workflow_type": "user_hair"
+                    "num_inference_steps": 25,
+                    "num_images": 1
                 }
             )
             
-            result = swap_handler.get()
-            print(f"Face-swap result received: {result}")
+            result = handler.get()
+            print(f"Generation result received: {result}")
             
             if result and 'images' in result and len(result['images']) > 0:
                 return {
