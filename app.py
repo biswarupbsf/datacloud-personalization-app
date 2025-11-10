@@ -1130,6 +1130,8 @@ def generate_personalized_image():
         individual_id = data.get('individual_id')
         custom_prompt = data.get('custom_prompt')
         
+        print(f"🎨 API Request - Individual ID: {individual_id}")
+        
         if not individual_id:
             return jsonify({'success': False, 'error': 'Individual ID required'}), 400
         
@@ -1148,7 +1150,10 @@ def generate_personalized_image():
                 break
         
         if not individual:
+            print(f"❌ Individual not found: {individual_id}")
             return jsonify({'success': False, 'error': 'Individual not found'}), 404
+        
+        print(f"✅ Found individual: {individual.get('Name')}")
         
         # Load latest insights for this individual
         try:
@@ -1165,16 +1170,24 @@ def generate_personalized_image():
                 individual['hobby'] = latest_insight.get('Hobby')
                 individual['lifestyle_quotient'] = latest_insight.get('Lifestyle_Quotient')
                 individual['current_sentiment'] = latest_insight.get('Current_Sentiment')
-        except:
+                print(f"📊 Loaded insights: {latest_insight.get('Hobby')} + {latest_insight.get('Favourite_Brand')}")
+        except Exception as insights_error:
+            print(f"⚠️ Could not load insights: {insights_error}")
             pass  # Use defaults if insights not available
         
         # Generate personalized image
+        print(f"🚀 Starting image generation...")
         result = image_generator.generate_personalized_image(individual, custom_prompt)
+        print(f"✅ Generation complete: {result.get('success')}")
         
         return jsonify(result)
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"❌ ERROR in generate_personalized_image:")
+        print(error_details)
+        return jsonify({'success': False, 'error': str(e), 'details': error_details}), 500
 
 @app.route('/api/personalized-images/batch', methods=['POST'])
 def generate_batch_images():
