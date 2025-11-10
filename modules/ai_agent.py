@@ -5,6 +5,7 @@ Interprets natural language requests and executes appropriate actions
 
 import json
 import re
+import os
 from datetime import datetime
 
 class AIAgent:
