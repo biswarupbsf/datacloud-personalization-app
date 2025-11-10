@@ -52,3 +52,8 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Data files - DO NOT overwrite production data on deploy
+# These contain user uploads (profile pictures) that should persist
+data/synthetic_engagement.json
+data/individual_insights.json
