@@ -874,6 +874,7 @@ def get_individuals_engagement():
                 'LastName': item.get('LastName', ''),
                 'Email': item.get('Email', ''),
                 'Phone': item.get('Phone', ''),
+                'profile_picture_url': item.get('profile_picture_url', ''),
                 'engagement_score': item.get('engagement_score', 0),
                 'omnichannel_score': item.get('omnichannel_score', 0),
                 # Email metrics
