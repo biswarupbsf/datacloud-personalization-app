@@ -987,7 +987,9 @@ def upload_profile_picture():
             <title>Upload Profile Picture</title>
             <style>
                 body {{ font-family: Arial; max-width: 700px; margin: 50px auto; padding: 20px; background: #f5f7fa; }}
-                h1 {{ color: #667eea; }}
+                h1 {{ color: #667eea; display: flex; align-items: center; justify-content: space-between; }}
+                .home-btn {{ background: #4caf50; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; display: inline-block; }}
+                .home-btn:hover {{ background: #45a049; }}
                 .upload-box {{ background: white; border: 2px dashed #667eea; padding: 40px; text-align: center; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
                 select, input[type="file"] {{ width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }}
                 button {{ background: #667eea; color: white; border: none; padding: 15px 40px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }}
@@ -999,7 +1001,10 @@ def upload_profile_picture():
             </style>
         </head>
         <body>
-            <h1>📸 Upload Profile Picture</h1>
+            <h1>
+                <span>📸 Upload Profile Picture</span>
+                <a href="/" class="home-btn">🏠 Home</a>
+            </h1>
             <div class="upload-box">
                 <p style="color: #666;">Upload profile pictures for any individual (Stored as base64 - works on Heroku!)</p>
                 <form id="uploadForm">
