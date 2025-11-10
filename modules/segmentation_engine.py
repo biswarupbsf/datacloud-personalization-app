@@ -287,6 +287,7 @@ class SegmentationEngine:
                     'Name': eng_data.get('Name', ind['Name']),  # Prefer engagement data Name
                     'engagement_score': eng_data.get('engagement_score', 0),
                     'omnichannel_score': eng_data.get('omnichannel_score', 0),
+                    'profile_picture_url': eng_data.get('profile_picture_url', ''),  # Include profile picture!
                     # Email engagement
                     'email_opens': eng_data.get('email_opens', 0),
                     'email_clicks': eng_data.get('email_clicks', 0),
