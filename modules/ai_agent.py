@@ -496,6 +496,8 @@ class AIAgent:
                     if image_generator and member_count <= 10 and member_count > 0:
                         try:
                             print(f"🎨 Auto-generating personalized content for {min(member_count, 5)} top engaged members...")
+                            print(f"  Image generator available: {image_generator is not None}")
+                            print(f"  Member count: {member_count}")
                             message_text += f"\n\n🎨 **Generating Personalized AI Images...**\n"
                             
                             # Load insights data for enrichment
@@ -506,6 +508,8 @@ class AIAgent:
                                 print(f"  ✅ Loaded {len(all_insights)} insights records for enrichment")
                             except Exception as e:
                                 print(f"  ⚠️ Could not load insights: {e}")
+                                import traceback
+                                print(traceback.format_exc())
                                 all_insights = []
                             
                             # Generate for top 5 (or fewer if segment is smaller)
@@ -538,7 +542,13 @@ class AIAgent:
                                         print(f"    ⚠️ No insights found for {member_name}")
                                     
                                     # Generate personalized image using the existing system
+                                    print(f"    Calling image_generator.generate_personalized_image for {member_name}...")
+                                    print(f"    Member has profile_picture_url: {bool(member.get('profile_picture_url'))}")
+                                    print(f"    Profile picture URL: {member.get('profile_picture_url', 'NONE')[:100]}")
+                                    
                                     result = image_generator.generate_personalized_image(member, custom_prompt=None)
+                                    
+                                    print(f"    Result: success={result.get('success')}, error={result.get('error', 'none')}")
                                     
                                     if result.get('success'):
                                         personalized_images.append({
@@ -549,17 +559,26 @@ class AIAgent:
                                         })
                                         print(f"    ✅ Generated for {member_name}")
                                     else:
-                                        print(f"    ❌ Failed for {member_name}: {result.get('error')}")
+                                        error_msg = result.get('error', 'Unknown error')
+                                        print(f"    ❌ Failed for {member_name}: {error_msg}")
+                                        message_text += f"  ❌ {member_name}: {error_msg}\n"
                                 except Exception as e:
-                                    print(f"    ❌ Error generating for {member_name}: {str(e)}")
+                                    print(f"    ❌ Exception generating for {member_name}: {str(e)}")
+                                    import traceback
+                                    print(traceback.format_exc())
+                                    message_text += f"  ❌ {member_name}: {str(e)}\n"
                                     continue
                             
                             if personalized_images:
-                                message_text += f"✅ Generated {len(personalized_images)} personalized images with hyper-targeted content!\n"
+                                message_text += f"\n✅ Generated {len(personalized_images)} personalized images with hyper-targeted content!\n"
                                 message_text += f"Each image includes profile picture, favorite exercise, brand, destination, and lifestyle!\n"
+                            else:
+                                message_text += f"\n⚠️ No images were generated. Please check the errors above.\n"
                         except Exception as e:
                             print(f"❌ Error in auto-personalization: {str(e)}")
-                            message_text += f"\n⚠️ Could not auto-generate images. You can generate them manually later.\n"
+                            import traceback
+                            print(traceback.format_exc())
+                            message_text += f"\n⚠️ Could not auto-generate images: {str(e)}\n"
                     
                     response_data = {
                         'segment': segment,
