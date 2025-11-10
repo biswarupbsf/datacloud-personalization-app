@@ -698,9 +698,11 @@ def agent_chat():
             return jsonify({'success': False, 'error': 'No message provided'}), 400
         
         # Process through AI agent
+        # Pass None for sf if not connected (synthetic data doesn't need Salesforce)
+        sf_connection = sf_manager.sf if sf_manager.is_connected() else None
         response = ai_agent.process_request(
             user_message,
-            sf_manager.sf,
+            sf_connection,
             data_manager,
             segmentation_engine,
             email_generator,
