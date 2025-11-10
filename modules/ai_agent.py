@@ -547,7 +547,7 @@ class AIAgent:
                                     print(f"    Member has profile_picture_url: {bool(member.get('profile_picture_url'))}")
                                     print(f"    Profile picture URL: {member.get('profile_picture_url', 'NONE')[:100]}")
                                     
-                                    result = image_generator.generate_personalized_image(member, custom_prompt=None)
+                                    result = image_generator.generate_personalized_image(member)
                                     
                                     print(f"    Result: success={result.get('success')}, error={result.get('error', 'none')}")
                                     
@@ -722,7 +722,7 @@ class AIAgent:
                         print(f"  ⚠️ No insights found for {member_name}, using defaults")
                     
                     # Generate using the personalized image system
-                    result = image_generator.generate_personalized_image(member, custom_prompt=None)
+                    result = image_generator.generate_personalized_image(member)
                     
                     if result.get('success'):
                         personalized_images.append({
