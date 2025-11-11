@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Personalized Image Generator using Fal.ai
+Personalized Image Generator using Replicate API
 Generates campaign images with face-swap based on individual profiles and segments
 """
 
@@ -52,7 +52,7 @@ class PersonalizedImageGenerator:
         if not scenario_prompt:
             scenario_prompt = self._generate_scenario_prompt(individual_data)
         
-        # Call Fal.ai API for face-swap image generation
+        # Call Replicate API for face-swap image generation
         try:
             result = self._call_fal_api(profile_pic_url, scenario_prompt, individual_data)
             return result
@@ -63,192 +63,115 @@ class PersonalizedImageGenerator:
             }
     
     def _generate_scenario_prompt(self, individual_data):
-        """
-        Generate HYPER-PERSONALIZED scenario prompt based on ALL psychographic insights
-        Dynamically incorporates: hobby, brand, destination, lifestyle, fitness, sentiment, events
-        """
+        """Generate detailed, context-aware scenario prompts based on individual's profile"""
         
-        name = individual_data.get('Name', 'person')
-        
-        # Get ALL psychographic insights
-        fitness_milestone = individual_data.get('fitness_milestone', 'Active Lifestyle')
+        # Extract all psychographic insights
+        favourite_exercise = individual_data.get('favourite_exercise', 'Treadmill Running')
         favourite_brand = individual_data.get('favourite_brand', 'Nike')
-        favourite_destination = individual_data.get('favourite_destination', 'Singapore')
-        hobby = individual_data.get('hobby', 'Running')
+        favourite_destination = individual_data.get('favourite_destination', 'Beach Resort')
         lifestyle = individual_data.get('lifestyle_quotient', 'Active')
+        fitness_milestone = individual_data.get('fitness_milestone', 'Intermediate')
         sentiment = individual_data.get('current_sentiment', 'Motivated')
         upcoming_event = individual_data.get('upcoming_event', None)
-        favourite_exercise = individual_data.get('favourite_exercise', 'Treadmill Running')
         
-        # Sentiment-to-mood mapping for more nuanced imagery
-        sentiment_mood = {
-            'Happy': 'joyful, smiling, celebrating',
-            'Excited': 'energetic, enthusiastic, dynamic',
-            'Motivated': 'focused, determined, powerful',
-            'Relaxed': 'calm, peaceful, serene',
-            'Confident': 'strong, assured, professional'
-        }.get(sentiment, 'energetic and positive')
-        
-        # Destination-specific background elements
-        destination_elements = {
-            'Singapore': 'iconic Singapore skyline with Marina Bay Sands visible through floor-to-ceiling windows',
-            'Paris': 'elegant Parisian architecture or Eiffel Tower in the distance',
-            'Tokyo': 'modern Tokyo cityscape with neon lights',
-            'New York': 'Manhattan skyline visible in background',
-            'London': 'classic London architecture, Big Ben or London Eye visible',
-            'Dubai': 'luxurious Dubai skyline with Burj Khalifa',
-            'Beach': 'pristine beach with crystal clear water and palm trees',
-            'Mountains': 'majestic mountain range with snow-capped peaks'
+        # Sentiment to mood mapping
+        sentiment_moods = {
+            'Motivated': 'energetic and determined',
+            'Excited': 'joyful and enthusiastic',
+            'Stressed': 'focused yet calm',
+            'Relaxed': 'peaceful and content',
+            'Confident': 'self-assured and powerful',
+            'Happy': 'joyful and smiling',
+            'Angry': 'intense and focused'
         }
-        destination_background = destination_elements.get(favourite_destination, f'scenic {favourite_destination} landscape')
+        sentiment_mood = sentiment_moods.get(sentiment, 'determined')
         
-        # FITNESS EXERCISE-specific scenarios with FULL personalization
-        # Map exercises to activity types
-        exercise_scenarios = {
-            # Treadmill & Running
-            'Treadmill Running': f"Dynamic fitness photograph of athletic person powerfully running on treadmill in ultra-modern luxury gym, wearing {favourite_brand} athletic wear, {sentiment_mood} and focused expression, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone}, professional fitness photography, dramatic gym lighting, photorealistic",
-            'Outdoor Jogging': f"Action shot of runner jogging on scenic path, wearing {favourite_brand} running gear, {sentiment_mood}, {destination_background} surrounding them, {lifestyle.lower()} active lifestyle, achieving {fitness_milestone}, golden hour outdoor lighting, professional sports photography",
-            'Sprint Intervals': f"Intense fitness photo of person doing sprint training on track, wearing {favourite_brand} performance gear, {sentiment_mood} and powerful, {destination_background} in distance, {lifestyle.lower()} athletic lifestyle, achieving {fitness_milestone}, motion blur effect, professional sports photography",
-            
-            # Gym Equipment
-            'Elliptical': f"Fitness photograph of person exercising on elliptical machine in modern gym, wearing {favourite_brand} athletic apparel, {sentiment_mood}, windows showing {destination_background}, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional gym photography, natural lighting",
-            'Rowing Machine': f"Dynamic shot of athletic person using rowing machine in premium gym, wearing {favourite_brand} fitness wear, {sentiment_mood} and determined, {destination_background} visible through windows, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional fitness photography",
-            'Stair Climber': f"Fitness photo of person on stair climber in modern gym, wearing {favourite_brand} athletic gear, {sentiment_mood}, large windows with {destination_background}, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
-            
-            # Strength Training  
-            'Weight Lifting': f"Powerful photograph of person lifting weights in premium gym, wearing {favourite_brand} fitness apparel, {sentiment_mood} and strong, {destination_background} through floor-to-ceiling windows, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional strength training photography, dramatic lighting",
-            'Squats': f"Fitness photo of person doing squats with proper form in modern gym, wearing {favourite_brand} workout clothes, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional training photography",
-            'Bench Press': f"Strength training photograph of person on bench press in high-end gym, wearing {favourite_brand} athletic wear, {sentiment_mood} and focused, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
-            
-            # Cycling
-            'Cycling': f"Epic action shot of cyclist on premium road bike, wearing professional {favourite_brand} cycling gear, {sentiment_mood}, {destination_background} landscape, {lifestyle.lower()} athletic lifestyle, {fitness_milestone}, motion blur, professional cycling photography, golden hour",
-            'Spin Class': f"Energetic photo of person in spin class at luxury gym, wearing {favourite_brand} cycling gear, {sentiment_mood}, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional indoor cycling photography",
-            'Stationary Bike': f"Fitness photo of person on stationary bike in modern gym, wearing {favourite_brand} workout apparel, {sentiment_mood}, windows showing {destination_background}, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
-            
-            # Yoga & Flexibility
-            'Yoga Flow': f"Serene photo of person in yoga pose at exclusive studio, wearing elegant {favourite_brand} yoga outfit, {sentiment_mood} and mindful, {destination_background} backdrop, sunrise lighting, {lifestyle.lower()} wellness lifestyle, {fitness_milestone}, professional yoga photography",
-            'Pilates': f"Elegant photo of person doing Pilates in luxury studio, wearing {favourite_brand} activewear, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional wellness photography",
-            'Stretching': f"Peaceful photo of person stretching in modern gym or studio, wearing {favourite_brand} athletic wear, {sentiment_mood} and relaxed, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, natural lighting",
-            
-            # Swimming
-            'Swimming': f"Professional photo of swimmer in luxurious infinity pool, wearing {favourite_brand} swimwear, {sentiment_mood}, {destination_background} creating stunning views, {lifestyle.lower()} lifestyle, {fitness_milestone}, crystal clear water, natural lighting",
-            'Water Aerobics': f"Fitness photo of person doing water aerobics in premium pool, wearing {favourite_brand} swimwear, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional pool photography",
-            
-            # HIIT & Cross Training
-            'HIIT Circuit': f"Intense fitness photo of person doing HIIT workout in modern gym, wearing {favourite_brand} performance gear, {sentiment_mood} and powerful, {destination_background} through windows, {lifestyle.lower()} athletic lifestyle, {fitness_milestone}, dynamic action shot",
-            'Battle Ropes': f"Action shot of person using battle ropes in gym, wearing {favourite_brand} workout gear, {sentiment_mood} and fierce, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional training photography",
-            'Bodyweight Exercises': f"Fitness photo of person doing bodyweight training in gym or outdoor, wearing {favourite_brand} athletic apparel, {sentiment_mood}, {destination_background} setting, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional fitness photography"
+        # Destination background mapping - NOW USED AS ACTUAL BACKGROUND (not through windows!)
+        destination_backgrounds = {
+            'Beach Resort': 'on pristine sandy beach with turquoise ocean waves and palm trees in the background',
+            'Mountain Retreat': 'in mountain landscape with snow-capped peaks and alpine scenery behind',
+            'Urban City': 'on modern city rooftop with glass skyscrapers visible in background',
+            'Countryside': 'in countryside setting with rolling green hills and pastoral landscape',
+            'Desert Oasis': 'in desert oasis with golden sand dunes and palm trees',
+            'Tropical Island': 'in tropical paradise with lush jungle and waterfalls visible',
+            'European Villa': 'at Mediterranean villa terrace with cypress trees and scenic views',
+            'Asian Temple': 'at oriental temple courtyard with zen gardens and architecture',
+            'Safari Lodge': 'in African savanna setting with acacia trees and wildlife',
+            'Lakeside Cabin': 'beside serene mountain lake with pine forests in background',
+            'Singapore': 'at scenic Singapore location with Marina Bay Sands visible in background',
+            'Paris': 'at elegant Parisian location with Eiffel Tower visible in distance',
+            'Tokyo': 'in modern Tokyo setting with cityscape in background',
+            'New York': 'in New York City with Manhattan skyline visible',
+            'London': 'in London with iconic architecture and Big Ben visible',
+            'Dubai': 'in Dubai with luxurious skyline and Burj Khalifa',
+            'Maldives': 'in Maldives paradise with crystal clear turquoise waters and overwater bungalows'
         }
+        destination_background = destination_backgrounds.get(favourite_destination, f'in scenic {favourite_destination.lower()} setting')
         
-        # Check if there's an upcoming event to incorporate
-        event_context = ""
+        # Brand integration mapping - SPECIFIC to brand type
+        tech_brands = ['Samsung', 'Bose', 'Garmin', 'Apple', 'Fitbit', 'Polar', 'JBL', 'Sony']
+        apparel_brands = ['Nike', 'Adidas', 'Under Armour', 'Lululemon', 'Puma', 'Reebok', 'New Balance', 'Asics']
+        non_fitness_brands = ['Netflix', 'Spotify', 'Amazon', 'Google', 'Microsoft', 'Facebook', 'Instagram', 'Twitter', 'YouTube', 'Airbnb', 'Uber']
+        
+        if favourite_brand in tech_brands:
+            brand_detail = f"wearing {favourite_brand} smartwatch and wireless earbuds clearly visible on wrist and ears"
+        elif favourite_brand in apparel_brands:
+            brand_detail = f"wearing {favourite_brand} athletic wear with visible brand logo on chest"
+        elif favourite_brand in non_fitness_brands:
+            # If the brand isn't fitness-related, skip brand mention and use generic athletic wear
+            brand_detail = f"wearing premium athletic fitness gear"
+        else:
+            # Unknown brand - keep it generic
+            brand_detail = f"wearing premium athletic wear"
+        
+        # Add upcoming event context if present
+        event_context = ''
         if upcoming_event and upcoming_event != 'None':
-            event_context = f" preparing for upcoming {upcoming_event},"
+            event_context = f' preparing for {upcoming_event}'
         
-        # USE FAVOURITE EXERCISE (not hobby!) to determine the scenario
-        base_scenario = exercise_scenarios.get(favourite_exercise, 
-            f"Professional fitness photograph of athletic person doing {favourite_exercise.lower()}{event_context} wearing premium {favourite_brand} athletic apparel, {sentiment_mood} expression showing determination, {destination_background} visible through large windows, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} milestone, state-of-the-art gym setting, professional sports photography, photorealistic, dramatic lighting with natural light, 8K quality"
+        # Exercise-specific action descriptions
+        exercise_actions = {
+            'Treadmill Running': 'running on treadmill',
+            'Yoga': 'doing yoga pose',
+            'Cycling': 'cycling on bike',
+            'Swimming': 'swimming',
+            'Weight Lifting': 'lifting dumbbells',
+            'HIIT Training': 'doing high-intensity training',
+            'Pilates': 'doing pilates exercise',
+            'Boxing': 'practicing boxing moves',
+            'Dance Fitness': 'dancing energetically',
+            'CrossFit': 'doing CrossFit workout',
+            'Rowing': 'rowing',
+            'Rock Climbing': 'rock climbing',
+            'Martial Arts': 'practicing martial arts',
+            'Tennis': 'playing tennis',
+            'Basketball': 'playing basketball',
+            'Soccer': 'playing soccer',
+            'Golf': 'practicing golf swing',
+            'Skiing': 'skiing',
+            'Surfing': 'surfing',
+            'Elliptical Training': 'training on elliptical',
+            'Outdoor Jogging': 'jogging',
+            'Rowing Machine': 'using rowing machine',
+            'Stationary Bike': 'riding stationary bike',
+            'Yoga Flow': 'doing yoga flow',
+            'Squats': 'doing squats',
+            'Bench Press': 'doing bench press'
+        }
+        
+        action = exercise_actions.get(favourite_exercise, f'doing {favourite_exercise.lower()}')
+        
+        # GENERATE COMPLETE PROMPT - destination as actual background, no gym!
+        personalized_scenario = (
+            f"Professional fitness photograph of athletic person {action}{event_context}, "
+            f"{destination_background}, "
+            f"{brand_detail}, "
+            f"{sentiment_mood} expression, "
+            f"{lifestyle.lower()} lifestyle aesthetic, "
+            f"natural outdoor lighting, photorealistic, high-resolution 8K quality, professional sports photography style"
         )
         
-        # Add upcoming event emphasis if present
-        if upcoming_event and upcoming_event != 'None':
-            base_scenario += f" Image should convey preparation and excitement for {upcoming_event} event."
-        
-        return base_scenario
-    
-    def _add_text_overlay(self, image_url, individual_data):
-        """
-        Add promotional text overlay to the generated image
-        """
-        try:
-            # Download the image
-            with urllib.request.urlopen(image_url) as url:
-                img = Image.open(io.BytesIO(url.read()))
-            
-            # Convert to RGB if necessary
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            
-            # Create drawing context
-            draw = ImageDraw.Draw(img)
-            
-            # Determine promotional message
-            health_profile = individual_data.get('health_profile', '')
-            fitness_milestone = individual_data.get('fitness_milestone', '')
-            
-            # Check for health alert or promotional offer
-            message = None
-            bg_color = None
-            
-            if health_profile == 'Hypertensive':
-                message = "⚕️ HEALTH ALERT: Schedule a consultation with your doctor"
-                bg_color = (220, 53, 69, 230)  # Red with transparency
-            else:
-                # Check for fitness milestone progression (simplified check)
-                if fitness_milestone in ['Elite', 'Advanced']:
-                    message = "🎉 50% OFF Premium Membership - Limited Time!"
-                    bg_color = (40, 167, 69, 230)  # Green with transparency
-            
-            if message:
-                # Image dimensions
-                width, height = img.size
-                
-                # Try to load a font (fallback to default if not available)
-                try:
-                    font_size = int(width * 0.025)  # 2.5% of image width
-                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
-                except:
-                    font = ImageFont.load_default()
-                
-                # Get text bounding box
-                bbox = draw.textbbox((0, 0), message, font=font)
-                text_width = bbox[2] - bbox[0]
-                text_height = bbox[3] - bbox[1]
-                
-                # Position at bottom of image with padding
-                padding = int(width * 0.02)
-                text_x = (width - text_width) // 2
-                text_y = height - text_height - padding * 2
-                
-                # Draw semi-transparent background rectangle
-                rect_coords = [
-                    text_x - padding,
-                    text_y - padding,
-                    text_x + text_width + padding,
-                    text_y + text_height + padding
-                ]
-                
-                # Create overlay for transparency
-                overlay = Image.new('RGBA', img.size, (255, 255, 255, 0))
-                overlay_draw = ImageDraw.Draw(overlay)
-                overlay_draw.rectangle(rect_coords, fill=bg_color)
-                
-                # Composite overlay
-                img = img.convert('RGBA')
-                img = Image.alpha_composite(img, overlay)
-                img = img.convert('RGB')
-                
-                # Draw text
-                draw = ImageDraw.Draw(img)
-                draw.text((text_x, text_y), message, fill='white', font=font)
-            
-            # Save to BytesIO
-            output = io.BytesIO()
-            img.save(output, format='JPEG', quality=95)
-            output.seek(0)
-            
-            # Upload to Cloudinary with text overlay
-            result = cloudinary.uploader.upload(
-                output,
-                folder="generated_images_with_text",
-                resource_type="image"
-            )
-            
-            return result.get('secure_url', image_url)
-            
-        except Exception as e:
-            print(f"⚠️ Could not add text overlay: {e}")
-            return image_url  # Return original image if overlay fails
+        return personalized_scenario
     
     def _call_fal_api(self, profile_pic_url, scenario_prompt, individual_data):
         """
@@ -257,14 +180,9 @@ class PersonalizedImageGenerator:
         """
         
         if not self.replicate_api_key:
-            # Return mock response for testing without API key
             return {
                 'success': False,
-                'error': 'REPLICATE_API_TOKEN not set. Please add it to Heroku config.',
-                'message': 'Sign up at https://replicate.com and get your API token',
-                'metadata': {
-                    'individual': individual_data.get('Name', 'Unknown')
-                }
+                'error': 'REPLICATE_API_TOKEN not set. Please add it to Heroku config.'
             }
         
         # Prepare the face image (convert base64 to public URL via Cloudinary)
@@ -280,9 +198,9 @@ class PersonalizedImageGenerator:
         try:
             print(f"🎨 Starting face-swap generation for {individual_data.get('Name', 'Unknown')}")
             print(f"👤 Face image URL: {face_image_url[:100]}...")
-            print(f"📝 Scenario: {scenario_prompt[:100]}...")
+            print(f"📝 Scenario: {scenario_prompt[:150]}...")
             
-            # Step 1: Generate base scene image with SDXL (using latest version)
+            # Step 1: Generate base scene image with SDXL
             print("⚡ Step 1: Generating base scene with SDXL...")
             
             # Enhanced prompt for better accuracy
@@ -292,11 +210,11 @@ class PersonalizedImageGenerator:
                 "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
                 input={
                     "prompt": enhanced_prompt,
-                    "negative_prompt": "blurry, distorted face, wrong gender, cartoon, anime, low quality, bad anatomy, deformed, disfigured, poorly drawn face, mutation",
+                    "negative_prompt": "blurry, distorted face, wrong gender, cartoon, anime, low quality, bad anatomy, deformed, disfigured, poorly drawn face, mutation, gym, indoor, ceiling, roof",
                     "width": 1024,
                     "height": 768,
-                    "num_inference_steps": 40,  # More steps for better quality
-                    "guidance_scale": 8.5  # Higher guidance for more accuracy
+                    "num_inference_steps": 40,
+                    "guidance_scale": 8.5
                 }
             )
             
@@ -308,7 +226,7 @@ class PersonalizedImageGenerator:
             
             print(f"✅ Base scene generated: {target_image_url[:100]}...")
             
-            # Step 2: Face-swap using Replicate's face-swap model (updated version)
+            # Step 2: Face-swap using Replicate's face-swap model
             print("🔄 Step 2: Swapping face with profile picture...")
             swap_output = replicate.run(
                 "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
@@ -326,12 +244,18 @@ class PersonalizedImageGenerator:
             
             print(f"🎉 Face-swap complete: {final_image_url[:100]}...")
             
-            # Add promotional overlay to the image
-            final_image_with_text = self._add_promotional_overlay(final_image_url, individual_data)
+            # Add promotional text overlay to the image
+            try:
+                final_image_with_text = self._add_promotional_overlay(final_image_url, individual_data)
+                if final_image_with_text:
+                    final_image_url = final_image_with_text
+                    print(f"✅ Added promotional text overlay to image")
+            except Exception as text_error:
+                print(f"⚠️ Could not add text overlay: {text_error}")
             
             return {
                 'success': True,
-                'image_url': final_image_with_text if final_image_with_text else final_image_url,
+                'image_url': final_image_url,
                 'base_image_url': target_image_url,
                 'prompt_used': scenario_prompt,
                 'prompt': scenario_prompt,
@@ -356,7 +280,7 @@ class PersonalizedImageGenerator:
     
     def _add_promotional_overlay(self, image_url, individual_data):
         """
-        Add promotional text overlay to the generated image
+        Add promotional text overlay to the generated image at the TOP
         Shows health alerts or promotional offers directly on the image
         """
         try:
@@ -377,11 +301,11 @@ class PersonalizedImageGenerator:
             if health_profile == 'Hypertensive':
                 message_text = "⚕️ HEALTH ALERT: Please consult a doctor soon"
                 message_color = (220, 53, 69)  # Red
-            elif health_profile and health_profile not in ['Healthy', 'Fit']:
+            elif health_profile and health_profile not in ['Healthy', 'Fit', 'Active']:
                 message_text = f"⚠️  Health Check: {health_profile} - Consult your doctor"
                 message_color = (255, 152, 0)  # Orange
             # Priority 2: Fitness Milestone Offer (green) - for progression or Healthy/Fit
-            elif health_profile in ['Healthy', 'Fit'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
+            elif health_profile in ['Healthy', 'Fit', 'Active'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
                 message_text = "🎉 50% OFF PREMIUM - Limited Time Offer!"
                 message_color = (76, 175, 80)  # Green
             
@@ -435,15 +359,15 @@ class PersonalizedImageGenerator:
             img = Image.alpha_composite(img, overlay)
             img = img.convert('RGB')
             
-            # Draw text on top
+            # Draw text on top - CENTERED in the banner
             draw = ImageDraw.Draw(img)
-            text_x = (img_width - text_width) / 2
-            text_y = banner_y + 20
+            text_x = (img_width - text_width) // 2
+            text_y = (banner_height - text_height) // 2  # Center vertically in banner
             
-            # Draw text with shadow for better readability
-            shadow_offset = 2
-            draw.text((text_x + shadow_offset, text_y + shadow_offset), message_text, font=font, fill=(0, 0, 0))
-            draw.text((text_x, text_y), message_text, font=font, fill=(255, 255, 255))
+            # Add shadow for better readability
+            shadow_offset = 3
+            draw.text((text_x + shadow_offset, text_y + shadow_offset), message_text, fill='black', font=font)
+            draw.text((text_x, text_y), message_text, fill='white', font=font)
             
             # Save to BytesIO
             output = BytesIO()
@@ -472,7 +396,7 @@ class PersonalizedImageGenerator:
     
     def _prepare_face_image(self, profile_pic_url):
         """
-        Prepare face image for Fal.ai API
+        Prepare face image for Replicate API
         Convert base64 to public URL using Cloudinary
         """
         
@@ -483,15 +407,6 @@ class PersonalizedImageGenerator:
         # If it's a base64 data URI, upload to Cloudinary for public access
         if profile_pic_url.startswith('data:image'):
             try:
-                # Check if Cloudinary is configured
-                if not os.environ.get('CLOUDINARY_API_KEY'):
-                    print("⚠️ Cloudinary not configured - trying Fal.ai upload...")
-                    # Fallback to Fal.ai upload
-                    import fal_client
-                    uploaded_url = fal_client.upload_file(profile_pic_url)
-                    print(f"✅ Uploaded to Fal.ai: {uploaded_url}")
-                    return uploaded_url
-                
                 # Upload to Cloudinary
                 print("📤 Uploading base64 image to Cloudinary...")
                 result = cloudinary.uploader.upload(
@@ -508,30 +423,14 @@ class PersonalizedImageGenerator:
                 
             except Exception as e:
                 print(f"❌ Error uploading image: {e}")
-                # Last resort fallback to base64
                 return profile_pic_url
-        
-        # If it's a local path, construct full URL
-        if profile_pic_url.startswith('/static'):
-            # This would be the Heroku app URL + static path
-            base_url = os.environ.get('APP_URL', 'https://infinite-lowlands-00393-eacde66da597.herokuapp.com')
-            return f"{base_url}{profile_pic_url}"
         
         return profile_pic_url
     
     def generate_campaign_batch(self, segment_data, individuals_data, max_images=10):
         """
         Generate personalized images for a batch of individuals in a segment
-        
-        Args:
-            segment_data: Segment information
-            individuals_data: List of individuals in the segment
-            max_images: Maximum number of images to generate
-            
-        Returns:
-            List of results for each individual
         """
-        
         results = []
         
         for idx, individual in enumerate(individuals_data[:max_images]):
@@ -557,8 +456,7 @@ class PersonalizedImageGenerator:
             f"Relaxing at {destination} destination",
             f"Professional lifestyle photo with {brand} products",
             f"Celebratory moment after achieving fitness goal",
-            f"Training montage in modern gym environment"
+            f"Training montage in modern environment"
         ]
         
         return suggestions
-
