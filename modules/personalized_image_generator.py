@@ -74,6 +74,25 @@ class PersonalizedImageGenerator:
         sentiment = individual_data.get('current_sentiment', 'Motivated')
         upcoming_event = individual_data.get('upcoming_event', None)
         
+        # Determine gender from first name
+        name = individual_data.get('Name', '')
+        first_name = individual_data.get('FirstName', name.split()[0] if name else '')
+        
+        # Gender detection based on common Indian names
+        male_names = ['Biswarup', 'Ashish', 'Rajesh', 'Varun', 'Amit', 'Rahul', 'Rohan', 'Arjun', 'Karan', 'Anil']
+        female_names = ['Archana', 'Deepika', 'Ananya', 'Priya', 'Neha', 'Pooja', 'Kavita', 'Sneha', 'Riya']
+        
+        if first_name in male_names:
+            gender = 'male'
+            gender_descriptor = 'athletic man'
+        elif first_name in female_names:
+            gender = 'female'
+            gender_descriptor = 'athletic woman'
+        else:
+            # Default based on common patterns
+            gender = 'male' if first_name.endswith(('h', 'n', 'l', 'j')) else 'female'
+            gender_descriptor = f'athletic {"man" if gender == "male" else "woman"}'
+        
         # Sentiment to mood mapping
         sentiment_moods = {
             'Motivated': 'energetic and determined',
@@ -162,8 +181,9 @@ class PersonalizedImageGenerator:
         action = exercise_actions.get(favourite_exercise, f'doing {favourite_exercise.lower()}')
         
         # GENERATE COMPLETE PROMPT - destination as actual background, no gym!
+        # Include gender descriptor for accuracy
         personalized_scenario = (
-            f"Professional fitness photograph of athletic person {action}{event_context}, "
+            f"Professional fitness photograph of {gender_descriptor} {action}{event_context}, "
             f"{destination_background}, "
             f"{brand_detail}, "
             f"{sentiment_mood} expression, "
@@ -208,11 +228,23 @@ class PersonalizedImageGenerator:
             # Enhanced prompt for better accuracy
             enhanced_prompt = f"{scenario_prompt}, professional photography, clear face details, accurate human anatomy, photorealistic skin texture, natural body proportions, realistic fitness setting"
             
+            # Determine gender from name for negative prompts
+            name = individual_data.get('Name', '')
+            first_name = individual_data.get('FirstName', name.split()[0] if name else '')
+            male_names = ['Biswarup', 'Ashish', 'Rajesh', 'Varun', 'Amit', 'Rahul', 'Rohan', 'Arjun', 'Karan', 'Anil']
+            is_male = first_name in male_names
+            
+            # Gender-specific negative prompts
+            if is_male:
+                gender_negative = "female, woman, feminine features, female body, breasts, long hair, makeup, female clothing"
+            else:
+                gender_negative = "male, man, masculine features, male body, beard, mustache, masculine clothing"
+            
             base_output = replicate.run(
                 "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
                 input={
                     "prompt": enhanced_prompt,
-                    "negative_prompt": "blurry, distorted face, wrong gender, cartoon, anime, low quality, bad anatomy, deformed, disfigured, poorly drawn face, mutation, gym, indoor, ceiling, roof",
+                    "negative_prompt": f"blurry, distorted face, wrong gender, {gender_negative}, cartoon, anime, low quality, bad anatomy, deformed, disfigured, poorly drawn face, mutation, gym, indoor, ceiling, roof",
                     "width": 1024,
                     "height": 768,
                     "num_inference_steps": 40,
