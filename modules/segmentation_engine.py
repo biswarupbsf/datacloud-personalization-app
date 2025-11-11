@@ -269,8 +269,12 @@ class SegmentationEngine:
             print(f"Warning: Could not load insights data: {e}")
         
         # Get all Individuals
-        query = "SELECT Id, Name FROM Individual"
-        individuals = sf.query(query)['records']
+        if sf is None:
+            # No Salesforce - use synthetic data directly
+            individuals = [{'Id': e['id'], 'Name': e.get('Name', '')} for e in engagement_data]
+        else:
+            query = "SELECT Id, Name FROM Individual"
+            individuals = sf.query(query)['records']
         
         # Create lookup dict
         engagement_lookup = {e['id']: e for e in engagement_data}
