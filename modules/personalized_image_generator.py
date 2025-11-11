@@ -226,10 +226,14 @@ class PersonalizedImageGenerator:
             
             print(f"🎉 Face-swap complete: {final_image_url[:100]}...")
             
+            # Add promotional overlay to the image
+            final_image_with_text = self._add_promotional_overlay(final_image_url, individual_data)
+            
             return {
                 'success': True,
-                'image_url': final_image_url,
+                'image_url': final_image_with_text if final_image_with_text else final_image_url,
                 'base_image_url': target_image_url,
+                'prompt_used': scenario_prompt,
                 'prompt': scenario_prompt,
                 'metadata': {
                     'model': 'replicate/sdxl + face_swap',
