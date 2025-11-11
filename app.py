@@ -899,6 +899,21 @@ def get_individuals_engagement():
         with open(engagement_file, 'r') as f:
             engagement_data = json.load(f)
         
+        # Load individual insights data
+        insights_file = 'data/individual_insights.json'
+        insights_by_name = {}
+        try:
+            with open(insights_file, 'r') as f:
+                insights_data = json.load(f)
+            # Create lookup by name, get latest insight for each individual
+            for insight in insights_data:
+                name = insight.get('Individual_Name')
+                if name:
+                    if name not in insights_by_name or insight.get('Event_Timestamp', '') > insights_by_name[name].get('Event_Timestamp', ''):
+                        insights_by_name[name] = insight
+        except Exception as e:
+            print(f"⚠️ Could not load insights: {e}")
+        
         # Use data directly from synthetic_engagement.json (has real names and all metrics)
         merged_data = []
         for item in engagement_data:
@@ -964,6 +979,23 @@ def get_individuals_engagement():
                 'favorite_category': item.get('favorite_category', ''),
                 'last_engagement': item.get('last_engagement_date', '')
             })
+            
+            # Add insights if available
+            name = item.get('Name')
+            if name in insights_by_name:
+                insight = insights_by_name[name]
+                merged_data[-1]['insights'] = {
+                    'Favourite_Exercise': insight.get('Favourite_Exercise'),
+                    'Favourite_Brand': insight.get('Favourite_Brand'),
+                    'Favourite_Destination': insight.get('Favourite_Destination'),
+                    'Hobby': insight.get('Hobby'),
+                    'Lifestyle_Quotient': insight.get('Lifestyle_Quotient'),
+                    'Current_Sentiment': insight.get('Current_Sentiment'),
+                    'Health_Profile': insight.get('Health_Profile'),
+                    'Fitness_Milestone': insight.get('Fitness_Milestone'),
+                    'Purchase_Intent': insight.get('Purchase_Intent'),
+                    'Imminent_Event': insight.get('Imminent_Event')
+                }
         
         # Sort by omnichannel score descending
         merged_data.sort(key=lambda x: x['omnichannel_score'], reverse=True)

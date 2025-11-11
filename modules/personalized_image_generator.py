@@ -8,11 +8,12 @@ import os
 import json
 import base64
 import io
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import requests
 import cloudinary
 import cloudinary.uploader
 import replicate
+import urllib.request
 
 class PersonalizedImageGenerator:
     def __init__(self):
@@ -154,6 +155,100 @@ class PersonalizedImageGenerator:
             base_scenario += f" Image should convey preparation and excitement for {upcoming_event} event."
         
         return base_scenario
+    
+    def _add_text_overlay(self, image_url, individual_data):
+        """
+        Add promotional text overlay to the generated image
+        """
+        try:
+            # Download the image
+            with urllib.request.urlopen(image_url) as url:
+                img = Image.open(io.BytesIO(url.read()))
+            
+            # Convert to RGB if necessary
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            
+            # Create drawing context
+            draw = ImageDraw.Draw(img)
+            
+            # Determine promotional message
+            health_profile = individual_data.get('health_profile', '')
+            fitness_milestone = individual_data.get('fitness_milestone', '')
+            
+            # Check for health alert or promotional offer
+            message = None
+            bg_color = None
+            
+            if health_profile == 'Hypertensive':
+                message = "⚕️ HEALTH ALERT: Schedule a consultation with your doctor"
+                bg_color = (220, 53, 69, 230)  # Red with transparency
+            else:
+                # Check for fitness milestone progression (simplified check)
+                if fitness_milestone in ['Elite', 'Advanced']:
+                    message = "🎉 50% OFF Premium Membership - Limited Time!"
+                    bg_color = (40, 167, 69, 230)  # Green with transparency
+            
+            if message:
+                # Image dimensions
+                width, height = img.size
+                
+                # Try to load a font (fallback to default if not available)
+                try:
+                    font_size = int(width * 0.025)  # 2.5% of image width
+                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+                except:
+                    font = ImageFont.load_default()
+                
+                # Get text bounding box
+                bbox = draw.textbbox((0, 0), message, font=font)
+                text_width = bbox[2] - bbox[0]
+                text_height = bbox[3] - bbox[1]
+                
+                # Position at bottom of image with padding
+                padding = int(width * 0.02)
+                text_x = (width - text_width) // 2
+                text_y = height - text_height - padding * 2
+                
+                # Draw semi-transparent background rectangle
+                rect_coords = [
+                    text_x - padding,
+                    text_y - padding,
+                    text_x + text_width + padding,
+                    text_y + text_height + padding
+                ]
+                
+                # Create overlay for transparency
+                overlay = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                overlay_draw = ImageDraw.Draw(overlay)
+                overlay_draw.rectangle(rect_coords, fill=bg_color)
+                
+                # Composite overlay
+                img = img.convert('RGBA')
+                img = Image.alpha_composite(img, overlay)
+                img = img.convert('RGB')
+                
+                # Draw text
+                draw = ImageDraw.Draw(img)
+                draw.text((text_x, text_y), message, fill='white', font=font)
+            
+            # Save to BytesIO
+            output = io.BytesIO()
+            img.save(output, format='JPEG', quality=95)
+            output.seek(0)
+            
+            # Upload to Cloudinary with text overlay
+            result = cloudinary.uploader.upload(
+                output,
+                folder="generated_images_with_text",
+                resource_type="image"
+            )
+            
+            return result.get('secure_url', image_url)
+            
+        except Exception as e:
+            print(f"⚠️ Could not add text overlay: {e}")
+            return image_url  # Return original image if overlay fails
     
     def _call_fal_api(self, profile_pic_url, scenario_prompt, individual_data):
         """
