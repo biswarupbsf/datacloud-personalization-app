@@ -250,6 +250,114 @@ class PersonalizedImageGenerator:
                 'details': error_details
             }
     
+    def _add_promotional_overlay(self, image_url, individual_data):
+        """
+        Add promotional text overlay to the generated image
+        Shows health alerts or promotional offers directly on the image
+        """
+        try:
+            import requests
+            from PIL import Image, ImageDraw, ImageFont
+            from io import BytesIO
+            import cloudinary.uploader
+            
+            # Check if we should add any promotional messages
+            health_profile = individual_data.get('health_profile', individual_data.get('Health_Profile'))
+            fitness_milestone = individual_data.get('fitness_milestone', individual_data.get('Fitness_Milestone'))
+            
+            # Determine what message to show
+            message_text = None
+            message_color = None
+            
+            # Priority 1: Health Alert (red)
+            if health_profile == 'Hypertensive':
+                message_text = "⚕️ HEALTH ALERT: Schedule a doctor consultation"
+                message_color = (220, 53, 69)  # Red
+            # Priority 2: Fitness Milestone Offer (green)
+            elif fitness_milestone in ['Advanced', 'Elite']:
+                message_text = "🎉 50% OFF Premium Membership - Celebrate Your Progress!"
+                message_color = (40, 167, 69)  # Green
+            
+            if not message_text:
+                # No message to add
+                return image_url
+            
+            # Download the image
+            print(f"📥 Downloading image to add overlay...")
+            response = requests.get(image_url)
+            img = Image.open(BytesIO(response.content))
+            
+            # Create drawing context
+            draw = ImageDraw.Draw(img)
+            
+            # Try to use a better font, fall back to default if not available
+            try:
+                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 40)
+                font_small = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 30)
+            except:
+                font = ImageFont.load_default()
+                font_small = font
+            
+            # Get image dimensions
+            img_width, img_height = img.size
+            
+            # Calculate text size and position for banner at bottom
+            bbox = draw.textbbox((0, 0), message_text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            
+            # Create semi-transparent banner at bottom
+            banner_height = text_height + 40
+            banner_y = img_height - banner_height
+            
+            # Draw semi-transparent rectangle
+            overlay = Image.new('RGBA', img.size, (255, 255, 255, 0))
+            overlay_draw = ImageDraw.Draw(overlay)
+            overlay_draw.rectangle(
+                [(0, banner_y), (img_width, img_height)],
+                fill=message_color + (230,)  # Add alpha channel for semi-transparency
+            )
+            
+            # Composite the overlay onto the original image
+            img = img.convert('RGBA')
+            img = Image.alpha_composite(img, overlay)
+            img = img.convert('RGB')
+            
+            # Draw text on top
+            draw = ImageDraw.Draw(img)
+            text_x = (img_width - text_width) / 2
+            text_y = banner_y + 20
+            
+            # Draw text with shadow for better readability
+            shadow_offset = 2
+            draw.text((text_x + shadow_offset, text_y + shadow_offset), message_text, font=font, fill=(0, 0, 0))
+            draw.text((text_x, text_y), message_text, font=font, fill=(255, 255, 255))
+            
+            # Save to BytesIO
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=95)
+            output.seek(0)
+            
+            # Upload the modified image back to Cloudinary
+            print(f"☁️ Uploading image with overlay to Cloudinary...")
+            result = cloudinary.uploader.upload(
+                output,
+                folder="personalized_images_with_text",
+                resource_type="image"
+            )
+            
+            modified_url = result.get('secure_url')
+            print(f"✅ Image with overlay uploaded: {modified_url[:100]}...")
+            
+            return modified_url
+            
+        except Exception as e:
+            print(f"⚠️ Error adding promotional overlay: {e}")
+            import traceback
+            print(traceback.format_exc())
+            # Return original image if overlay fails
+            return image_url
+    
     def _prepare_face_image(self, profile_pic_url):
         """
         Prepare face image for Fal.ai API
