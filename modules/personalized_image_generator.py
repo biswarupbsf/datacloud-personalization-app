@@ -284,14 +284,19 @@ class PersonalizedImageGenerator:
             
             # Step 1: Generate base scene image with SDXL (using latest version)
             print("⚡ Step 1: Generating base scene with SDXL...")
+            
+            # Enhanced prompt for better accuracy
+            enhanced_prompt = f"{scenario_prompt}, professional photography, clear face details, accurate human anatomy, photorealistic skin texture, natural body proportions, realistic fitness setting"
+            
             base_output = replicate.run(
                 "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
                 input={
-                    "prompt": scenario_prompt,
+                    "prompt": enhanced_prompt,
+                    "negative_prompt": "blurry, distorted face, wrong gender, cartoon, anime, low quality, bad anatomy, deformed, disfigured, poorly drawn face, mutation",
                     "width": 1024,
                     "height": 768,
-                    "num_inference_steps": 30,
-                    "guidance_scale": 7.5
+                    "num_inference_steps": 40,  # More steps for better quality
+                    "guidance_scale": 8.5  # Higher guidance for more accuracy
                 }
             )
             
@@ -394,30 +399,35 @@ class PersonalizedImageGenerator:
             
             # Try to use a better font, fall back to default if not available
             try:
-                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 40)
-                font_small = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 30)
+                # LARGER fonts for better visibility
+                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 60)
+                font_small = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 40)
             except:
-                font = ImageFont.load_default()
-                font_small = font
+                try:
+                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 60)
+                    font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 40)
+                except:
+                    font = ImageFont.load_default()
+                    font_small = font
             
             # Get image dimensions
             img_width, img_height = img.size
             
-            # Calculate text size and position for banner at bottom
+            # Calculate text size and position for banner at TOP (not bottom!)
             bbox = draw.textbbox((0, 0), message_text, font=font)
             text_width = bbox[2] - bbox[0]
             text_height = bbox[3] - bbox[1]
             
-            # Create semi-transparent banner at bottom
-            banner_height = text_height + 40
-            banner_y = img_height - banner_height
+            # Create semi-transparent banner at TOP
+            banner_height = text_height + 50
+            banner_y = 0  # TOP of image
             
-            # Draw semi-transparent rectangle
+            # Draw semi-transparent rectangle at TOP
             overlay = Image.new('RGBA', img.size, (255, 255, 255, 0))
             overlay_draw = ImageDraw.Draw(overlay)
             overlay_draw.rectangle(
-                [(0, banner_y), (img_width, img_height)],
-                fill=message_color + (230,)  # Add alpha channel for semi-transparency
+                [(0, banner_y), (img_width, banner_height)],
+                fill=message_color + (240,)  # Add alpha channel for semi-transparency
             )
             
             # Composite the overlay onto the original image
