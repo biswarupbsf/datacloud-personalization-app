@@ -322,7 +322,7 @@ class PersonalizedImageGenerator:
                 message_text = "⚕️ HEALTH ALERT: Please consult a doctor soon"
                 message_color = (220, 53, 69)  # Red
             elif health_profile and health_profile not in ['Healthy', 'Fit', 'Active']:
-                message_text = f"⚠️  Health Check: {health_profile} - Consult your doctor"
+                message_text = f"⚠️ Health Check: {health_profile} - Consult your doctor"
                 message_color = (255, 152, 0)  # Orange
             # Priority 2: Fitness Milestone Offer (green) - for progression or Healthy/Fit
             elif health_profile in ['Healthy', 'Fit', 'Active'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
@@ -343,27 +343,50 @@ class PersonalizedImageGenerator:
             
             # Try to use a better font, fall back to default if not available
             try:
-                # LARGER fonts for better visibility
-                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 60)
-                font_small = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 40)
+                # Use good-sized font for readability
+                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 48)
             except:
                 try:
-                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 60)
-                    font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 40)
+                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 48)
                 except:
                     font = ImageFont.load_default()
-                    font_small = font
             
             # Get image dimensions
             img_width, img_height = img.size
             
-            # Calculate text size and position for banner at TOP (not bottom!)
-            bbox = draw.textbbox((0, 0), message_text, font=font)
-            text_width = bbox[2] - bbox[0]
-            text_height = bbox[3] - bbox[1]
+            # Wrap text to multiple lines if needed
+            max_width = img_width - 80  # Leave 40px padding on each side
+            lines = []
+            
+            # Simple word wrapping
+            words = message_text.split()
+            current_line = ""
+            
+            for word in words:
+                test_line = current_line + " " + word if current_line else word
+                bbox = draw.textbbox((0, 0), test_line, font=font)
+                test_width = bbox[2] - bbox[0]
+                
+                if test_width <= max_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                        current_line = word
+                    else:
+                        # Single word is too long, add it anyway
+                        lines.append(word)
+                        current_line = ""
+            
+            if current_line:
+                lines.append(current_line)
+            
+            # Calculate total text height for all lines
+            line_height = 55  # Space between lines
+            total_text_height = len(lines) * line_height
             
             # Create semi-transparent banner at TOP
-            banner_height = text_height + 50
+            banner_height = total_text_height + 40
             banner_y = 0  # TOP of image
             
             # Draw semi-transparent rectangle at TOP
@@ -379,15 +402,23 @@ class PersonalizedImageGenerator:
             img = Image.alpha_composite(img, overlay)
             img = img.convert('RGB')
             
-            # Draw text on top - CENTERED in the banner
+            # Draw text on top - MULTI-LINE CENTERED in the banner
             draw = ImageDraw.Draw(img)
-            text_x = (img_width - text_width) // 2
-            text_y = (banner_height - text_height) // 2  # Center vertically in banner
             
-            # Add shadow for better readability
-            shadow_offset = 3
-            draw.text((text_x + shadow_offset, text_y + shadow_offset), message_text, fill='black', font=font)
-            draw.text((text_x, text_y), message_text, fill='white', font=font)
+            # Start Y position (centered vertically in banner)
+            start_y = 20
+            
+            # Draw each line centered
+            for i, line in enumerate(lines):
+                bbox = draw.textbbox((0, 0), line, font=font)
+                line_width = bbox[2] - bbox[0]
+                text_x = (img_width - line_width) // 2
+                text_y = start_y + (i * line_height)
+                
+                # Add shadow for better readability
+                shadow_offset = 2
+                draw.text((text_x + shadow_offset, text_y + shadow_offset), line, fill='black', font=font)
+                draw.text((text_x, text_y), line, fill='white', font=font)
             
             # Save to BytesIO
             output = BytesIO()
