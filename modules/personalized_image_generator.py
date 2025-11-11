@@ -19,6 +19,10 @@ class PersonalizedImageGenerator:
     def __init__(self):
         self.fal_api_key = os.environ.get('FAL_KEY', '')
         self.replicate_api_key = os.environ.get('REPLICATE_API_TOKEN', '')
+        self.gemini_api_key = os.environ.get('GOOGLE_GEMINI_API_KEY', '')
+        
+        # Determine which API to use (default: Replicate, can be overridden)
+        self.image_api = os.environ.get('IMAGE_GENERATION_API', 'replicate')  # 'replicate' or 'gemini'
         
         # Configure Cloudinary
         cloudinary.config(
@@ -26,6 +30,16 @@ class PersonalizedImageGenerator:
             api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
             api_secret=os.environ.get('CLOUDINARY_API_SECRET', '')
         )
+        
+        # Initialize Gemini client if API key is available
+        self.gemini_client = None
+        if self.gemini_api_key:
+            try:
+                from google import genai
+                self.gemini_client = genai.Client(api_key=self.gemini_api_key)
+                print("✅ Google Gemini Nano Banana client initialized")
+            except Exception as e:
+                print(f"⚠️ Could not initialize Gemini client: {e}")
         
     def generate_personalized_image(self, individual_data, scenario_prompt=None):
         """
@@ -52,9 +66,12 @@ class PersonalizedImageGenerator:
         if not scenario_prompt:
             scenario_prompt = self._generate_scenario_prompt(individual_data)
         
-        # Call Replicate API for face-swap image generation
+        # Call image generation API (Replicate or Gemini)
         try:
-            result = self._call_fal_api(profile_pic_url, scenario_prompt, individual_data)
+            if self.image_api == 'gemini' and self.gemini_client:
+                result = self._call_gemini_api(profile_pic_url, scenario_prompt, individual_data)
+            else:
+                result = self._call_fal_api(profile_pic_url, scenario_prompt, individual_data)
             return result
         except Exception as e:
             return {
@@ -192,6 +209,127 @@ class PersonalizedImageGenerator:
         )
         
         return personalized_scenario
+    
+    def _call_gemini_api(self, profile_pic_url, scenario_prompt, individual_data):
+        """
+        Generate personalized image using Google Gemini Nano Banana (Gemini 2.5 Flash Image)
+        This model supports character consistency, making it great for personalized content!
+        """
+        
+        if not self.gemini_client:
+            return {
+                'success': False,
+                'error': 'GOOGLE_GEMINI_API_KEY not set. Please add it to Heroku config.'
+            }
+        
+        try:
+            from google.genai import types
+            from PIL import Image as PILImage
+            
+            print(f"🎨 Starting Gemini Nano Banana generation for {individual_data.get('Name', 'Unknown')}")
+            print(f"📝 Scenario: {scenario_prompt[:150]}...")
+            
+            # Prepare face image for context (Gemini can use reference images)
+            face_image_url = self._prepare_face_image(profile_pic_url)
+            
+            # Build the prompt with face reference
+            enhanced_prompt = (
+                f"{scenario_prompt}. "
+                f"Use the provided reference face image to maintain character consistency. "
+                f"Professional photography, clear face details, accurate human anatomy, "
+                f"photorealistic skin texture, natural body proportions."
+            )
+            
+            # Generate image with Gemini
+            print("⚡ Generating image with Gemini Nano Banana...")
+            
+            # If we have a face image URL, download it and include as reference
+            image_parts = []
+            if face_image_url and face_image_url.startswith('http'):
+                try:
+                    response = requests.get(face_image_url, timeout=30)
+                    if response.status_code == 200:
+                        face_image_data = response.content
+                        image_parts.append(types.Part.from_bytes(
+                            data=face_image_data,
+                            mime_type="image/jpeg"
+                        ))
+                        print(f"✅ Included reference face image")
+                except Exception as e:
+                    print(f"⚠️ Could not include face reference: {e}")
+            
+            # Add text prompt
+            image_parts.append(enhanced_prompt)
+            
+            # Generate content
+            response = self.gemini_client.models.generate_content(
+                model="gemini-2.5-flash-image",
+                contents=image_parts,
+            )
+            
+            # Extract image from response
+            generated_image_data = None
+            for candidate in response.candidates:
+                for part in candidate.content.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data:
+                        generated_image_data = part.inline_data.data
+                        break
+                    elif hasattr(part, 'bytes') and part.bytes:
+                        generated_image_data = part.bytes
+                        break
+            
+            if not generated_image_data:
+                return {
+                    'success': False,
+                    'error': 'Gemini did not return an image. Response: ' + str(response)
+                }
+            
+            # Save image to Cloudinary
+            print("☁️ Uploading generated image to Cloudinary...")
+            result = cloudinary.uploader.upload(
+                io.BytesIO(generated_image_data),
+                folder="personalized_images_gemini",
+                resource_type="image"
+            )
+            
+            final_image_url = result.get('secure_url')
+            print(f"✅ Image generated and uploaded: {final_image_url[:100]}...")
+            
+            # Add promotional text overlay
+            try:
+                final_image_with_text = self._add_promotional_overlay(final_image_url, individual_data)
+                if final_image_with_text:
+                    final_image_url = final_image_with_text
+                    print(f"✅ Added promotional text overlay to image")
+            except Exception as text_error:
+                print(f"⚠️ Could not add text overlay: {text_error}")
+            
+            return {
+                'success': True,
+                'image_url': final_image_url,
+                'base_image_url': final_image_url,
+                'prompt_used': scenario_prompt,
+                'prompt': scenario_prompt,
+                'metadata': {
+                    'model': 'gemini-2.5-flash-image (Nano Banana)',
+                    'individual': individual_data.get('Name', 'Unknown'),
+                    'face_image': face_image_url[:100] if face_image_url else 'N/A'
+                }
+            }
+            
+        except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
+            print(f"❌ Error during Gemini generation: {str(e)}")
+            print(f"❌ Full traceback:")
+            print(error_details)
+            
+            return {
+                'success': False,
+                'error': f'Gemini API error: {str(e)}',
+                'details': error_details,
+                'error_type': type(e).__name__
+            }
     
     def _call_fal_api(self, profile_pic_url, scenario_prompt, individual_data):
         """
