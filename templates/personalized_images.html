@@ -420,6 +420,7 @@
         
         function displayResult(result) {
             const picUrl = selectedIndividual.profile_picture_url || '';
+            const insights = selectedIndividual.insights || {};
             
             document.getElementById('resultsContainer').innerHTML = `
                 <div class="result-card">
@@ -428,26 +429,83 @@
                         <button onclick="downloadImage('${result.image_url}')" style="background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">📥 Download</button>
                     </div>
                     
-                    <div style="margin: 20px 0;">
-                        <strong>Prompt:</strong>
-                        <p style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px;">${result.prompt}</p>
-                    </div>
-                    
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
                         <div>
                             <h4>Original Profile Picture:</h4>
-                            <img src="${picUrl}" style="width: 100%; border-radius: 8px; border: 2px solid #e0e0e0;">
+                            <img src="${picUrl}" style="width: 100%; border-radius: 8px; border: 2px solid #e0e0e0; margin-bottom: 15px;">
+                            
+                            <h4>🎯 Complete Individual Insights:</h4>
+                            <div style="background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%); padding: 20px; border-radius: 12px; border: 2px solid #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);">
+                                <div style="display: grid; gap: 12px;">
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                                        <strong>🏃 Favourite Exercise:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Favourite_Exercise || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #e91e63;">
+                                        <strong>❤️ Favourite Brand:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Favourite_Brand || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                                        <strong>✈️ Favourite Destination:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Favourite_Destination || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                                        <strong>🎨 Hobby:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Hobby || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                                        <strong>🎯 Lifestyle Quotient:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Lifestyle_Quotient || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #00bcd4;">
+                                        <strong>😊 Current Sentiment:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Current_Sentiment || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #ff5722;">
+                                        <strong>👨‍⚕️ Health Profile:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Health_Profile || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                                        <strong>🏋️ Fitness Milestone:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Fitness_Milestone || 'N/A'}</span>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #607d8b;">
+                                        <strong>🛒 Purchase Intent:</strong><br>
+                                        <span style="font-size: 16px; color: #333;">${insights.Purchase_Intent || 'N/A'}</span>
+                                    </div>
+                                    
+                                    ${insights.Imminent_Event && insights.Imminent_Event !== 'None' ? `
+                                        <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #673ab7;">
+                                            <strong>📅 Upcoming Event:</strong><br>
+                                            <span style="font-size: 14px; color: #333;">${insights.Imminent_Event}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
                         </div>
                         <div>
-                            <h4>Generated Personalized Image:</h4>
-                            <img src="${result.image_url}" style="width: 100%; border-radius: 8px; border: 2px solid #667eea;">
+                            <h4>🎨 Generated Personalized Image:</h4>
+                            <img src="${result.image_url}" style="width: 100%; border-radius: 8px; border: 2px solid #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+                            
+                            <div style="margin-top: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                                <strong>📝 AI Prompt Used:</strong>
+                                <p style="margin: 10px 0; color: #555; font-size: 13px; line-height: 1.6;">${result.prompt}</p>
+                            </div>
                         </div>
                     </div>
                     
                     ${result.metadata ? `
                         <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                            <strong>Generation Details:</strong>
-                            <ul style="margin: 10px 0;">
+                            <strong>⚙️ Generation Details:</strong>
+                            <ul style="margin: 10px 0; color: #666;">
                                 <li>Model: ${result.metadata.model}</li>
                                 ${result.metadata.seed ? `<li>Seed: ${result.metadata.seed}</li>` : ''}
                             </ul>
