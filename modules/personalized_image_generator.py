@@ -101,23 +101,42 @@ class PersonalizedImageGenerator:
         }
         destination_background = destination_elements.get(favourite_destination, f'scenic {favourite_destination} landscape')
         
-        # Activity-specific scenarios with FULL personalization
-        activity_scenarios = {
-            'Hiking': f"Professional action photograph of athletic person hiking on a scenic mountain trail during golden hour, wearing premium {favourite_brand} outdoor gear and hiking boots, {sentiment_mood} expression, {destination_background} in the background, {lifestyle.lower()} adventure lifestyle aesthetic, achieving {fitness_milestone}, photorealistic, high-quality outdoor photography, cinematic lighting",
+        # FITNESS EXERCISE-specific scenarios with FULL personalization
+        # Map exercises to activity types
+        exercise_scenarios = {
+            # Treadmill & Running
+            'Treadmill Running': f"Dynamic fitness photograph of athletic person powerfully running on treadmill in ultra-modern luxury gym, wearing {favourite_brand} athletic wear, {sentiment_mood} and focused expression, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone}, professional fitness photography, dramatic gym lighting, photorealistic",
+            'Outdoor Jogging': f"Action shot of runner jogging on scenic path, wearing {favourite_brand} running gear, {sentiment_mood}, {destination_background} surrounding them, {lifestyle.lower()} active lifestyle, achieving {fitness_milestone}, golden hour outdoor lighting, professional sports photography",
+            'Sprint Intervals': f"Intense fitness photo of person doing sprint training on track, wearing {favourite_brand} performance gear, {sentiment_mood} and powerful, {destination_background} in distance, {lifestyle.lower()} athletic lifestyle, achieving {fitness_milestone}, motion blur effect, professional sports photography",
             
-            'Running': f"Dynamic action shot of fit athletic person powerfully exercising on {favourite_exercise.lower()} in an ultra-modern luxury gym, wearing stylish {favourite_brand} athletic wear, {sentiment_mood} expression showing determination, large windows revealing {destination_background}, state-of-the-art fitness equipment visible, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} goal, professional fitness photography, dramatic gym lighting with natural light streaming in, photorealistic, 8K quality",
+            # Gym Equipment
+            'Elliptical': f"Fitness photograph of person exercising on elliptical machine in modern gym, wearing {favourite_brand} athletic apparel, {sentiment_mood}, windows showing {destination_background}, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional gym photography, natural lighting",
+            'Rowing Machine': f"Dynamic shot of athletic person using rowing machine in premium gym, wearing {favourite_brand} fitness wear, {sentiment_mood} and determined, {destination_background} visible through windows, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional fitness photography",
+            'Stair Climber': f"Fitness photo of person on stair climber in modern gym, wearing {favourite_brand} athletic gear, {sentiment_mood}, large windows with {destination_background}, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
             
-            'Yoga': f"Serene photograph of person in perfect yoga pose on an exclusive rooftop studio or beach, wearing elegant {favourite_brand} yoga outfit, {sentiment_mood} and mindful expression, {destination_background} creating a stunning backdrop, sunrise or sunset golden hour lighting, {lifestyle.lower()} wellness lifestyle, celebrating {fitness_milestone}, zen and peaceful atmosphere, professional wellness photography, highly detailed",
+            # Strength Training  
+            'Weight Lifting': f"Powerful photograph of person lifting weights in premium gym, wearing {favourite_brand} fitness apparel, {sentiment_mood} and strong, {destination_background} through floor-to-ceiling windows, {lifestyle.lower()} lifestyle, achieving {fitness_milestone}, professional strength training photography, dramatic lighting",
+            'Squats': f"Fitness photo of person doing squats with proper form in modern gym, wearing {favourite_brand} workout clothes, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional training photography",
+            'Bench Press': f"Strength training photograph of person on bench press in high-end gym, wearing {favourite_brand} athletic wear, {sentiment_mood} and focused, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
             
-            'Cycling': f"Epic action shot of cyclist riding a premium road bike on a scenic route, wearing professional {favourite_brand} cycling gear and helmet, {sentiment_mood} and focused, {destination_background} landscape surrounding them, {lifestyle.lower()} athletic lifestyle, achieving {fitness_milestone}, dynamic motion blur on wheels, professional cycling photography, golden hour lighting",
+            # Cycling
+            'Cycling': f"Epic action shot of cyclist on premium road bike, wearing professional {favourite_brand} cycling gear, {sentiment_mood}, {destination_background} landscape, {lifestyle.lower()} athletic lifestyle, {fitness_milestone}, motion blur, professional cycling photography, golden hour",
+            'Spin Class': f"Energetic photo of person in spin class at luxury gym, wearing {favourite_brand} cycling gear, {sentiment_mood}, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional indoor cycling photography",
+            'Stationary Bike': f"Fitness photo of person on stationary bike in modern gym, wearing {favourite_brand} workout apparel, {sentiment_mood}, windows showing {destination_background}, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional gym photography",
             
-            'Swimming': f"Professional photograph of swimmer in a luxurious infinity pool, wearing {favourite_brand} swimwear, {sentiment_mood} expression, {destination_background} creating stunning views, {lifestyle.lower()} lifestyle aesthetic, celebrating {fitness_milestone}, crystal clear water, natural lighting, resort photography quality",
+            # Yoga & Flexibility
+            'Yoga Flow': f"Serene photo of person in yoga pose at exclusive studio, wearing elegant {favourite_brand} yoga outfit, {sentiment_mood} and mindful, {destination_background} backdrop, sunrise lighting, {lifestyle.lower()} wellness lifestyle, {fitness_milestone}, professional yoga photography",
+            'Pilates': f"Elegant photo of person doing Pilates in luxury studio, wearing {favourite_brand} activewear, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional wellness photography",
+            'Stretching': f"Peaceful photo of person stretching in modern gym or studio, wearing {favourite_brand} athletic wear, {sentiment_mood} and relaxed, {destination_background} through windows, {lifestyle.lower()} lifestyle, {fitness_milestone}, natural lighting",
             
-            'Reading': f"Sophisticated photograph of person reading in an elegant setting - luxury lounge or cafe, wearing casual {favourite_brand} lifestyle clothing, {sentiment_mood} and relaxed, {destination_background} visible through windows, {lifestyle.lower()} intellectual lifestyle, cozy atmospheric lighting, high-end lifestyle photography, warm tones",
+            # Swimming
+            'Swimming': f"Professional photo of swimmer in luxurious infinity pool, wearing {favourite_brand} swimwear, {sentiment_mood}, {destination_background} creating stunning views, {lifestyle.lower()} lifestyle, {fitness_milestone}, crystal clear water, natural lighting",
+            'Water Aerobics': f"Fitness photo of person doing water aerobics in premium pool, wearing {favourite_brand} swimwear, {sentiment_mood}, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional pool photography",
             
-            'Photography': f"Creative portrait of photographer with professional camera equipment, wearing {favourite_brand} gear, {sentiment_mood} and passionate expression, actively photographing {destination_background}, {lifestyle.lower()} creative lifestyle, artistic composition, professional lifestyle photography, natural lighting",
-            
-            'Cooking': f"Professional culinary photograph of person preparing gourmet cuisine in a modern luxury kitchen, wearing {favourite_brand} chef attire or apron, {sentiment_mood} and passionate, kitchen with view of {destination_background}, {lifestyle.lower()} lifestyle aesthetic, premium cookware and ingredients visible, warm atmospheric lighting, food photography quality"
+            # HIIT & Cross Training
+            'HIIT Circuit': f"Intense fitness photo of person doing HIIT workout in modern gym, wearing {favourite_brand} performance gear, {sentiment_mood} and powerful, {destination_background} through windows, {lifestyle.lower()} athletic lifestyle, {fitness_milestone}, dynamic action shot",
+            'Battle Ropes': f"Action shot of person using battle ropes in gym, wearing {favourite_brand} workout gear, {sentiment_mood} and fierce, {destination_background} visible, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional training photography",
+            'Bodyweight Exercises': f"Fitness photo of person doing bodyweight training in gym or outdoor, wearing {favourite_brand} athletic apparel, {sentiment_mood}, {destination_background} setting, {lifestyle.lower()} lifestyle, {fitness_milestone}, professional fitness photography"
         }
         
         # Check if there's an upcoming event to incorporate
@@ -125,9 +144,9 @@ class PersonalizedImageGenerator:
         if upcoming_event and upcoming_event != 'None':
             event_context = f" preparing for upcoming {upcoming_event},"
         
-        # Get activity-specific scenario or create comprehensive default
-        base_scenario = activity_scenarios.get(hobby, 
-            f"Professional lifestyle photograph of athletic person engaged in {hobby.lower()}{event_context} wearing premium {favourite_brand} apparel and gear, {sentiment_mood} expression, {destination_background} in the background, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone}, high-quality commercial photography, photorealistic, dramatic lighting"
+        # USE FAVOURITE EXERCISE (not hobby!) to determine the scenario
+        base_scenario = exercise_scenarios.get(favourite_exercise, 
+            f"Professional fitness photograph of athletic person doing {favourite_exercise.lower()}{event_context} wearing premium {favourite_brand} athletic apparel, {sentiment_mood} expression showing determination, {destination_background} visible through large windows, {lifestyle.lower()} lifestyle aesthetic, achieving {fitness_milestone} milestone, state-of-the-art gym setting, professional sports photography, photorealistic, dramatic lighting with natural light, 8K quality"
         )
         
         # Add upcoming event emphasis if present
