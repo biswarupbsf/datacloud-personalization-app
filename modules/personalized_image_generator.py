@@ -185,6 +185,8 @@ class PersonalizedImageGenerator:
                 'error': 'REPLICATE_API_TOKEN not set. Please add it to Heroku config.'
             }
         
+        print(f"🔑 Replicate API key present: {self.replicate_api_key[:10]}...")
+        
         # Prepare the face image (convert base64 to public URL via Cloudinary)
         face_image_url = self._prepare_face_image(profile_pic_url)
         
@@ -219,10 +221,16 @@ class PersonalizedImageGenerator:
             )
             
             # Get the generated image URL
+            print(f"🔍 Base output type: {type(base_output)}")
+            print(f"🔍 Base output value: {base_output}")
+            
             if isinstance(base_output, list) and len(base_output) > 0:
                 target_image_url = base_output[0]
             else:
                 target_image_url = str(base_output)
+            
+            if not target_image_url or target_image_url == 'None':
+                raise Exception(f"SDXL failed to generate base image. Output was: {base_output}")
             
             print(f"✅ Base scene generated: {target_image_url[:100]}...")
             
@@ -237,10 +245,18 @@ class PersonalizedImageGenerator:
             )
             
             # Get the face-swapped image URL
+            print(f"🔍 Swap output type: {type(swap_output)}")
+            print(f"🔍 Swap output value: {swap_output}")
+            
             if isinstance(swap_output, list) and len(swap_output) > 0:
                 final_image_url = swap_output[0]
             else:
                 final_image_url = str(swap_output)
+            
+            if not final_image_url or final_image_url == 'None':
+                # Face swap failed, but we have the base image
+                print(f"⚠️ Face-swap failed, using base image instead")
+                final_image_url = target_image_url
             
             print(f"🎉 Face-swap complete: {final_image_url[:100]}...")
             
@@ -270,12 +286,16 @@ class PersonalizedImageGenerator:
             import traceback
             error_details = traceback.format_exc()
             print(f"❌ Error during generation: {str(e)}")
+            print(f"❌ Full traceback:")
             print(error_details)
+            print(f"❌ Error type: {type(e).__name__}")
+            print(f"❌ Error args: {e.args}")
             
             return {
                 'success': False,
                 'error': f'Replicate API error: {str(e)}',
-                'details': error_details
+                'details': error_details,
+                'error_type': type(e).__name__
             }
     
     def _add_promotional_overlay(self, image_url, individual_data):

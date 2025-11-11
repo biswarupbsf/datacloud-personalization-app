@@ -377,16 +377,28 @@
             document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
             
             try {
+                // Set a long timeout for image generation (90 seconds)
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 90000);
+                
                 const response = await fetch('/api/personalized-images/generate', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         individual_id: selectedIndividual.Id,
                         custom_prompt: customPrompt || null
-                    })
+                    }),
+                    signal: controller.signal
                 });
                 
+                clearTimeout(timeout);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const result = await response.json();
+                console.log('Generation result:', result);
                 
                 if (result.success) {
                     displayResult(result);
@@ -404,10 +416,17 @@
                 }
                 
             } catch (error) {
+                console.error('Image generation error:', error);
+                let errorMessage = error.message;
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Request timed out after 90 seconds. Image generation may still be processing. Please wait and refresh the page.';
+                }
                 document.getElementById('resultsContainer').innerHTML = `
                     <div class="result-card" style="border-left: 4px solid #f44336;">
                         <h3 style="color: #f44336;">❌ Error</h3>
-                        <p>${error.message}</p>
+                        <p><strong>Error:</strong> ${errorMessage}</p>
+                        <p style="margin-top: 10px; font-size: 12px; color: #666;">Check browser console (F12) for details</p>
+                        ${error.stack ? `<details style="margin-top: 10px; font-size: 11px;"><summary>Technical Details</summary><pre>${error.stack}</pre></details>` : ''}
                     </div>
                 `;
             } finally {
