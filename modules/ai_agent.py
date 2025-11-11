@@ -483,7 +483,8 @@ class AIAgent:
                     message_text += f"• Generate personalized emails for these members\n"
                     message_text += f"• Sync to Salesforce Campaign\n\n"
                     message_text += f"💡 **Ready to generate personalized content?**\n"
-                    message_text += f"Just say: 'Personalize content for the segment' or 'Generate personalized content'"
+                    message_text += f"Go to **🎨 AI Personalized Images** page and select individuals to generate images!\n"
+                    message_text += f"Or say: 'Personalize content for the segment' (note: may take 2-3 minutes for 5 images)"
                     
                     # Update context with the created segment
                     self.context['last_segment_created'] = segment
@@ -494,7 +495,9 @@ class AIAgent:
                     
                     # Auto-generate personalized images for top 5 if conditions are met
                     personalized_images = []
-                    if image_generator and member_count <= 10 and member_count > 0:
+                    # TEMPORARILY DISABLED: Image generation takes too long and causes timeouts
+                    # Will implement async/background generation in next version
+                    if False and image_generator and member_count <= 10 and member_count > 0:
                         try:
                             print(f"🎨 Auto-generating personalized content for {min(member_count, 5)} top engaged members...")
                             print(f"  Image generator available: {image_generator is not None}")
