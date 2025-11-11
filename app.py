@@ -1344,6 +1344,23 @@ def generate_personalized_image():
             result['promotional_messages'] = promotional_messages
             print(f"💰 Added {len(promotional_messages)} promotional messages")
         
+        # Add ALL insights to result for frontend display
+        if individual_insights:
+            latest_insight = individual_insights[0]
+            result['insights'] = {
+                'Favourite_Exercise': latest_insight.get('Favourite_Exercise', 'N/A'),
+                'Favourite_Brand': latest_insight.get('Favourite_Brand', 'N/A'),
+                'Favourite_Destination': latest_insight.get('Favourite_Destination', 'N/A'),
+                'Hobby': latest_insight.get('Hobby', 'N/A'),
+                'Lifestyle_Quotient': latest_insight.get('Lifestyle_Quotient', 'N/A'),
+                'Current_Sentiment': latest_insight.get('Current_Sentiment', 'N/A'),
+                'Health_Profile': latest_insight.get('Health_Profile', 'N/A'),
+                'Fitness_Milestone': latest_insight.get('Fitness_Milestone', 'N/A'),
+                'Purchase_Intent': latest_insight.get('Purchase_Intent', 'N/A'),
+                'Imminent_Event': latest_insight.get('Imminent_Event', 'None')
+            }
+            print(f"📊 Added complete insights to result")
+        
         return jsonify(result)
         
     except Exception as e:

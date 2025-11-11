@@ -418,7 +418,8 @@
         
         function displayResult(result) {
             const picUrl = selectedIndividual.profile_picture_url || '';
-            const insights = selectedIndividual.insights || {};
+            // Use insights from API result (has all the latest data)
+            const insights = result.insights || {};
             
             document.getElementById('resultsContainer').innerHTML = `
                 <div class="result-card">
