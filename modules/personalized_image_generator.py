@@ -368,14 +368,17 @@ class PersonalizedImageGenerator:
             message_text = None
             message_color = None
             
-            # Priority 1: Health Alert (red)
+            # Priority 1: Health Alert (red) - for Hypertensive or any non-Fit/Healthy status
             if health_profile == 'Hypertensive':
-                message_text = "⚕️ HEALTH ALERT: Schedule a doctor consultation"
+                message_text = "⚕️ HEALTH ALERT: Please consult a doctor soon"
                 message_color = (220, 53, 69)  # Red
-            # Priority 2: Fitness Milestone Offer (green)
-            elif fitness_milestone in ['Advanced', 'Elite']:
-                message_text = "🎉 50% OFF Premium Membership - Celebrate Your Progress!"
-                message_color = (40, 167, 69)  # Green
+            elif health_profile and health_profile not in ['Healthy', 'Fit']:
+                message_text = f"⚠️  Health Check: {health_profile} - Consult your doctor"
+                message_color = (255, 152, 0)  # Orange
+            # Priority 2: Fitness Milestone Offer (green) - for progression or Healthy/Fit
+            elif health_profile in ['Healthy', 'Fit'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
+                message_text = "🎉 50% OFF PREMIUM - Limited Time Offer!"
+                message_color = (76, 175, 80)  # Green
             
             if not message_text:
                 # No message to add
