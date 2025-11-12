@@ -144,15 +144,33 @@ class PersonalizedImageGenerator:
         }
         destination_background = destination_backgrounds.get(favourite_destination, f'in scenic {favourite_destination.lower()} setting')
         
-        # Brand integration mapping - SPECIFIC to brand type
-        tech_brands = ['Samsung', 'Bose', 'Garmin', 'Apple', 'Fitbit', 'Polar', 'JBL', 'Sony']
-        apparel_brands = ['Nike', 'Adidas', 'Under Armour', 'Lululemon', 'Puma', 'Reebok', 'New Balance', 'Asics']
+        # Brand integration mapping - SPECIFIC gadgets/products visible
+        tech_brands = {
+            'Samsung': 'wearing Samsung Galaxy Watch clearly visible on wrist and Samsung Galaxy Buds in ears',
+            'Bose': 'wearing Bose QuietComfort wireless earbuds clearly visible in ears and Bose portable speaker nearby',
+            'Garmin': 'wearing Garmin Forerunner smartwatch clearly visible on wrist and Garmin heart rate monitor',
+            'Apple': 'wearing Apple Watch clearly visible on wrist and AirPods Pro in ears',
+            'Fitbit': 'wearing Fitbit Versa smartwatch clearly visible on wrist',
+            'Polar': 'wearing Polar heart rate monitor chest strap and Polar watch visible',
+            'JBL': 'wearing JBL wireless earbuds clearly visible in ears',
+            'Sony': 'wearing Sony WH-1000XM5 headphones clearly visible'
+        }
+        apparel_brands = {
+            'Nike': 'wearing Nike Dri-FIT athletic T-shirt with large Nike swoosh logo clearly visible on chest',
+            'Adidas': 'wearing Adidas Originals athletic T-shirt with three stripes logo clearly visible',
+            'Under Armour': 'wearing Under Armour compression shirt with UA logo clearly visible',
+            'Lululemon': 'wearing Lululemon athletic top with logo clearly visible',
+            'Puma': 'wearing Puma athletic T-shirt with Puma logo clearly visible',
+            'Reebok': 'wearing Reebok athletic wear with logo clearly visible',
+            'New Balance': 'wearing New Balance athletic T-shirt with logo clearly visible',
+            'Asics': 'wearing Asics athletic top with logo clearly visible'
+        }
         non_fitness_brands = ['Netflix', 'Spotify', 'Amazon', 'Google', 'Microsoft', 'Facebook', 'Instagram', 'Twitter', 'YouTube', 'Airbnb', 'Uber']
         
         if favourite_brand in tech_brands:
-            brand_detail = f"wearing {favourite_brand} smartwatch and wireless earbuds clearly visible on wrist and ears"
+            brand_detail = tech_brands[favourite_brand]
         elif favourite_brand in apparel_brands:
-            brand_detail = f"wearing {favourite_brand} athletic wear with visible brand logo on chest"
+            brand_detail = apparel_brands[favourite_brand]
         elif favourite_brand in non_fitness_brands:
             # If the brand isn't fitness-related, skip brand mention and use generic athletic wear
             brand_detail = f"wearing premium athletic fitness gear"
@@ -501,8 +519,9 @@ class PersonalizedImageGenerator:
     
     def _add_promotional_overlay(self, image_url, individual_data):
         """
-        Add promotional text overlay to the generated image at the TOP
-        Shows health alerts or promotional offers directly on the image
+        Add promotional text overlay to the generated image at the BOTTOM
+        Shows health alerts, milestone congratulations, or promotional offers
+        Positioned at bottom to avoid blocking faces
         """
         try:
             import requests
@@ -513,10 +532,24 @@ class PersonalizedImageGenerator:
             # Check if we should add any promotional messages
             health_profile = individual_data.get('health_profile', individual_data.get('Health_Profile'))
             fitness_milestone = individual_data.get('fitness_milestone', individual_data.get('Fitness_Milestone'))
+            hobby = individual_data.get('hobby', individual_data.get('Hobby', ''))
+            upcoming_event = individual_data.get('imminent_event', individual_data.get('Imminent_Event', ''))
+            
+            # Check for milestone progression (need to compare with previous milestone)
+            # This will be passed from app.py which has access to insights history
+            previous_milestone = individual_data.get('previous_milestone', None)
+            milestone_progression = False
+            
+            milestone_order = ['Beginner', 'Intermediate', 'Advanced', 'Elite']
+            if (previous_milestone and fitness_milestone and 
+                previous_milestone in milestone_order and fitness_milestone in milestone_order and
+                milestone_order.index(fitness_milestone) > milestone_order.index(previous_milestone)):
+                milestone_progression = True
             
             # Determine what message to show
             message_text = None
             message_color = None
+            link_text = None
             
             # Priority 1: Health Alert (red) - for Hypertensive or any non-Fit/Healthy status
             if health_profile == 'Hypertensive':
@@ -525,10 +558,20 @@ class PersonalizedImageGenerator:
             elif health_profile and health_profile not in ['Healthy', 'Fit', 'Active']:
                 message_text = f"⚠️ Health Check: {health_profile} - Consult your doctor"
                 message_color = (255, 152, 0)  # Orange
-            # Priority 2: Fitness Milestone Offer (green) - for progression or Healthy/Fit
-            elif health_profile in ['Healthy', 'Fit', 'Active'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
-                message_text = "🎉 50% OFF PREMIUM - Limited Time Offer!"
+            # Priority 2: Milestone Progression Congratulations
+            elif milestone_progression:
+                message_text = f"🎉 Congratulations! You moved from {previous_milestone} to {fitness_milestone}!"
                 message_color = (76, 175, 80)  # Green
+            # Priority 3: Fitness Milestone Offer (green) - for Healthy/Fit individuals
+            elif health_profile in ['Healthy', 'Fit', 'Active'] and fitness_milestone in ['Advanced', 'Elite', 'Intermediate']:
+                message_text = f"🎉 50% OFF {fitness_milestone} Premium Subscription - Limited Time!"
+                message_color = (76, 175, 80)  # Green
+            
+            # Add links based on events/hobbies
+            if upcoming_event and 'vacation' in upcoming_event.lower():
+                link_text = "✈️ Book Flight Tickets Now"
+            elif hobby and 'guitar' in hobby.lower():
+                link_text = "🎸 Buy Guitar at 30% Discount"
             
             if not message_text:
                 # No message to add
@@ -586,15 +629,19 @@ class PersonalizedImageGenerator:
             line_height = 55  # Space between lines
             total_text_height = len(lines) * line_height
             
-            # Create semi-transparent banner at TOP
-            banner_height = total_text_height + 40
-            banner_y = 0  # TOP of image
+            # Add space for link if present
+            if link_text:
+                total_text_height += line_height + 10
             
-            # Draw semi-transparent rectangle at TOP
+            # Create semi-transparent banner at BOTTOM (to avoid blocking face)
+            banner_height = total_text_height + 40
+            banner_y = img_height - banner_height  # BOTTOM of image
+            
+            # Draw semi-transparent rectangle at BOTTOM
             overlay = Image.new('RGBA', img.size, (255, 255, 255, 0))
             overlay_draw = ImageDraw.Draw(overlay)
             overlay_draw.rectangle(
-                [(0, banner_y), (img_width, banner_height)],
+                [(0, banner_y), (img_width, img_height)],
                 fill=message_color + (240,)  # Add alpha channel for semi-transparency
             )
             
@@ -603,11 +650,11 @@ class PersonalizedImageGenerator:
             img = Image.alpha_composite(img, overlay)
             img = img.convert('RGB')
             
-            # Draw text on top - MULTI-LINE CENTERED in the banner
+            # Draw text on bottom - MULTI-LINE CENTERED in the banner
             draw = ImageDraw.Draw(img)
             
-            # Start Y position (centered vertically in banner)
-            start_y = 20
+            # Start Y position (from top of banner)
+            start_y = banner_y + 20
             
             # Draw each line centered
             for i, line in enumerate(lines):
@@ -620,6 +667,19 @@ class PersonalizedImageGenerator:
                 shadow_offset = 2
                 draw.text((text_x + shadow_offset, text_y + shadow_offset), line, fill='black', font=font)
                 draw.text((text_x, text_y), line, fill='white', font=font)
+            
+            # Draw link text if present
+            if link_text:
+                link_y = start_y + (len(lines) * line_height) + 10
+                bbox = draw.textbbox((0, 0), link_text, font=font)
+                link_width = bbox[2] - bbox[0]
+                link_x = (img_width - link_width) // 2
+                # Draw link with underline effect
+                draw.text((link_x + shadow_offset, link_y + shadow_offset), link_text, fill='black', font=font)
+                draw.text((link_x, link_y), link_text, fill='yellow', font=font)
+                # Draw underline
+                underline_y = link_y + line_height - 5
+                draw.line([(link_x, underline_y), (link_x + link_width, underline_y)], fill='yellow', width=2)
             
             # Save to BytesIO
             output = BytesIO()

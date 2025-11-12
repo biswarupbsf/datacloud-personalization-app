@@ -1306,6 +1306,7 @@ def generate_personalized_image():
                     })
                 
                 # Check for fitness milestone progression (offer 50% discount)
+                previous_milestone = None
                 if len(individual_insights) >= 2:
                     previous_insight = individual_insights[1]
                     current_milestone = latest_insight.get('Fitness_Milestone')
@@ -1327,6 +1328,13 @@ def generate_personalized_image():
                             'priority': 'high'
                         })
                         print(f"🎉 Milestone progression detected: {previous_milestone} → {current_milestone}")
+                
+                # Pass previous milestone to individual_data for image overlay
+                if previous_milestone:
+                    individual['previous_milestone'] = previous_milestone
+                
+                # Also pass Imminent_Event for link detection
+                individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
                 
                 individual['promotional_messages'] = promotional_messages
                 
