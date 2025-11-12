@@ -37,7 +37,7 @@ flowchart TB
         subgraph Insights["💡 Insights Creation"]
             UnstructuredProc["Unstructured Data Processing<br/>NLP, OCR, Image Recognition, Computer Vision"]
             StructuredProc["Structured Data Processing<br/>Calculated Insights, Predictive AI Models"]
-            UnstructuredInsights["Unstructured Insights<br/>Sentiment, Lifestyle, Health Profile, Purchase Intent"]
+            UnstructuredInsights["Unstructured Insights<br/>Sentiment, Lifestyle, Health Profile, Purchase Intent, Hobby, Affinities, Imminent Event"]
             StructuredInsights["Structured Insights<br/>Lifetime Value, Loyalty Tier, Favourite Brand, Preferred Channel, Preferred Send Schedule"]
         end
         
