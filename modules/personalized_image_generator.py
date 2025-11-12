@@ -266,19 +266,48 @@ class PersonalizedImageGenerator:
                 contents=image_parts,
             )
             
-            # Extract image from response (using the simpler pattern)
+            # Extract image from response - handle different response structures
             generated_image = None
-            for part in response.parts:
-                if part.text is not None:
-                    print(f"📝 Gemini text response: {part.text}")
-                elif part.inline_data is not None:
-                    generated_image = part.as_image()
-                    break
+            
+            # Try different response structures
+            if hasattr(response, 'candidates') and response.candidates:
+                # Standard response structure
+                for candidate in response.candidates:
+                    if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                        for part in candidate.content.parts:
+                            if hasattr(part, 'inline_data') and part.inline_data:
+                                try:
+                                    generated_image = part.as_image()
+                                    break
+                                except:
+                                    # Fallback: extract bytes directly
+                                    if hasattr(part.inline_data, 'data'):
+                                        from PIL import Image
+                                        generated_image = Image.open(io.BytesIO(part.inline_data.data))
+                                        break
+            elif hasattr(response, 'parts'):
+                # Direct parts access
+                for part in response.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data:
+                        try:
+                            generated_image = part.as_image()
+                            break
+                        except:
+                            if hasattr(part.inline_data, 'data'):
+                                from PIL import Image
+                                generated_image = Image.open(io.BytesIO(part.inline_data.data))
+                                break
+            
+            # Debug: print response structure
+            print(f"🔍 Response type: {type(response)}")
+            print(f"🔍 Response attributes: {dir(response)}")
+            if hasattr(response, 'candidates'):
+                print(f"🔍 Candidates: {len(response.candidates) if response.candidates else 0}")
             
             if not generated_image:
                 return {
                     'success': False,
-                    'error': 'Gemini did not return an image. Response: ' + str(response)
+                    'error': f'Gemini did not return an image. Response structure: {type(response)}, Attributes: {[attr for attr in dir(response) if not attr.startswith("_")]}'
                 }
             
             # Convert PIL Image to bytes for Cloudinary
