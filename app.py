@@ -1563,6 +1563,9 @@ def send_personalized_content_emails():
         {offers_html if offers_html else '<p>Check back soon for exclusive offers!</p>'}
         <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">🎨 Your Personalized Image</h2>
         <img src="{image_url}" alt="Personalized Content" style="max-width: 100%; border-radius: 10px; margin: 20px 0;" />
+        <p style="color: #666; font-size: 12px; text-align: center; margin-top: 10px;">
+            <em>💡 Tip: Generate personalized AI images via the "🎨 AI Personalized Images" page for full customization!</em>
+        </p>
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #667eea;">📊 Your Profile</h3>
             <p><strong>Exercise:</strong> {latest_insight.get('Favourite_Exercise', 'N/A')}</p>
