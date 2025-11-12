@@ -35,15 +35,16 @@ flowchart TB
         end
         
         subgraph Insights["💡 Insights Creation"]
-            UnstructuredProc["Unstructured Data Processing<br/>NLP, Sentiment Analysis, Entity Extraction"]
-            CalculatedInsights["Calculated Insights<br/>Aggregations, Scores, Metrics"]
-            StructuredInsights["Structured Insights<br/>Behavioral, Demographic, Engagement"]
+            UnstructuredProc["Unstructured Data Processing<br/>NLP, OCR, Image Recognition, Computer Vision"]
+            StructuredProc["Structured Data Processing<br/>Calculated Insights, Predictive AI Models"]
+            UnstructuredInsights["Unstructured Insights<br/>Sentiment, Lifestyle, Health Profile, Purchase Intent"]
+            StructuredInsights["Structured Insights<br/>Lifetime Value, Loyalty Tier, Favourite Brand, Preferred Channel, Preferred Send Schedule"]
         end
         
         subgraph Profile360["📊 Profile 360 Graph"]
             UnifiedProfileData["Unified Profile<br/>Demographics, Identity"]
-            InsightsTimeSeries["Insights on Time Axis<br/>Historical & Real-time"]
-            Profile360Graph["Profile 360 Graph<br/>Complete Individual View"]
+            InsightsTimeSeries["Insights on Time Axis<br/>Temporal Structured & Unstructured Insights<br/>Historical & Real-time"]
+            Profile360Graph["Dynamic Profile 360 Graph<br/>Unified Profile + Temporal Insights"]
         end
     end
 
@@ -116,14 +117,16 @@ flowchart TB
     
     %% Insights Creation
     Harmonization --> UnstructuredProc
-    Harmonization --> CalculatedInsights
-    UnstructuredProc --> StructuredInsights
-    CalculatedInsights --> StructuredInsights
+    Harmonization --> StructuredProc
+    UnstructuredProc --> UnstructuredInsights
+    StructuredProc --> StructuredInsights
     
-    %% Profile 360 Graph Creation
-    UnifiedProfileData --> Profile360Graph
+    %% Profile 360 Graph Creation - Both insights are temporal and marry with unified profile
+    UnifiedProfileData --> InsightsTimeSeries
+    UnstructuredInsights --> InsightsTimeSeries
     StructuredInsights --> InsightsTimeSeries
     InsightsTimeSeries --> Profile360Graph
+    UnifiedProfileData --> Profile360Graph
     
     %% Heroku App Connection via MCP
     Profile360Graph --> MCPConfig
@@ -188,7 +191,7 @@ flowchart TB
     class DataCloud,Ingestion,Processing,Insights,Profile360 datacloudStyle
     class DataStreams,Connectors ingestionStyle
     class Harmonization,IdentityResolution,UnifiedProfile processingStyle
-    class UnstructuredProc,CalculatedInsights,StructuredInsights insightsStyle
+    class UnstructuredProc,StructuredProc,UnstructuredInsights,StructuredInsights insightsStyle
     class UnifiedProfileData,InsightsTimeSeries,Profile360Graph profile360Style
     class HerokuApp,MCP,Segmentation,Personalization,Messaging herokuStyle
     class MCPConfig,Credentials,MCPTools mcpStyle
@@ -216,15 +219,13 @@ flowchart TB
         subgraph Insights["💡 Insights Layer"]
             
             subgraph Structured["📋 Structured Insights"]
-                Engagement["Engagement Metrics<br/>• Email Opens/Clicks<br/>• SMS Engagement<br/>• WhatsApp Reads<br/>• Push Opens<br/>• Website Activity"]
-                Behavioral["Behavioral Insights<br/>• Purchase Intent<br/>• Product Affinity<br/>• Category Preferences<br/>• Brand Affinity"]
-                Calculated["Calculated Metrics<br/>• Engagement Scores<br/>• Channel Preferences<br/>• Lifetime Value<br/>• Risk Scores"]
+                StructuredProc["Structured Data Processing<br/>• Calculated Insights<br/>• Predictive AI Models"]
+                StructuredInsights["Structured Insights<br/>• Lifetime Value<br/>• Loyalty Tier<br/>• Favourite Brand<br/>• Preferred Channel<br/>• Preferred Send Schedule"]
             end
             
             subgraph Unstructured["📝 Unstructured Insights"]
-                NLP["NLP Processing<br/>• Sentiment Analysis<br/>• Entity Extraction<br/>• Topic Modeling<br/>• Intent Detection"]
-                TextData["Text Sources<br/>• Support Cases<br/>• Social Media Posts<br/>• Reviews<br/>• Chat Transcripts"]
-                UnstructuredInsights["Unstructured Insights<br/>• Current Sentiment<br/>• Topics of Interest<br/>• Complaints/Issues<br/>• Recommendations"]
+                UnstructuredProc["Unstructured Data Processing<br/>• NLP (Natural Language Processing)<br/>• OCR (Optical Character Recognition)<br/>• Image Recognition<br/>• Computer Vision"]
+                UnstructuredInsights["Unstructured Insights<br/>• Sentiment<br/>• Lifestyle<br/>• Health Profile<br/>• Purchase Intent"]
             end
         end
         
@@ -247,18 +248,16 @@ flowchart TB
     Identity --> Demographics
     Demographics --> UnifiedRecord
     
-    Engagement --> StructuredInsights
-    Behavioral --> StructuredInsights
-    Calculated --> StructuredInsights
+    StructuredProc --> StructuredInsights
+    UnstructuredProc --> UnstructuredInsights
     
-    TextData --> NLP
-    NLP --> UnstructuredInsights
-    
+    %% Both insights are temporal on time axis
     StructuredInsights --> Historical
     UnstructuredInsights --> Historical
     Historical --> RealTime
     RealTime --> Trends
     
+    %% Unified profile marries with temporal insights to create Dynamic Profile 360 Graph
     UnifiedRecord --> Nodes
     StructuredInsights --> Nodes
     UnstructuredInsights --> Nodes
@@ -279,8 +278,8 @@ flowchart TB
     classDef graphStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:3px
     
     class Identity,Demographics,UnifiedRecord unifiedStyle
-    class Engagement,Behavioral,Calculated,StructuredInsights structuredStyle
-    class NLP,TextData,UnstructuredInsights unstructuredStyle
+    class StructuredProc,StructuredInsights structuredStyle
+    class UnstructuredProc,UnstructuredInsights unstructuredStyle
     class Historical,RealTime,Trends timeStyle
     class Nodes,Edges,GraphStructure graphStyle
 ```
@@ -330,41 +329,53 @@ flowchart TB
 ### **Phase 3: Insights Creation**
 
 #### **3.1 Unstructured Data Processing**
-- **NLP Processing**:
-  - Sentiment analysis from support cases, social media
-  - Entity extraction (brands, products, locations)
-  - Topic modeling (interests, concerns)
-  - Intent detection (purchase intent, support needs)
-- **Text Sources**:
+- **Processing Technologies**:
+  - **NLP (Natural Language Processing)**: Sentiment analysis, entity extraction, topic modeling, intent detection
+  - **OCR (Optical Character Recognition)**: Extract text from images, documents, scanned files
+  - **Image Recognition**: Identify objects, scenes, activities in images
+  - **Computer Vision**: Analyze visual content, detect patterns, extract insights from images/videos
+- **Data Sources**:
   - Support case descriptions
   - Social media posts and comments
   - Product reviews
   - Chat transcripts
-- **Output**: Unstructured insights (sentiment, topics, intents)
+  - Images and photos
+  - Documents and scanned files
+  - Video content
+- **Output**: **Unstructured Insights**
+  - Sentiment (positive, negative, neutral)
+  - Lifestyle (Active, Luxury Seeker, Adventurer, etc.)
+  - Health Profile (Fit, Active, Hypertensive, etc.)
+  - Purchase Intent (High, Medium, Low)
+  - Topics of Interest
+  - Behavioral Patterns
 
-#### **3.2 Calculated Insights (Structured Data)**
-- **Engagement Metrics**:
-  - Email opens/clicks/bounces
-  - SMS engagement rates
-  - WhatsApp read/reply rates
-  - Push notification opens
-  - Website activity (views, cart, purchases)
-- **Behavioral Insights**:
-  - Purchase intent scores
-  - Product affinity
-  - Category preferences
-  - Brand affinity
-- **Calculated Metrics**:
-  - Channel engagement scores
-  - Preferred channel detection
-  - Lifetime value (LTV)
-  - Risk scores
-  - Fitness milestone progression
+#### **3.2 Structured Data Processing**
+- **Processing Methods**:
+  - **Calculated Insights**: Aggregations, scores, metrics from structured data
+  - **Predictive AI Models**: Machine learning models for predictions and classifications
+- **Data Sources**:
+  - Engagement metrics (email, SMS, WhatsApp, push, website)
+  - Transaction data
+  - Behavioral data
+  - Demographic data
+  - Historical patterns
+- **Output**: **Structured Insights**
+  - Lifetime Value (LTV)
+  - Loyalty Tier (Bronze, Silver, Gold, Platinum)
+  - Favourite Brand (Nike, Samsung, Bose, etc.)
+  - Preferred Channel (Email, SMS, WhatsApp, Push)
+  - Preferred Send Schedule (Morning, Afternoon, Evening, Lunch Time)
+  - Engagement Scores
+  - Risk Scores
+  - Fitness Milestone Progression
 
-#### **3.3 Structured Insights**
-- Combine engagement metrics and behavioral insights
-- Create standardized insight records
-- Link to unified profile
+#### **3.3 Temporal Insights on Time Axis**
+- Both **Unstructured Insights** and **Structured Insights** are stored on a **Time Axis**
+- **Historical Data**: Past 30 days, 90 days, 1 year, lifetime
+- **Real-Time Data**: Last hour, last 24 hours, current state
+- **Trend Analysis**: Changes over time, progression patterns, shifts in behavior
+- Insights evolve and change over time, creating a temporal dimension
 
 ### **Phase 4: Profile 360 Graph Creation**
 
@@ -390,10 +401,13 @@ flowchart TB
   - Milestone progression (e.g., Beginner → Intermediate → Advanced)
   - Sentiment shifts over time
 
-#### **4.3 Graph Structure**
-- **Nodes**: Individual, Insights, Events, Relationships
+#### **4.3 Dynamic Profile 360 Graph Structure**
+- **Unified Profile**: Demographics, identity, contact information
+- **Temporal Structured Insights**: Lifetime value, loyalty tier, favourite brand, preferred channel, preferred send schedule (all on time axis)
+- **Temporal Unstructured Insights**: Sentiment, lifestyle, health profile, purchase intent (all on time axis)
+- **Nodes**: Individual, Insights (structured & unstructured), Events, Relationships
 - **Edges**: Temporal links (time-based), Causal links (cause-effect), Correlation links (related insights)
-- **Result**: Complete Profile 360 Graph with unified profile married to all insights on a time axis
+- **Result**: **Dynamic Profile 360 Graph** - Unified profile married with both structured and unstructured insights, all temporal on the time axis, creating a complete, evolving view of each individual
 
 ### **Phase 5: Heroku App Connection via MCP**
 
