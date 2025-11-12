@@ -1453,6 +1453,176 @@ def export_profile_pictures():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/personalized-content/send-test-emails', methods=['POST'])
+def send_personalized_content_emails():
+    """Send personalized content emails for 5 segment members to test addresses"""
+    try:
+        from modules.personalized_image_generator import PersonalizedImageGenerator
+        
+        # Test email recipients
+        test_emails = [
+            "bbanerjee@salesforce.com",
+            "ursonly_rup@yahoo.co.uk"
+        ]
+        
+        # The 5 segment members
+        segment_members = [
+            "Biswarup Banerjee",
+            "Ashish Desai",
+            "Deepika Chauhan",
+            "Rajesh Rao",
+            "Archana Tripathi"
+        ]
+        
+        # Load data
+        engagement_file = 'data/synthetic_engagement.json'
+        insights_file = 'data/individual_insights.json'
+        
+        with open(engagement_file, 'r') as f:
+            engagement_data = json.load(f)
+        
+        with open(insights_file, 'r') as f:
+            insights_data = json.load(f)
+        
+        results = []
+        
+        for member_name in segment_members:
+            # Find individual
+            individual = None
+            for ind in engagement_data:
+                if ind.get('Name') == member_name:
+                    individual = ind
+                    break
+            
+            if not individual:
+                continue
+            
+            # Get latest insights
+            individual_insights = sorted(
+                [i for i in insights_data if i.get('Individual_Name') == member_name],
+                key=lambda x: x.get('Event_Timestamp', ''),
+                reverse=True
+            )
+            
+            latest_insight = individual_insights[0] if individual_insights else {}
+            
+            # Merge insights
+            individual['fitness_milestone'] = latest_insight.get('Fitness_Milestone')
+            individual['favourite_brand'] = latest_insight.get('Favourite_Brand')
+            individual['favourite_destination'] = latest_insight.get('Favourite_Destination')
+            individual['hobby'] = latest_insight.get('Hobby')
+            individual['favourite_exercise'] = latest_insight.get('Favourite_Exercise', 'Treadmill Running')
+            individual['health_profile'] = latest_insight.get('Health_Profile')
+            individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
+            
+            # Generate image
+            image_result = image_generator.generate_personalized_image(individual)
+            image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
+            
+            # Generate email content (simplified HTML)
+            engagement_score = float(individual.get('engagement_score', individual.get('omnichannel_score', 5.0)))
+            vip_status = "VIP" if engagement_score >= 6.0 else "Standard"
+            vip_label = "🌟 Exceptional VIP Member" if engagement_score >= 7.0 else "⭐ Premium VIP Member" if engagement_score >= 6.0 else "Valued Member"
+            
+            first_name = individual['Name'].split()[0]
+            salutation = f"🌟 Dear {first_name},<br><br>As one of our <strong>{vip_label}</strong>, we're thrilled to bring you exclusive personalized content!" if vip_status == "VIP" else f"Dear {first_name},<br><br>Thank you for being a valued member!"
+            
+            preferred_channel = individual.get('preferred_channel', 'Email')
+            
+            # Build offers
+            offers_html = ""
+            if latest_insight.get('Fitness_Milestone') in ['Advanced', 'Elite']:
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎉 {latest_insight.get("Fitness_Milestone")} Premium Subscription - 50% OFF</strong><br>Celebrate your fitness level with our premium subscription!</div>'
+            
+            if latest_insight.get('Favourite_Brand'):
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🏷️ Exclusive {latest_insight.get("Favourite_Brand")} Collection</strong><br>Special access with member-only pricing!</div>'
+            
+            html_content = f"""
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1>🎯 Personalized Content for {individual['Name']}</h1>
+        <div style="background: gold; color: #333; padding: 8px 20px; border-radius: 25px; display: inline-block; margin: 10px 0; font-weight: bold;">{vip_label}</div>
+        <p>Engagement Score: {engagement_score:.2f} | Preferred Channel: {preferred_channel}</p>
+    </div>
+    <div style="background: white; padding: 30px; border: 1px solid #e0e0e0;">
+        <div style="font-size: 16px; margin-bottom: 20px;">
+            {salutation}
+        </div>
+        <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">🎁 Exclusive Offers</h2>
+        {offers_html}
+        <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">🎨 Your Personalized Image</h2>
+        <img src="{image_url}" alt="Personalized Content" style="max-width: 100%; border-radius: 10px; margin: 20px 0;" />
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #667eea;">📊 Your Profile</h3>
+            <p><strong>Exercise:</strong> {latest_insight.get('Favourite_Exercise', 'N/A')}</p>
+            <p><strong>Brand:</strong> {latest_insight.get('Favourite_Brand', 'N/A')}</p>
+            <p><strong>Destination:</strong> {latest_insight.get('Favourite_Destination', 'N/A')}</p>
+            <p><strong>Milestone:</strong> {latest_insight.get('Fitness_Milestone', 'N/A')}</p>
+        </div>
+    </div>
+    <div style="background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 12px;">
+        <p>This is a test email sent for demonstration purposes.</p>
+    </div>
+</body>
+</html>
+"""
+            
+            # Send emails
+            subject = f"🎯 Personalized Content for {member_name} - {vip_label} ({preferred_channel})"
+            
+            for test_email in test_emails:
+                try:
+                    if not sf_manager.is_connected():
+                        return jsonify({'success': False, 'error': 'Not connected to Salesforce'}), 400
+                    
+                    email_payload = {
+                        "inputs": [{
+                            "emailAddresses": test_email,
+                            "emailSubject": f"[TEST] {subject}",
+                            "emailBody": html_content,
+                            "senderType": "CurrentUser"
+                        }]
+                    }
+                    
+                    result = sf_manager.sf.restful(
+                        'actions/standard/emailSimple',
+                        method='POST',
+                        data=json.dumps(email_payload)
+                    )
+                    
+                    results.append({
+                        'recipient': test_email,
+                        'individual': member_name,
+                        'status': 'sent',
+                        'subject': subject
+                    })
+                    
+                except Exception as e:
+                    results.append({
+                        'recipient': test_email,
+                        'individual': member_name,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+        
+        return jsonify({
+            'success': True,
+            'results': results,
+            'total_sent': len([r for r in results if r['status'] == 'sent']),
+            'total_failed': len([r for r in results if r['status'] == 'failed'])
+        })
+        
+    except Exception as e:
+        import traceback
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }), 500
+
 @app.route('/health')
 def health_check():
     """Health check endpoint"""
