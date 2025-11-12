@@ -1457,8 +1457,6 @@ def export_profile_pictures():
 def send_personalized_content_emails():
     """Send personalized content emails for 5 segment members to test addresses"""
     try:
-        from modules.personalized_image_generator import PersonalizedImageGenerator
-        
         # Test email recipients
         test_emails = [
             "bbanerjee@salesforce.com",
@@ -1485,6 +1483,7 @@ def send_personalized_content_emails():
             insights_data = json.load(f)
         
         results = []
+        generated_htmls = []
         
         for member_name in segment_members:
             # Find individual
@@ -1516,10 +1515,11 @@ def send_personalized_content_emails():
             individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
             
             # Generate image
+            print(f"🎨 Generating image for {member_name}...")
             image_result = image_generator.generate_personalized_image(individual)
             image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
             
-            # Generate email content (simplified HTML)
+            # Generate email content
             engagement_score = float(individual.get('engagement_score', individual.get('omnichannel_score', 5.0)))
             vip_status = "VIP" if engagement_score >= 6.0 else "Standard"
             vip_label = "🌟 Exceptional VIP Member" if engagement_score >= 7.0 else "⭐ Premium VIP Member" if engagement_score >= 6.0 else "Valued Member"
@@ -1537,6 +1537,14 @@ def send_personalized_content_emails():
             if latest_insight.get('Favourite_Brand'):
                 offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🏷️ Exclusive {latest_insight.get("Favourite_Brand")} Collection</strong><br>Special access with member-only pricing!</div>'
             
+            # Vacation/flight offer
+            if latest_insight.get('Imminent_Event') and 'vacation' in str(latest_insight.get('Imminent_Event', '')).lower():
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>✈️ Flight Booking Special - 15% OFF</strong><br>Book your flights to {latest_insight.get("Favourite_Destination", "your destination")} with exclusive member rates!</div>'
+            
+            # Guitar hobby offer
+            if latest_insight.get('Hobby') and 'guitar' in str(latest_insight.get('Hobby', '')).lower():
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎸 Guitar Purchase - 30% Discount</strong><br>Special discount on premium guitars for music enthusiasts!</div>'
+            
             html_content = f"""
 <!DOCTYPE html>
 <html>
@@ -1552,7 +1560,7 @@ def send_personalized_content_emails():
             {salutation}
         </div>
         <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">🎁 Exclusive Offers</h2>
-        {offers_html}
+        {offers_html if offers_html else '<p>Check back soon for exclusive offers!</p>'}
         <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">🎨 Your Personalized Image</h2>
         <img src="{image_url}" alt="Personalized Content" style="max-width: 100%; border-radius: 10px; margin: 20px 0;" />
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -1561,6 +1569,7 @@ def send_personalized_content_emails():
             <p><strong>Brand:</strong> {latest_insight.get('Favourite_Brand', 'N/A')}</p>
             <p><strong>Destination:</strong> {latest_insight.get('Favourite_Destination', 'N/A')}</p>
             <p><strong>Milestone:</strong> {latest_insight.get('Fitness_Milestone', 'N/A')}</p>
+            <p><strong>Health Profile:</strong> {latest_insight.get('Health_Profile', 'N/A')}</p>
         </div>
     </div>
     <div style="background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 12px;">
@@ -1570,13 +1579,28 @@ def send_personalized_content_emails():
 </html>
 """
             
-            # Send emails
+            # Save HTML for preview
+            os.makedirs('generated_emails', exist_ok=True)
+            html_file = f"generated_emails/email_{member_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+            with open(html_file, 'w') as f:
+                f.write(html_content)
+            generated_htmls.append(html_file)
+            
+            # Send emails via Salesforce if connected
             subject = f"🎯 Personalized Content for {member_name} - {vip_label} ({preferred_channel})"
             
             for test_email in test_emails:
                 try:
                     if not sf_manager.is_connected():
-                        return jsonify({'success': False, 'error': 'Not connected to Salesforce'}), 400
+                        results.append({
+                            'recipient': test_email,
+                            'individual': member_name,
+                            'status': 'pending',
+                            'message': 'Salesforce not connected - HTML file generated',
+                            'html_file': html_file,
+                            'subject': subject
+                        })
+                        continue
                     
                     email_payload = {
                         "inputs": [{
@@ -1597,7 +1621,8 @@ def send_personalized_content_emails():
                         'recipient': test_email,
                         'individual': member_name,
                         'status': 'sent',
-                        'subject': subject
+                        'subject': subject,
+                        'html_file': html_file
                     })
                     
                 except Exception as e:
@@ -1605,14 +1630,18 @@ def send_personalized_content_emails():
                         'recipient': test_email,
                         'individual': member_name,
                         'status': 'failed',
-                        'error': str(e)
+                        'error': str(e),
+                        'html_file': html_file
                     })
         
         return jsonify({
             'success': True,
             'results': results,
             'total_sent': len([r for r in results if r['status'] == 'sent']),
-            'total_failed': len([r for r in results if r['status'] == 'failed'])
+            'total_failed': len([r for r in results if r['status'] == 'failed']),
+            'total_pending': len([r for r in results if r['status'] == 'pending']),
+            'html_files': generated_htmls,
+            'message': 'Check generated_emails/ folder for HTML previews' if not sf_manager.is_connected() else 'Emails sent successfully'
         })
         
     except Exception as e:
