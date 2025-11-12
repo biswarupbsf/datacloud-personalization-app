@@ -1576,7 +1576,8 @@ def send_personalized_content_emails():
                 print(f"⚠️ Using profile picture as fallback: {image_url[:100] if image_url else 'None'}...")
             
             # Generate email content
-            engagement_score = float(individual.get('engagement_score', individual.get('omnichannel_score', 5.0)))
+            # Use omnichannel_score first (more granular), fallback to engagement_score
+            engagement_score = float(individual.get('omnichannel_score', individual.get('engagement_score', 5.0)))
             vip_status = "VIP" if engagement_score >= 6.0 else "Standard"
             vip_label = "🌟 Exceptional VIP Member" if engagement_score >= 7.0 else "⭐ Premium VIP Member" if engagement_score >= 6.0 else "Valued Member"
             
