@@ -1347,6 +1347,29 @@ def generate_personalized_image():
         result = image_generator.generate_personalized_image(individual, custom_prompt)
         print(f"✅ Generation complete: {result.get('success')}")
         
+        # Save Cloudinary URL to persistent storage for email embedding
+        if result.get('success') and result.get('image_url'):
+            image_url = result.get('image_url')
+            if 'res.cloudinary.com' in image_url:
+                try:
+                    # Store in personalized_images.json (similar to profile_pictures.json)
+                    personalized_images_file = os.path.join('data', 'personalized_images.json')
+                    try:
+                        with open(personalized_images_file, 'r') as f:
+                            personalized_images = json.load(f)
+                    except:
+                        personalized_images = {}
+                    
+                    individual_name = individual.get('Name', 'Unknown')
+                    personalized_images[individual_name] = image_url
+                    
+                    with open(personalized_images_file, 'w') as f:
+                        json.dump(personalized_images, f, indent=2)
+                    
+                    print(f"💾 Saved Cloudinary URL for {individual_name}: {image_url[:100]}...")
+                except Exception as save_error:
+                    print(f"⚠️ Could not save image URL: {save_error}")
+        
         # Add promotional messages to result
         if promotional_messages:
             result['promotional_messages'] = promotional_messages
@@ -1514,48 +1537,43 @@ def send_personalized_content_emails():
             individual['health_profile'] = latest_insight.get('Health_Profile')
             individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
             
-            # Generate image and ensure it's stored in Cloudinary for email embedding
-            print(f"🎨 Generating image for {member_name}...")
-            image_result = image_generator.generate_personalized_image(individual)
+            # Check for existing Cloudinary URL first (skip regeneration)
+            personalized_images_file = os.path.join('data', 'personalized_images.json')
+            image_url = None
             
-            # Get image URL - should already be a Cloudinary URL
-            image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
+            try:
+                with open(personalized_images_file, 'r') as f:
+                    personalized_images = json.load(f)
+                    image_url = personalized_images.get(member_name)
+                    if image_url and 'res.cloudinary.com' in image_url:
+                        print(f"✅ Found existing Cloudinary URL for {member_name}: {image_url[:100]}...")
+            except:
+                personalized_images = {}
             
-            # Ensure image is stored in Cloudinary with proper naming for email embedding
-            if image_url and image_result.get('success'):
-                # Image is already in Cloudinary (from personalized_image_generator.py)
-                # Store it with a specific naming convention for email use
-                try:
-                    import cloudinary
-                    import cloudinary.uploader
-                    import requests
-                    from io import BytesIO
-                    
-                    cloudinary.config(
-                        cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-                        api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
-                        api_secret=os.environ.get('CLOUDINARY_API_SECRET', '')
-                    )
-                    
-                    # If image is already a Cloudinary URL, use it directly
-                    if 'res.cloudinary.com' in image_url:
-                        print(f"✅ Image already in Cloudinary: {image_url[:100]}...")
-                    else:
-                        # Download and re-upload to Cloudinary with email-specific folder
-                        print(f"📥 Downloading image to store in Cloudinary...")
-                        img_response = requests.get(image_url, timeout=30)
-                        if img_response.status_code == 200:
-                            result = cloudinary.uploader.upload(
-                                BytesIO(img_response.content),
-                                folder="personalized_images_email",
-                                public_id=f"email_{member_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}",
-                                overwrite=True,
-                                resource_type="image"
-                            )
-                            image_url = result.get('secure_url')
-                            print(f"✅ Stored in Cloudinary for email: {image_url[:100]}...")
-                except Exception as e:
-                    print(f"⚠️ Could not store image in Cloudinary: {e}, using original URL")
+            # Only generate if no existing URL found
+            if not image_url:
+                print(f"🎨 No existing image found. Generating new image for {member_name}...")
+                image_result = image_generator.generate_personalized_image(individual)
+                
+                # Get image URL - should already be a Cloudinary URL
+                image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
+                
+                # Save to persistent storage if generation succeeded
+                if image_result.get('success') and image_url and 'res.cloudinary.com' in image_url:
+                    try:
+                        personalized_images[member_name] = image_url
+                        with open(personalized_images_file, 'w') as f:
+                            json.dump(personalized_images, f, indent=2)
+                        print(f"💾 Saved Cloudinary URL for {member_name}")
+                    except Exception as save_error:
+                        print(f"⚠️ Could not save image URL: {save_error}")
+            else:
+                print(f"⏭️ Skipping image generation - using existing Cloudinary URL")
+            
+            # Fallback to profile picture if no personalized image available
+            if not image_url or 'res.cloudinary.com' not in image_url:
+                image_url = individual.get('profile_picture_url', '')
+                print(f"⚠️ Using profile picture as fallback: {image_url[:100] if image_url else 'None'}...")
             
             # Generate email content
             engagement_score = float(individual.get('engagement_score', individual.get('omnichannel_score', 5.0)))
