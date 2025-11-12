@@ -1559,7 +1559,7 @@ def send_personalized_content_emails():
             individual['health_profile'] = latest_insight.get('Health_Profile')
             individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
             
-            # Check for existing Cloudinary URL first (skip regeneration)
+            # Check for existing Cloudinary URL first (NEVER generate during email sending - causes timeout)
             personalized_images_file = os.path.join('data', 'personalized_images.json')
             image_url = None
             
@@ -1569,33 +1569,18 @@ def send_personalized_content_emails():
                     image_url = personalized_images.get(member_name)
                     if image_url and 'res.cloudinary.com' in image_url:
                         print(f"✅ Found existing Cloudinary URL for {member_name}: {image_url[:100]}...")
-            except:
-                personalized_images = {}
+            except FileNotFoundError:
+                print(f"⚠️ personalized_images.json not found - will use profile pictures")
+            except Exception as e:
+                print(f"⚠️ Error reading personalized_images.json: {e}")
             
-            # Only generate if no existing URL found
-            if not image_url:
-                print(f"🎨 No existing image found. Generating new image for {member_name}...")
-                image_result = image_generator.generate_personalized_image(individual)
-                
-                # Get image URL - should already be a Cloudinary URL
-                image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
-                
-                # Save to persistent storage if generation succeeded
-                if image_result.get('success') and image_url and 'res.cloudinary.com' in image_url:
-                    try:
-                        personalized_images[member_name] = image_url
-                        with open(personalized_images_file, 'w') as f:
-                            json.dump(personalized_images, f, indent=2)
-                        print(f"💾 Saved Cloudinary URL for {member_name}")
-                    except Exception as save_error:
-                        print(f"⚠️ Could not save image URL: {save_error}")
-            else:
-                print(f"⏭️ Skipping image generation - using existing Cloudinary URL")
-            
-            # Fallback to profile picture if no personalized image available
+            # NEVER generate images during email sending - it causes Heroku 30-second timeout
+            # Users must generate images first via "AI Personalized Images" page
             if not image_url or 'res.cloudinary.com' not in image_url:
+                # Use profile picture as fallback
                 image_url = individual.get('profile_picture_url', '')
-                print(f"⚠️ Using profile picture as fallback: {image_url[:100] if image_url else 'None'}...")
+                print(f"⚠️ No cached personalized image for {member_name}. Using profile picture: {image_url[:100] if image_url else 'None'}...")
+                print(f"💡 Tip: Generate personalized images first via 'AI Personalized Images' page to use AI-generated content in emails")
             
             # Generate email content
             # Use omnichannel_score first (more granular), fallback to engagement_score
