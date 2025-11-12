@@ -8,6 +8,7 @@ import os
 import json
 import base64
 import io
+from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 import requests
 import cloudinary
@@ -333,16 +334,19 @@ class PersonalizedImageGenerator:
             generated_image.save(img_bytes, format='PNG')
             img_bytes.seek(0)
             
-            # Save image to Cloudinary
+            # Save image to Cloudinary with naming convention for email embedding
+            individual_name = individual_data.get('Name', 'Unknown').replace(' ', '_')
             print("☁️ Uploading generated image to Cloudinary...")
             result = cloudinary.uploader.upload(
                 img_bytes,
                 folder="personalized_images_gemini",
-                resource_type="image"
+                public_id=f"gemini_{individual_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                resource_type="image",
+                overwrite=False  # Keep all versions
             )
             
             final_image_url = result.get('secure_url')
-            print(f"✅ Image generated and uploaded: {final_image_url[:100]}...")
+            print(f"✅ Image generated and uploaded to Cloudinary: {final_image_url[:100]}...")
             
             # Add promotional text overlay
             try:
@@ -686,16 +690,19 @@ class PersonalizedImageGenerator:
             img.save(output, format='JPEG', quality=95)
             output.seek(0)
             
-            # Upload the modified image back to Cloudinary
+            # Upload the modified image back to Cloudinary with naming for email embedding
+            individual_name = individual_data.get('Name', 'Unknown').replace(' ', '_')
             print(f"☁️ Uploading image with overlay to Cloudinary...")
             result = cloudinary.uploader.upload(
                 output,
                 folder="personalized_images_with_text",
-                resource_type="image"
+                public_id=f"email_{individual_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                resource_type="image",
+                overwrite=False  # Keep all versions for email embedding
             )
             
             modified_url = result.get('secure_url')
-            print(f"✅ Image with overlay uploaded: {modified_url[:100]}...")
+            print(f"✅ Image with overlay uploaded to Cloudinary: {modified_url[:100]}...")
             
             return modified_url
             

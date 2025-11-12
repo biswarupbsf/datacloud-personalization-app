@@ -1514,10 +1514,48 @@ def send_personalized_content_emails():
             individual['health_profile'] = latest_insight.get('Health_Profile')
             individual['imminent_event'] = latest_insight.get('Imminent_Event', '')
             
-            # Generate image
+            # Generate image and ensure it's stored in Cloudinary for email embedding
             print(f"🎨 Generating image for {member_name}...")
             image_result = image_generator.generate_personalized_image(individual)
+            
+            # Get image URL - should already be a Cloudinary URL
             image_url = image_result.get('image_url') if image_result.get('success') else individual.get('profile_picture_url', '')
+            
+            # Ensure image is stored in Cloudinary with proper naming for email embedding
+            if image_url and image_result.get('success'):
+                # Image is already in Cloudinary (from personalized_image_generator.py)
+                # Store it with a specific naming convention for email use
+                try:
+                    import cloudinary
+                    import cloudinary.uploader
+                    import requests
+                    from io import BytesIO
+                    
+                    cloudinary.config(
+                        cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+                        api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
+                        api_secret=os.environ.get('CLOUDINARY_API_SECRET', '')
+                    )
+                    
+                    # If image is already a Cloudinary URL, use it directly
+                    if 'res.cloudinary.com' in image_url:
+                        print(f"✅ Image already in Cloudinary: {image_url[:100]}...")
+                    else:
+                        # Download and re-upload to Cloudinary with email-specific folder
+                        print(f"📥 Downloading image to store in Cloudinary...")
+                        img_response = requests.get(image_url, timeout=30)
+                        if img_response.status_code == 200:
+                            result = cloudinary.uploader.upload(
+                                BytesIO(img_response.content),
+                                folder="personalized_images_email",
+                                public_id=f"email_{member_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}",
+                                overwrite=True,
+                                resource_type="image"
+                            )
+                            image_url = result.get('secure_url')
+                            print(f"✅ Stored in Cloudinary for email: {image_url[:100]}...")
+                except Exception as e:
+                    print(f"⚠️ Could not store image in Cloudinary: {e}, using original URL")
             
             # Generate email content
             engagement_score = float(individual.get('engagement_score', individual.get('omnichannel_score', 5.0)))
@@ -1605,20 +1643,52 @@ def send_personalized_content_emails():
                         })
                         continue
                     
-                    email_payload = {
-                        "inputs": [{
-                            "emailAddresses": test_email,
-                            "emailSubject": f"[TEST] {subject}",
-                            "emailBody": html_content,
-                            "senderType": "CurrentUser"
-                        }]
-                    }
-                    
-                    result = sf_manager.sf.restful(
-                        'actions/standard/emailSimple',
-                        method='POST',
-                        data=json.dumps(email_payload)
-                    )
+                    # Use Salesforce Email API - try multiple methods for HTML rendering
+                    # Method 1: Use Apex SingleEmailMessage (most reliable for HTML)
+                    try:
+                        # Properly escape HTML for Apex string
+                        html_escaped = html_content.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n").replace("\r", "\\r")
+                        subject_escaped = subject.replace("'", "\\'")
+                        
+                        apex_code = f"""
+                        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                        email.setToAddresses(new String[] {{'{test_email}'}});
+                        email.setSubject('{subject_escaped}');
+                        email.setHtmlBody('{html_escaped}');
+                        email.setSaveAsActivity(false);
+                        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {{ email }});
+                        System.debug('Email sent: ' + results[0].isSuccess());
+                        """
+                        
+                        result = sf_manager.sf.toolingexecuteanonymous(apex_code)
+                        if not result.get('success'):
+                            error_msg = result.get('compileProblem') or result.get('exceptionMessage', 'Unknown error')
+                            raise Exception(f"Apex execution failed: {error_msg}")
+                        print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML)")
+                    except Exception as apex_error:
+                        # Method 2: Fallback to emailSimple API with explicit HTML format
+                        print(f"⚠️ Apex method failed: {apex_error}, trying emailSimple API...")
+                        try:
+                            email_payload = {
+                                "inputs": [{
+                                    "emailAddresses": test_email,
+                                    "emailSubject": f"[TEST] {subject}",
+                                    "emailBody": html_content,
+                                    "emailFormat": "Html",
+                                    "senderType": "CurrentUser"
+                                }]
+                            }
+                            result = sf_manager.sf.restful(
+                                'actions/standard/emailSimple',
+                                method='POST',
+                                data=json.dumps(email_payload),
+                                headers={'Content-Type': 'application/json'}
+                            )
+                            print(f"✅ Email sent via emailSimple API")
+                        except Exception as email_simple_error:
+                            # Method 3: Last resort - save HTML file and provide link
+                            print(f"⚠️ emailSimple also failed: {email_simple_error}")
+                            raise Exception(f"All email methods failed. HTML saved to: {html_file}. Last error: {email_simple_error}")
                     
                     results.append({
                         'recipient': test_email,
