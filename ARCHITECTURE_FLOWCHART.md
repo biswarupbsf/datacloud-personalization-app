@@ -43,7 +43,7 @@ flowchart TB
         
         subgraph Profile360["📊 Profile 360 Graph"]
             UnifiedProfileData["Unified Profile<br/>Demographics, Identity"]
-            InsightsTimeSeries["Insights on Time Axis<br/>Temporal Structured & Unstructured Insights<br/>Historical & Real-time"]
+            InsightsTimeSeries["Insights on Time Axis:<br/>Temporal Structured & Unstructured Insights<br/>Historical & Real-time"]
             Profile360Graph["Dynamic Profile 360 Graph<br/>Unified Profile + Temporal Insights"]
         end
     end
