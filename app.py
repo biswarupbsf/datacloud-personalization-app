@@ -1476,6 +1476,26 @@ def export_profile_pictures():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/personalized-images/export')
+def export_personalized_images():
+    """Export current personalized image URLs from Cloudinary"""
+    try:
+        personalized_images_file = os.path.join('data', 'personalized_images.json')
+        try:
+            with open(personalized_images_file, 'r') as f:
+                personalized_images = json.load(f)
+        except FileNotFoundError:
+            personalized_images = {}
+        
+        return jsonify({
+            'success': True,
+            'personalized_images': personalized_images,
+            'count': len(personalized_images),
+            'instructions': 'These are the Cloudinary URLs for AI-generated personalized images. Generate images via "AI Personalized Images" page to populate this list.'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/api/personalized-content/send-test-emails', methods=['POST'])
 def send_personalized_content_emails():
     """Send personalized content emails for 5 segment members to test addresses"""
@@ -1564,15 +1584,25 @@ def send_personalized_content_emails():
             image_url = None
             
             try:
+                # Initialize file if it doesn't exist
+                if not os.path.exists(personalized_images_file):
+                    with open(personalized_images_file, 'w') as f:
+                        json.dump({}, f)
+                    print(f"📝 Created empty personalized_images.json")
+                
                 with open(personalized_images_file, 'r') as f:
                     personalized_images = json.load(f)
                     image_url = personalized_images.get(member_name)
                     if image_url and 'res.cloudinary.com' in image_url:
                         print(f"✅ Found existing Cloudinary URL for {member_name}: {image_url[:100]}...")
+                    else:
+                        print(f"⚠️ No cached image for {member_name} in personalized_images.json (found {len(personalized_images)} total entries)")
             except FileNotFoundError:
                 print(f"⚠️ personalized_images.json not found - will use profile pictures")
             except Exception as e:
                 print(f"⚠️ Error reading personalized_images.json: {e}")
+                import traceback
+                print(traceback.format_exc())
             
             # NEVER generate images during email sending - it causes Heroku 30-second timeout
             # Users must generate images first via "AI Personalized Images" page

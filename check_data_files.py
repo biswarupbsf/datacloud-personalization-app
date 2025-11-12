@@ -34,6 +34,16 @@ def ensure_data_files():
         else:
             print(f"✅ {data_file} exists")
     
+    # Initialize personalized_images.json if it doesn't exist
+    personalized_images_file = os.path.join(data_dir, 'personalized_images.json')
+    if not os.path.exists(personalized_images_file):
+        print(f"⚠️  {personalized_images_file} not found - creating empty file")
+        with open(personalized_images_file, 'w') as f:
+            json.dump({}, f)
+        print(f"✅ Created {personalized_images_file}")
+    else:
+        print(f"✅ {personalized_images_file} exists")
+    
     # Restore profile pictures from persistent mapping
     restore_profile_pictures()
 
