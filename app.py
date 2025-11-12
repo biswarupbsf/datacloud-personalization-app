@@ -1672,17 +1672,19 @@ def send_personalized_content_emails():
                         continue
                     
                     # Use Salesforce Email API - try multiple methods for HTML rendering
-                    # Method 1: Use Apex SingleEmailMessage (most reliable for HTML)
+                    # Method 1: Use Apex SingleEmailMessage with base64 encoding (most reliable for HTML)
                     try:
-                        # Properly escape HTML for Apex string
-                        html_escaped = html_content.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n").replace("\r", "\\r")
+                        import base64
+                        # Encode HTML as base64 to avoid escaping issues
+                        html_base64 = base64.b64encode(html_content.encode('utf-8')).decode('utf-8')
                         subject_escaped = subject.replace("'", "\\'")
                         
                         apex_code = f"""
                         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
                         email.setToAddresses(new String[] {{'{test_email}'}});
                         email.setSubject('{subject_escaped}');
-                        email.setHtmlBody('{html_escaped}');
+                        String htmlBody = EncodingUtil.base64Decode('{html_base64}').toString();
+                        email.setHtmlBody(htmlBody);
                         email.setSaveAsActivity(false);
                         Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {{ email }});
                         System.debug('Email sent: ' + results[0].isSuccess());
@@ -1692,31 +1694,58 @@ def send_personalized_content_emails():
                         if not result.get('success'):
                             error_msg = result.get('compileProblem') or result.get('exceptionMessage', 'Unknown error')
                             raise Exception(f"Apex execution failed: {error_msg}")
-                        print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML)")
+                        print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML with base64)")
                     except Exception as apex_error:
-                        # Method 2: Fallback to emailSimple API with explicit HTML format
-                        print(f"⚠️ Apex method failed: {apex_error}, trying emailSimple API...")
+                        # Method 2: Try Apex with proper string escaping (fallback)
+                        print(f"⚠️ Base64 method failed: {apex_error}, trying string escaping...")
                         try:
-                            email_payload = {
-                                "inputs": [{
-                                    "emailAddresses": test_email,
-                                    "emailSubject": f"[TEST] {subject}",
-                                    "emailBody": html_content,
-                                    "emailFormat": "Html",
-                                    "senderType": "CurrentUser"
-                                }]
-                            }
-                            result = sf_manager.sf.restful(
-                                'actions/standard/emailSimple',
-                                method='POST',
-                                data=json.dumps(email_payload),
-                                headers={'Content-Type': 'application/json'}
-                            )
-                            print(f"✅ Email sent via emailSimple API")
-                        except Exception as email_simple_error:
-                            # Method 3: Last resort - save HTML file and provide link
-                            print(f"⚠️ emailSimple also failed: {email_simple_error}")
-                            raise Exception(f"All email methods failed. HTML saved to: {html_file}. Last error: {email_simple_error}")
+                            # Use triple quotes in Apex for multi-line strings (more reliable)
+                            # Escape single quotes and backslashes properly
+                            html_escaped = html_content.replace("\\", "\\\\").replace("'", "\\'")
+                            subject_escaped = subject.replace("'", "\\'")
+                            
+                            # Split HTML into chunks if too long (Apex has string length limits)
+                            # Use String.join for long HTML
+                            apex_code = f"""
+                            String htmlBody = '{html_escaped}';
+                            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                            email.setToAddresses(new String[] {{'{test_email}'}});
+                            email.setSubject('{subject_escaped}');
+                            email.setHtmlBody(htmlBody);
+                            email.setSaveAsActivity(false);
+                            Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {{ email }});
+                            System.debug('Email sent: ' + results[0].isSuccess());
+                            """
+                            
+                            result = sf_manager.sf.toolingexecuteanonymous(apex_code)
+                            if not result.get('success'):
+                                error_msg = result.get('compileProblem') or result.get('exceptionMessage', 'Unknown error')
+                                raise Exception(f"Apex execution failed: {error_msg}")
+                            print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML with escaping)")
+                        except Exception as apex_error2:
+                            # Method 3: Fallback to emailSimple API with explicit HTML format
+                            print(f"⚠️ Apex escaping method failed: {apex_error2}, trying emailSimple API...")
+                            try:
+                                email_payload = {
+                                    "inputs": [{
+                                        "emailAddresses": test_email,
+                                        "emailSubject": f"[TEST] {subject}",
+                                        "emailBody": html_content,
+                                        "emailFormat": "Html",
+                                        "senderType": "CurrentUser"
+                                    }]
+                                }
+                                result = sf_manager.sf.restful(
+                                    'actions/standard/emailSimple',
+                                    method='POST',
+                                    data=json.dumps(email_payload),
+                                    headers={'Content-Type': 'application/json'}
+                                )
+                                print(f"✅ Email sent via emailSimple API")
+                            except Exception as email_simple_error:
+                                # Method 4: Last resort - save HTML file and provide link
+                                print(f"⚠️ emailSimple also failed: {email_simple_error}")
+                                raise Exception(f"All email methods failed. HTML saved to: {html_file}. Last error: {email_simple_error}")
                     
                     results.append({
                         'recipient': test_email,
