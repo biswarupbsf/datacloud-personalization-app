@@ -68,14 +68,14 @@ SEGMENT_INSIGHTS = {
     "Archana Tripathi": {
         "Favourite_Exercise": "Rock Climbing",
         "Favourite_Brand": "Adidas",  # Apparel brand
-        "Favourite_Destination": "Maldives",
+        "Favourite_Destination": "Switzerland",  # Changed from Maldives to Switzerland
         "Hobby": "Playing Guitar",
         "Health_Profile": "Active",
         "Fitness_Milestone_Current": "Advanced",
         "Fitness_Milestone_Previous": "Intermediate",  # Shows progression
         "Lifestyle_Quotient": "Adventurer",
         "Current_Sentiment": "Happy",
-        "Imminent_Event": "Vacation to Maldives next week"
+        "Imminent_Event": "Rock climbing adventure in Switzerland next week"
     }
 }
 
