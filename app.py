@@ -1500,10 +1500,9 @@ def export_personalized_images():
 def send_personalized_content_emails():
     """Send personalized content emails for 5 segment members to test addresses"""
     try:
-        # Test email recipients
+        # Test email recipients - only one email
         test_emails = [
-            "bbanerjee@salesforce.com",
-            "ursonly_rup@yahoo.co.uk"
+            "bbanerjee@salesforce.com"
         ]
         
         # The 5 segment members
@@ -1612,32 +1611,62 @@ def send_personalized_content_emails():
                 print(f"⚠️ No cached personalized image for {member_name}. Using profile picture: {image_url[:100] if image_url else 'None'}...")
                 print(f"💡 Tip: Generate personalized images first via 'AI Personalized Images' page to use AI-generated content in emails")
             
-            # Generate email content
+            # Generate email content with full personalization
             # Use omnichannel_score first (more granular), fallback to engagement_score
             engagement_score = float(individual.get('omnichannel_score', individual.get('engagement_score', 5.0)))
             vip_status = "VIP" if engagement_score >= 6.0 else "Standard"
             vip_label = "🌟 Exceptional VIP Member" if engagement_score >= 7.0 else "⭐ Premium VIP Member" if engagement_score >= 6.0 else "Valued Member"
             
             first_name = individual['Name'].split()[0]
-            salutation = f"🌟 Dear {first_name},<br><br>As one of our <strong>{vip_label}</strong>, we're thrilled to bring you exclusive personalized content!" if vip_status == "VIP" else f"Dear {first_name},<br><br>Thank you for being a valued member!"
-            
             preferred_channel = individual.get('preferred_channel', 'Email')
             
-            # Build offers
+            # Build personalized salutation based on VIP status
+            if vip_status == "VIP":
+                if engagement_score >= 7.0:
+                    salutation = f"🌟 <strong>Dear {first_name},</strong><br><br>As one of our <strong>{vip_label}</strong>, we're absolutely thrilled to bring you exclusive, hyper-personalized content tailored just for you! Your exceptional engagement (Score: {engagement_score:.2f}/10) deserves the very best."
+                else:
+                    salutation = f"⭐ <strong>Dear {first_name},</strong><br><br>As one of our <strong>{vip_label}</strong>, we're delighted to bring you exclusive personalized content! Your premium engagement (Score: {engagement_score:.2f}/10) makes you special to us."
+            else:
+                salutation = f"<strong>Dear {first_name},</strong><br><br>Thank you for being a valued member! We appreciate your engagement and want to share some personalized content with you."
+            
+            # Build comprehensive offers based on ALL insights
             offers_html = ""
-            if latest_insight.get('Fitness_Milestone') in ['Advanced', 'Elite']:
-                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎉 {latest_insight.get("Fitness_Milestone")} Premium Subscription - 50% OFF</strong><br>Celebrate your fitness level with our premium subscription!</div>'
             
-            if latest_insight.get('Favourite_Brand'):
-                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🏷️ Exclusive {latest_insight.get("Favourite_Brand")} Collection</strong><br>Special access with member-only pricing!</div>'
+            # Favorite Exercise offer
+            favourite_exercise = latest_insight.get('Favourite_Exercise', '')
+            if favourite_exercise:
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>💪 {favourite_exercise} Training Gear - 20% OFF</strong><br>Perfect equipment for your {favourite_exercise} routine! Get premium gear at exclusive member pricing.</div>'
             
-            # Vacation/flight offer
-            if latest_insight.get('Imminent_Event') and 'vacation' in str(latest_insight.get('Imminent_Event', '')).lower():
-                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>✈️ Flight Booking Special - 15% OFF</strong><br>Book your flights to {latest_insight.get("Favourite_Destination", "your destination")} with exclusive member rates!</div>'
+            # Fitness Milestone offer
+            fitness_milestone = latest_insight.get('Fitness_Milestone', '')
+            if fitness_milestone in ['Advanced', 'Elite']:
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎉 {fitness_milestone} Premium Subscription - 50% OFF</strong><br>Celebrate your {fitness_milestone} fitness level! Get 3 months of premium membership at half price.</div>'
+            
+            # Favorite Brand offer
+            favourite_brand = latest_insight.get('Favourite_Brand', '')
+            if favourite_brand:
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🏷️ Exclusive {favourite_brand} Collection</strong><br>Special access to {favourite_brand} products with member-only pricing! Shop the latest collection now.</div>'
+            
+            # Favorite Destination offer
+            favourite_destination = latest_insight.get('Favourite_Destination', '')
+            if favourite_destination:
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🌴 {favourite_destination} Travel Package - 15% OFF</strong><br>Dreaming of {favourite_destination}? Book your travel package with exclusive member discount!</div>'
+            
+            # Vacation/Upcoming Event offer
+            imminent_event = latest_insight.get('Imminent_Event', '')
+            if imminent_event and 'vacation' in str(imminent_event).lower():
+                destination = favourite_destination or "your destination"
+                offers_html += f'<div style="background: #fff3cd; padding: 15px; margin: 10px 0; border-left: 4px solid #ffc107;"><strong>✈️ Flight Booking Special - 15% OFF</strong><br>Your upcoming vacation to {destination} is calling! Book your flights now with exclusive member rates. <a href="#" style="color: #667eea; text-decoration: underline;">Book Now →</a></div>'
             
             # Guitar hobby offer
-            if latest_insight.get('Hobby') and 'guitar' in str(latest_insight.get('Hobby', '')).lower():
-                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎸 Guitar Purchase - 30% Discount</strong><br>Special discount on premium guitars for music enthusiasts!</div>'
+            hobby = latest_insight.get('Hobby', '')
+            if hobby and 'guitar' in str(hobby).lower():
+                offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎸 Guitar Purchase - 30% Discount</strong><br>Special discount on premium guitars for music enthusiasts! <a href="#" style="color: #667eea; text-decoration: underline;">Shop Guitars →</a></div>'
+            
+            # Health alert (if negative health profile)
+            health_profile = latest_insight.get('Health_Profile', '')
+            if health_profile and health_profile.lower() in ['hypertensive', 'at risk', 'unhealthy']:
+                offers_html += f'<div style="background: #fee; padding: 15px; margin: 10px 0; border-left: 4px solid #f44336;"><strong>⚕️ Health Check Recommended</strong><br>Based on your health profile ({health_profile}), we recommend scheduling a consultation with a healthcare provider. Your wellbeing is our priority! <a href="#" style="color: #667eea; text-decoration: underline;">Find a Doctor →</a></div>'
             
             # Ensure image URL is absolute and from Cloudinary for email embedding
             if image_url and not image_url.startswith('http'):
@@ -1709,59 +1738,58 @@ def send_personalized_content_emails():
                         })
                         continue
                     
-                    # Use Salesforce Email API - prioritize emailSimple API for better HTML rendering
-                    # Method 1: Try emailSimple API first (most reliable for HTML emails)
+                    # Use Salesforce Email API - try multiple methods for HTML rendering
+                    # Method 1: Use Apex SingleEmailMessage with base64 encoding (most reliable for HTML)
                     try:
-                        email_payload = {
-                            "inputs": [{
-                                "emailAddresses": test_email,
-                                "emailSubject": subject,
-                                "emailBody": html_content,
-                                "emailFormat": "Html",  # Explicitly set HTML format
-                                "senderType": "CurrentUser"
-                            }]
-                        }
-                        result = sf_manager.sf.restful(
-                            'actions/standard/emailSimple',
-                            method='POST',
-                            data=json.dumps(email_payload),
-                            headers={'Content-Type': 'application/json'}
-                        )
-                        print(f"✅ Email sent via emailSimple API (HTML format)")
-                    except Exception as email_simple_error:
-                        # Method 2: Fallback to Apex SingleEmailMessage with base64 encoding
-                        print(f"⚠️ emailSimple API failed: {email_simple_error}, trying Apex with base64...")
+                        import base64
+                        # Encode HTML as base64 to avoid escaping issues
+                        html_base64 = base64.b64encode(html_content.encode('utf-8')).decode('utf-8')
+                        subject_escaped = subject.replace("'", "\\'").replace('"', '\\"')
+                        
+                        apex_code = f"""
+                        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                        email.setToAddresses(new String[] {{'{test_email}'}});
+                        email.setSubject('{subject_escaped}');
+                        String htmlBody = EncodingUtil.base64Decode('{html_base64}').toString();
+                        email.setHtmlBody(htmlBody);
+                        email.setSaveAsActivity(false);
+                        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {{ email }});
+                        System.debug('Email sent: ' + results[0].isSuccess());
+                        """
+                        
+                        result = sf_manager.sf.toolingexecuteanonymous(apex_code)
+                        if not result.get('success'):
+                            error_msg = result.get('compileProblem') or result.get('exceptionMessage', 'Unknown error')
+                            raise Exception(f"Apex execution failed: {error_msg}")
+                        print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML with base64)")
+                    except Exception as apex_error:
+                        # Method 2: Fallback to emailSimple API with explicit HTML format
+                        print(f"⚠️ Apex base64 method failed: {apex_error}, trying emailSimple API...")
                         try:
-                            import base64
-                            # Encode HTML as base64 to avoid escaping issues
-                            html_base64 = base64.b64encode(html_content.encode('utf-8')).decode('utf-8')
-                            subject_escaped = subject.replace("'", "\\'").replace('"', '\\"')
-                            
-                            apex_code = f"""
-                            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-                            email.setToAddresses(new String[] {{'{test_email}'}});
-                            email.setSubject('{subject_escaped}');
-                            String htmlBody = EncodingUtil.base64Decode('{html_base64}').toString();
-                            email.setHtmlBody(htmlBody);
-                            email.setSaveAsActivity(false);
-                            Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {{ email }});
-                            System.debug('Email sent: ' + results[0].isSuccess());
-                            """
-                            
-                            result = sf_manager.sf.toolingexecuteanonymous(apex_code)
-                            if not result.get('success'):
-                                error_msg = result.get('compileProblem') or result.get('exceptionMessage', 'Unknown error')
-                                raise Exception(f"Apex execution failed: {error_msg}")
-                            print(f"✅ Email sent successfully via Apex SingleEmailMessage (HTML with base64)")
-                        except Exception as apex_error:
+                            email_payload = {
+                                "inputs": [{
+                                    "emailAddresses": test_email,
+                                    "emailSubject": subject,
+                                    "emailBody": html_content,
+                                    "emailFormat": "Html",  # Explicitly set HTML format
+                                    "senderType": "CurrentUser"
+                                }]
+                            }
+                            result = sf_manager.sf.restful(
+                                'actions/standard/emailSimple',
+                                method='POST',
+                                data=json.dumps(email_payload),
+                                headers={'Content-Type': 'application/json'}
+                            )
+                            print(f"✅ Email sent via emailSimple API (HTML format)")
+                        except Exception as email_simple_error:
                             # Method 3: Last resort - try Apex with string escaping
-                            print(f"⚠️ Base64 method failed: {apex_error}, trying string escaping...")
+                            print(f"⚠️ emailSimple API failed: {email_simple_error}, trying Apex string escaping...")
                             try:
                                 # Escape HTML properly for Apex string
                                 html_escaped = html_content.replace("\\", "\\\\").replace("'", "\\'").replace('\n', '\\n').replace('\r', '\\r')
                                 subject_escaped = subject.replace("'", "\\'").replace('"', '\\"')
                                 
-                                # Use Blob to handle large HTML strings
                                 apex_code = f"""
                                 String htmlBody = '{html_escaped}';
                                 Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
