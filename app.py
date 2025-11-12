@@ -997,8 +997,8 @@ def get_individuals_engagement():
                     'Imminent_Event': insight.get('Imminent_Event')
                 }
         
-        # Sort by omnichannel score descending
-        merged_data.sort(key=lambda x: x['omnichannel_score'], reverse=True)
+        # Sort by omnichannel score descending (ensure numeric conversion)
+        merged_data.sort(key=lambda x: float(x.get('omnichannel_score', 0) or 0), reverse=True)
         
         return jsonify({'success': True, 'individuals': merged_data, 'total': len(merged_data)})
         
