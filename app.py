@@ -1495,15 +1495,37 @@ def send_personalized_content_emails():
             "Archana Tripathi"
         ]
         
-        # Load data
+        # Load data with error handling
         engagement_file = 'data/synthetic_engagement.json'
         insights_file = 'data/individual_insights.json'
         
-        with open(engagement_file, 'r') as f:
-            engagement_data = json.load(f)
+        try:
+            with open(engagement_file, 'r') as f:
+                engagement_data = json.load(f)
+        except FileNotFoundError:
+            return jsonify({
+                'success': False,
+                'error': f'Engagement data file not found: {engagement_file}'
+            }), 404
+        except json.JSONDecodeError as e:
+            return jsonify({
+                'success': False,
+                'error': f'Invalid JSON in engagement file: {str(e)}'
+            }), 500
         
-        with open(insights_file, 'r') as f:
-            insights_data = json.load(f)
+        try:
+            with open(insights_file, 'r') as f:
+                insights_data = json.load(f)
+        except FileNotFoundError:
+            return jsonify({
+                'success': False,
+                'error': f'Insights data file not found: {insights_file}'
+            }), 404
+        except json.JSONDecodeError as e:
+            return jsonify({
+                'success': False,
+                'error': f'Invalid JSON in insights file: {str(e)}'
+            }), 500
         
         results = []
         generated_htmls = []
@@ -1802,6 +1824,14 @@ def not_found(e):
 
 @app.errorhandler(500)
 def server_error(e):
+    # Check if this is an API request (JSON expected)
+    if request.path.startswith('/api/'):
+        import traceback
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }), 500
     return render_template('500.html'), 500
 
 # ============================================================================
