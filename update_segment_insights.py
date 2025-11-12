@@ -16,13 +16,15 @@ INDIVIDUAL_IDS = {
 }
 
 # Diverse values for each individual
+# 2 individuals with NEGATIVE health profiles (will trigger doctor alerts)
+# 3 individuals with POSITIVE health profiles (will trigger promotional offers + vacation links)
 SEGMENT_INSIGHTS = {
     "Biswarup Banerjee": {
         "Favourite_Exercise": "Treadmill Running",
         "Favourite_Brand": "Nike",  # Apparel brand
         "Favourite_Destination": "Singapore",
         "Hobby": "Running",
-        "Health_Profile": "Fit",
+        "Health_Profile": "Hypertensive",  # NEGATIVE - will trigger doctor alert
         "Fitness_Milestone_Current": "Advanced",
         "Fitness_Milestone_Previous": "Intermediate",  # Shows progression
         "Lifestyle_Quotient": "Active",
@@ -34,19 +36,19 @@ SEGMENT_INSIGHTS = {
         "Favourite_Brand": "Samsung",  # Tech brand
         "Favourite_Destination": "Switzerland",
         "Hobby": "Cooking",
-        "Health_Profile": "Healthy",
+        "Health_Profile": "Healthy",  # POSITIVE - will trigger promotional offer
         "Fitness_Milestone_Current": "Elite",
         "Fitness_Milestone_Previous": "Advanced",  # Shows progression
         "Lifestyle_Quotient": "Minimalist",
         "Current_Sentiment": "Confident",
-        "Imminent_Event": "Vacation to Switzerland next week"
+        "Imminent_Event": "Vacation to Switzerland next week"  # Will trigger vacation link
     },
     "Deepika Chauhan": {
         "Favourite_Exercise": "CrossFit",
         "Favourite_Brand": "Garmin",  # Tech brand
         "Favourite_Destination": "Paris",
         "Hobby": "Dancing",
-        "Health_Profile": "Healthy",
+        "Health_Profile": "At Risk",  # NEGATIVE - will trigger doctor alert
         "Fitness_Milestone_Current": "Intermediate",
         "Fitness_Milestone_Previous": "Beginner",  # Shows progression
         "Lifestyle_Quotient": "Connoisseur",
@@ -58,24 +60,24 @@ SEGMENT_INSIGHTS = {
         "Favourite_Brand": "Bose",  # Tech brand
         "Favourite_Destination": "Maldives",
         "Hobby": "Meditation",
-        "Health_Profile": "Fit",
+        "Health_Profile": "Fit",  # POSITIVE - will trigger promotional offer
         "Fitness_Milestone_Current": "Elite",
         "Fitness_Milestone_Previous": "Advanced",  # Shows progression
         "Lifestyle_Quotient": "Luxury Seeker",
         "Current_Sentiment": "Relaxed",
-        "Imminent_Event": "Yoga retreat in Maldives next month"
+        "Imminent_Event": "Vacation to Maldives next month"  # Will trigger vacation link
     },
     "Archana Tripathi": {
         "Favourite_Exercise": "Rock Climbing",
         "Favourite_Brand": "Adidas",  # Apparel brand
-        "Favourite_Destination": "Dubai",  # Changed to Dubai (unique from all others)
+        "Favourite_Destination": "Dubai",
         "Hobby": "Playing Guitar",
-        "Health_Profile": "Active",
+        "Health_Profile": "Active",  # POSITIVE - will trigger promotional offer
         "Fitness_Milestone_Current": "Advanced",
         "Fitness_Milestone_Previous": "Intermediate",  # Shows progression
         "Lifestyle_Quotient": "Adventurer",
         "Current_Sentiment": "Happy",
-        "Imminent_Event": "Rock climbing adventure in Dubai next week"
+        "Imminent_Event": "Vacation in Dubai next week"  # Will trigger vacation link
     }
 }
 
