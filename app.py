@@ -1583,42 +1583,52 @@ def send_personalized_content_emails():
             if latest_insight.get('Hobby') and 'guitar' in str(latest_insight.get('Hobby', '')).lower():
                 offers_html += f'<div style="background: #f5f7fa; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea;"><strong>🎸 Guitar Purchase - 30% Discount</strong><br>Special discount on premium guitars for music enthusiasts!</div>'
             
-            html_content = f"""
-<!DOCTYPE html>
+            # Ensure image URL is absolute and from Cloudinary for email embedding
+            if image_url and not image_url.startswith('http'):
+                # If relative URL, make it absolute
+                image_url = f"https://res.cloudinary.com/{os.environ.get('CLOUDINARY_CLOUD_NAME', 'demo')}/image/upload/{image_url}"
+            
+            # Build HTML email with proper structure for email clients
+            html_content = f"""<!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"></head>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Content for {individual['Name']}</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1>🎯 Personalized Content for {individual['Name']}</h1>
+        <h1 style="margin: 0; color: white;">🎯 Personalized Content for {individual['Name']}</h1>
         <div style="background: gold; color: #333; padding: 8px 20px; border-radius: 25px; display: inline-block; margin: 10px 0; font-weight: bold;">{vip_label}</div>
-        <p>Engagement Score: {engagement_score:.2f} | Preferred Channel: {preferred_channel}</p>
+        <p style="margin: 10px 0 0 0;">Engagement Score: {engagement_score:.2f} | Preferred Channel: {preferred_channel}</p>
     </div>
     <div style="background: white; padding: 30px; border: 1px solid #e0e0e0;">
-        <div style="font-size: 16px; margin-bottom: 20px;">
+        <div style="font-size: 16px; margin-bottom: 20px; line-height: 1.6;">
             {salutation}
         </div>
-        <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">🎁 Exclusive Offers</h2>
+        <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">🎁 Exclusive Offers</h2>
         {offers_html if offers_html else '<p>Check back soon for exclusive offers!</p>'}
         <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">🎨 Your Personalized Image</h2>
-        <img src="{image_url}" alt="Personalized Content" style="max-width: 100%; border-radius: 10px; margin: 20px 0;" />
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{image_url}" alt="Personalized Content" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" />
+        </div>
         <p style="color: #666; font-size: 12px; text-align: center; margin-top: 10px;">
             <em>💡 Tip: Generate personalized AI images via the "🎨 AI Personalized Images" page for full customization!</em>
         </p>
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #667eea;">📊 Your Profile</h3>
-            <p><strong>Exercise:</strong> {latest_insight.get('Favourite_Exercise', 'N/A')}</p>
-            <p><strong>Brand:</strong> {latest_insight.get('Favourite_Brand', 'N/A')}</p>
-            <p><strong>Destination:</strong> {latest_insight.get('Favourite_Destination', 'N/A')}</p>
-            <p><strong>Milestone:</strong> {latest_insight.get('Fitness_Milestone', 'N/A')}</p>
-            <p><strong>Health Profile:</strong> {latest_insight.get('Health_Profile', 'N/A')}</p>
+            <h3 style="color: #667eea; margin-top: 0;">📊 Your Profile</h3>
+            <p style="margin: 8px 0;"><strong>Exercise:</strong> {latest_insight.get('Favourite_Exercise', 'N/A')}</p>
+            <p style="margin: 8px 0;"><strong>Brand:</strong> {latest_insight.get('Favourite_Brand', 'N/A')}</p>
+            <p style="margin: 8px 0;"><strong>Destination:</strong> {latest_insight.get('Favourite_Destination', 'N/A')}</p>
+            <p style="margin: 8px 0;"><strong>Milestone:</strong> {latest_insight.get('Fitness_Milestone', 'N/A')}</p>
+            <p style="margin: 8px 0;"><strong>Health Profile:</strong> {latest_insight.get('Health_Profile', 'N/A')}</p>
         </div>
     </div>
     <div style="background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 12px;">
-        <p>This is a test email sent for demonstration purposes.</p>
+        <p style="margin: 0;">This is a test email sent for demonstration purposes.</p>
     </div>
 </body>
-</html>
-"""
+</html>"""
             
             # Save HTML for preview
             os.makedirs('generated_emails', exist_ok=True)
