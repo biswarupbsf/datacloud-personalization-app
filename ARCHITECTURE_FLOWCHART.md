@@ -15,7 +15,8 @@ flowchart TB
         WhatsApp["💬 WhatsApp Business API<br/>Message Engagement"]
         Health["⚕️ Health Systems<br/>Health Profiles, Fitness Data"]
         Ecommerce["🛒 E-commerce Platform<br/>Purchase History, Preferences"]
-        Social["📱 Social Media<br/>Engagement, Sentiment"]
+        Social["📱 Social Media<br/>Engagement, Product Reviews, Pvt Fan page interactions"]
+        Customer Service["📱 Contact Center<br/>Product Inquiries, Complaints"]
     end
 
     %% ============================================
@@ -37,7 +38,7 @@ flowchart TB
         subgraph Insights["💡 Insights Creation"]
             UnstructuredProc["Unstructured Data Processing<br/>NLP, OCR, Image Recognition, Computer Vision"]
             StructuredProc["Structured Data Processing<br/>Calculated Insights, Predictive AI Models"]
-            UnstructuredInsights["Unstructured Insights<br/>Sentiment, Lifestyle, Health Profile, Purchase Intent, Hobby, Affinities, Imminent Event"]
+            UnstructuredInsights["Unstructured Insights<br/>Sentiment, Lifestyle, Health Profile, Purchase Intent, Churn Risk, Hobby, Affinities, Imminent Event"]
             StructuredInsights["Structured Insights<br/>Lifetime Value, Loyalty Tier, Favourite Brand, Preferred Channel, Preferred Send Schedule"]
         end
         
@@ -106,6 +107,7 @@ flowchart TB
     Health --> DataStreams
     Ecommerce --> DataStreams
     Social --> DataStreams
+    Customer Service --> DataStreams
     
     DataStreams --> Connectors
     Connectors --> Harmonization
