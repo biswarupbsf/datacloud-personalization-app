@@ -224,7 +224,6 @@ class PersonalizedImageGenerator:
         
         try:
             from google.genai import types
-            from PIL import Image as PILImage
             
             print(f"🎨 Starting Gemini Nano Banana generation for {individual_data.get('Name', 'Unknown')}")
             print(f"📝 Scenario: {scenario_prompt[:150]}...")
@@ -267,27 +266,30 @@ class PersonalizedImageGenerator:
                 contents=image_parts,
             )
             
-            # Extract image from response
-            generated_image_data = None
-            for candidate in response.candidates:
-                for part in candidate.content.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        generated_image_data = part.inline_data.data
-                        break
-                    elif hasattr(part, 'bytes') and part.bytes:
-                        generated_image_data = part.bytes
-                        break
+            # Extract image from response (using the simpler pattern)
+            generated_image = None
+            for part in response.parts:
+                if part.text is not None:
+                    print(f"📝 Gemini text response: {part.text}")
+                elif part.inline_data is not None:
+                    generated_image = part.as_image()
+                    break
             
-            if not generated_image_data:
+            if not generated_image:
                 return {
                     'success': False,
                     'error': 'Gemini did not return an image. Response: ' + str(response)
                 }
             
+            # Convert PIL Image to bytes for Cloudinary
+            img_bytes = io.BytesIO()
+            generated_image.save(img_bytes, format='PNG')
+            img_bytes.seek(0)
+            
             # Save image to Cloudinary
             print("☁️ Uploading generated image to Cloudinary...")
             result = cloudinary.uploader.upload(
-                io.BytesIO(generated_image_data),
+                img_bytes,
                 folder="personalized_images_gemini",
                 resource_type="image"
             )
