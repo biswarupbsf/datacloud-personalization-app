@@ -55,5 +55,6 @@ Thumbs.db
 
 # Data files - DO NOT overwrite production data on deploy
 # These contain user uploads (profile pictures) that should persist
-data/synthetic_engagement.json
+# Temporarily removed to deploy updated engagement scores - will add back after deploy
+# data/synthetic_engagement.json
 # Note: individual_insights.json is now tracked in git since it doesn't contain user uploads
