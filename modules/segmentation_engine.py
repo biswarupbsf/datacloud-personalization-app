@@ -114,8 +114,8 @@ class SegmentationEngine:
             if segment.get('sentiment_filter'):
                 members = [m for m in members if m.get('Current_Sentiment') in segment.get('sentiment_filter')]
             
-            # Sort by omnichannel score
-            members = sorted(members, key=lambda x: x.get('omnichannel_score', x.get('engagement_score', 0)), reverse=True)
+            # Sort by omnichannel score (ensure numeric conversion)
+            members = sorted(members, key=lambda x: float(x.get('omnichannel_score', x.get('engagement_score', 0)) or 0), reverse=True)
             
             # Apply limit if specified in segment metadata
             if segment.get('limit') and len(members) > segment['limit']:
@@ -374,13 +374,19 @@ class SegmentationEngine:
                     'push_sends', 'push_opens', 'push_clicks', 'push_open_rate',
                     'total_message_sends', 'total_message_interactions'
                 ]
+                
+                member_value = member.get(field)
+                
+                # Convert both value and member_value to float for numeric fields to avoid str/float comparison errors
                 if field in numeric_fields:
                     try:
                         value = float(value)
                     except:
                         value = 0
-                
-                member_value = member.get(field)
+                    try:
+                        member_value = float(member_value or 0)
+                    except:
+                        member_value = 0
                 
                 if operator == 'equals':
                     if member_value != value:
@@ -414,8 +420,8 @@ class SegmentationEngine:
             if passes_all_filters:
                 filtered_members.append(member)
         
-        # Sort by engagement_score descending
-        filtered_members.sort(key=lambda x: x.get('engagement_score', 0), reverse=True)
+        # Sort by engagement_score descending (ensure numeric conversion)
+        filtered_members.sort(key=lambda x: float(x.get('engagement_score', 0) or 0), reverse=True)
         
         # Check if there's a limit in the description or filters
         # For "top N" segments, we'll take just the first N

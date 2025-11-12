@@ -392,8 +392,8 @@ class AIAgent:
                     if sentiment_filter:
                         members = [m for m in members if m.get('Current_Sentiment') in sentiment_filter]
                     
-                    # Sort by omnichannel score
-                    members = sorted(members, key=lambda x: x.get('omnichannel_score', 0), reverse=True)
+                    # Sort by omnichannel score (ensure numeric conversion to avoid str/float comparison errors)
+                    members = sorted(members, key=lambda x: float(x.get('omnichannel_score', 0) or 0), reverse=True)
                     
                     # Apply limit if specified
                     if limit and len(members) > limit:
@@ -2038,7 +2038,7 @@ _Engagement: {engagement_score}/10 | Channel: WhatsApp_"""
             total_revenue = sum(i.get('total_order_value', 0) for i in engagement_data)
             
             # Top 5 engaged individuals
-            top_5 = sorted(engagement_data, key=lambda x: x['engagement_score'], reverse=True)[:5]
+            top_5 = sorted(engagement_data, key=lambda x: float(x.get('engagement_score', 0) or 0), reverse=True)[:5]
             
             # Build message
             message_text = "📊 **Individual Engagement Analytics**\n\n"
