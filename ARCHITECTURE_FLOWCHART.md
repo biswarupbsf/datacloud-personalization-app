@@ -16,8 +16,8 @@ flowchart TB
         WhatsApp["<b>💬 WhatsApp Business API</b><br/>Message Engagement"]
         Health["<b>⚕️ Health Systems</b><br/>Health Profiles, Fitness Data"]
         Ecommerce["<b>🛒 E-commerce Platform</b><br/>Purchase History, Preferences"]
-        Social["<b>📱 Social Media</b><br/>Engagement, Product Reviews, Pvt Fan page interactions"]
-        Service["<b>📱 Contact Center</b><br/>Product Inquiries, Complaints"]
+        Social["<b>📸 Social Media</b><br/>Engagement, Product Reviews, Pvt Fan page interactions"]
+        Service["<b>☎️ Contact Center</b><br/>Product Inquiries, Complaints"]
     end
 
     %% ============================================
@@ -186,20 +186,20 @@ flowchart TB
     WebsiteDel -.->|"Feedback"| DataStreams
     
     %% ============================================
-    %% ENHANCED STYLING WITH BOLD COLORS
+    %% ENHANCED STYLING WITH SOFT COLORS
     %% ============================================
-    classDef sourceStyle fill:#1e88e5,stroke:#0d47a1,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef datacloudStyle fill:#7b1fa2,stroke:#4a148c,stroke-width:4px,color:#ffffff,font-weight:bold
-    classDef ingestionStyle fill:#5c6bc0,stroke:#283593,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef processingStyle fill:#00897b,stroke:#00695c,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef insightsStyle fill:#f57c00,stroke:#e65100,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef profile360Style fill:#388e3c,stroke:#1b5e20,stroke-width:4px,color:#ffffff,font-weight:bold
-    classDef herokuStyle fill:#c2185b,stroke:#880e4f,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef mcpStyle fill:#fbc02d,stroke:#f57f17,stroke-width:3px,color:#000000,font-weight:bold
-    classDef segmentationStyle fill:#8e24aa,stroke:#6a1b9a,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef personalizationStyle fill:#0097a7,stroke:#006064,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef messagingStyle fill:#43a047,stroke:#2e7d32,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef channelStyle fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff,font-weight:bold
+    classDef sourceStyle fill:#90caf9,stroke:#1976d2,stroke-width:2px,color:#000000,font-weight:bold
+    classDef datacloudStyle fill:#ba68c8,stroke:#7b1fa2,stroke-width:3px,color:#ffffff,font-weight:bold
+    classDef ingestionStyle fill:#9fa8da,stroke:#5c6bc0,stroke-width:2px,color:#000000,font-weight:bold
+    classDef processingStyle fill:#4db6ac,stroke:#00897b,stroke-width:2px,color:#000000,font-weight:bold
+    classDef insightsStyle fill:#ffb74d,stroke:#f57c00,stroke-width:2px,color:#000000,font-weight:bold
+    classDef profile360Style fill:#81c784,stroke:#388e3c,stroke-width:3px,color:#000000,font-weight:bold
+    classDef herokuStyle fill:#f06292,stroke:#c2185b,stroke-width:2px,color:#000000,font-weight:bold
+    classDef mcpStyle fill:#fff176,stroke:#fbc02d,stroke-width:2px,color:#000000,font-weight:bold
+    classDef segmentationStyle fill:#ce93d8,stroke:#8e24aa,stroke-width:2px,color:#000000,font-weight:bold
+    classDef personalizationStyle fill:#4dd0e1,stroke:#0097a7,stroke-width:2px,color:#000000,font-weight:bold
+    classDef messagingStyle fill:#a5d6a7,stroke:#43a047,stroke-width:2px,color:#000000,font-weight:bold
+    classDef channelStyle fill:#64b5f6,stroke:#1976d2,stroke-width:2px,color:#000000,font-weight:bold
     
     class CRM,Marketing,Website,Mobile,WhatsApp,Health,Ecommerce,Social,Service sourceStyle
     class DataCloud,Ingestion,Processing,Insights,Profile360 datacloudStyle
@@ -290,13 +290,13 @@ flowchart TB
     Edges --> GraphStructure
     
     %% ============================================
-    %% ENHANCED STYLING
+    %% ENHANCED STYLING WITH SOFT COLORS
     %% ============================================
-    classDef unifiedStyle fill:#388e3c,stroke:#1b5e20,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef structuredStyle fill:#f57c00,stroke:#e65100,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef unstructuredStyle fill:#8e24aa,stroke:#6a1b9a,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef timeStyle fill:#0097a7,stroke:#006064,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef graphStyle fill:#7b1fa2,stroke:#4a148c,stroke-width:4px,color:#ffffff,font-weight:bold
+    classDef unifiedStyle fill:#81c784,stroke:#388e3c,stroke-width:2px,color:#000000,font-weight:bold
+    classDef structuredStyle fill:#ffb74d,stroke:#f57c00,stroke-width:2px,color:#000000,font-weight:bold
+    classDef unstructuredStyle fill:#ce93d8,stroke:#8e24aa,stroke-width:2px,color:#000000,font-weight:bold
+    classDef timeStyle fill:#4dd0e1,stroke:#0097a7,stroke-width:2px,color:#000000,font-weight:bold
+    classDef graphStyle fill:#ba68c8,stroke:#7b1fa2,stroke-width:3px,color:#ffffff,font-weight:bold
     
     class Identity,Demographics,UnifiedRecord unifiedStyle
     class StructuredProc,StructuredInsights structuredStyle
