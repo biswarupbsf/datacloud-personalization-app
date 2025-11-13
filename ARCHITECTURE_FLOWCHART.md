@@ -14,7 +14,7 @@ flowchart TB
         Website["<b>🌐 Website Analytics</b><br/>Product Views, Cart, Purchases"]
         Mobile["<b>📱 Mobile App</b><br/>Push Notifications, In-App Events"]
         WhatsApp["<b>💬 WhatsApp Business API</b><br/>Message Engagement"]
-        Health["<b>⚕️ Health Systems</b><br/>Health Profiles, Fitness Data"]
+        IoT["<b>🔌 IoT Hub</b><br/>Smart wearables & devices - Vehicle Telematics, Vitals & Health Parameters"]
         Ecommerce["<b>🛒 E-commerce Platform</b><br/>Purchase History, Preferences"]
         Social["<b>📸 Social Media</b><br/>Engagement, Product Reviews, Pvt Fan page interactions"]
         Service["<b>☎️ Contact Center</b><br/>Product Inquiries, Complaints"]
@@ -116,7 +116,7 @@ flowchart TB
     Website --> DataStreams
     Mobile --> DataStreams
     WhatsApp --> DataStreams
-    Health --> DataStreams
+    IoT --> DataStreams
     Ecommerce --> DataStreams
     Social --> DataStreams
     Service --> DataStreams
@@ -189,19 +189,19 @@ flowchart TB
     %% ENHANCED STYLING WITH SOFT COLORS
     %% ============================================
     classDef sourceStyle fill:#90caf9,stroke:#1976d2,stroke-width:2px,color:#000000,font-weight:bold
-    classDef datacloudStyle fill:#ba68c8,stroke:#7b1fa2,stroke-width:3px,color:#ffffff,font-weight:bold
+    classDef datacloudStyle fill:#e1bee7,stroke:#ba68c8,stroke-width:2px,color:#000000,font-weight:bold
     classDef ingestionStyle fill:#9fa8da,stroke:#5c6bc0,stroke-width:2px,color:#000000,font-weight:bold
     classDef processingStyle fill:#4db6ac,stroke:#00897b,stroke-width:2px,color:#000000,font-weight:bold
     classDef insightsStyle fill:#ffb74d,stroke:#f57c00,stroke-width:2px,color:#000000,font-weight:bold
     classDef profile360Style fill:#81c784,stroke:#388e3c,stroke-width:3px,color:#000000,font-weight:bold
-    classDef herokuStyle fill:#f06292,stroke:#c2185b,stroke-width:2px,color:#000000,font-weight:bold
+    classDef herokuStyle fill:#fce4ec,stroke:#f06292,stroke-width:2px,color:#000000,font-weight:bold
     classDef mcpStyle fill:#fff176,stroke:#fbc02d,stroke-width:2px,color:#000000,font-weight:bold
     classDef segmentationStyle fill:#ce93d8,stroke:#8e24aa,stroke-width:2px,color:#000000,font-weight:bold
     classDef personalizationStyle fill:#4dd0e1,stroke:#0097a7,stroke-width:2px,color:#000000,font-weight:bold
     classDef messagingStyle fill:#a5d6a7,stroke:#43a047,stroke-width:2px,color:#000000,font-weight:bold
     classDef channelStyle fill:#64b5f6,stroke:#1976d2,stroke-width:2px,color:#000000,font-weight:bold
     
-    class CRM,Marketing,Website,Mobile,WhatsApp,Health,Ecommerce,Social,Service sourceStyle
+    class CRM,Marketing,Website,Mobile,WhatsApp,IoT,Ecommerce,Social,Service sourceStyle
     class DataCloud,Ingestion,Processing,Insights,Profile360 datacloudStyle
     class DataStreams,Connectors ingestionStyle
     class Harmonization,IdentityResolution,UnifiedProfile processingStyle
@@ -321,7 +321,7 @@ flowchart TB
 
    - WhatsApp Business API (Message engagement)
 
-   - Health Systems (Health profiles, fitness data)
+   - IoT Hub (Smart wearables & devices - Vehicle Telematics, Vitals & Health Parameters)
 
    - E-commerce Platform (Purchase history, preferences)
 
