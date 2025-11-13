@@ -222,7 +222,7 @@ flowchart TB
     %% ============================================
     %% PROFILE 360 GRAPH COMPONENTS
     %% ============================================
-    subgraph Profile360["<b>📊 PROFILE 360 GRAPH ARCHITECTURE</b>"]
+    subgraph Profile360["<b><font size='+2'>📊 PROFILE 360 GRAPH ARCHITECTURE</font></b>"]
         direction TB
         
         subgraph Unified["<b>👤 UNIFIED PROFILE</b>"]
