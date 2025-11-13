@@ -7,7 +7,7 @@ flowchart TB
     %% ============================================
     %% ENTERPRISE DATA SOURCES
     %% ============================================
-    subgraph Sources["<b>📊 ENTERPRISE DATA SOURCES</b>"]
+    subgraph Sources["<b><font size='+2'>📊 ENTERPRISE DATA SOURCES</font></b>"]
         direction TB
         CRM["<b>🏢 Salesforce CRM</b><br/>Accounts, Contacts, Leads, Cases"]
         Marketing["<b>📧 Marketing Cloud</b><br/>Email, SMS, Push Campaigns"]
@@ -23,7 +23,7 @@ flowchart TB
     %% ============================================
     %% DATA CLOUD - DATA INGESTION & PROCESSING
     %% ============================================
-    subgraph DataCloud["<b>☁️ SALESFORCE DATA CLOUD</b>"]
+    subgraph DataCloud["<b><font size='+2'>☁️ SALESFORCE DATA 360</font></b>"]
         direction TB
         
         subgraph Ingestion["<b>📥 DATA INGESTION</b>"]
@@ -58,7 +58,7 @@ flowchart TB
     %% ============================================
     %% HEROKU APP - MCP CONNECTION
     %% ============================================
-    subgraph HerokuApp["<b>🚀 HEROKU APPLICATION</b>"]
+    subgraph HerokuApp["<b><font size='+2'>🚀 HEROKU APPLICATION</font></b>"]
         direction TB
         
         subgraph MCP["<b>🔌 MCP SERVER CONNECTION</b>"]
@@ -97,7 +97,7 @@ flowchart TB
     %% ============================================
     %% DELIVERY CHANNELS
     %% ============================================
-    subgraph Channels["<b>📤 DELIVERY CHANNELS</b>"]
+    subgraph Channels["<b><font size='+2'>📤 DELIVERY CHANNELS</font></b>"]
         direction LR
         Email["<b>📧 Email</b><br/>Marketing Cloud"]
         SMS["<b>💬 SMS</b><br/>Mobile Studio"]
