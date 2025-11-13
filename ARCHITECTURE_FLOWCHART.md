@@ -223,7 +223,7 @@ flowchart TB
     %% PROFILE 360 GRAPH COMPONENTS
     %% ============================================
     subgraph Profile360["<b><font size='+2'>📊 PROFILE 360 GRAPH ARCHITECTURE</font></b>"]
-        direction TB
+        direction LR
         
         subgraph Unified["<b>👤 UNIFIED PROFILE</b>"]
             direction TB
@@ -233,7 +233,7 @@ flowchart TB
         end
         
         subgraph Insights["<b>💡 INSIGHTS LAYER</b>"]
-            direction TB
+            direction LR
             
             subgraph Structured["<b>📋 STRUCTURED INSIGHTS</b>"]
                 direction TB
